@@ -18,6 +18,7 @@ Rule::Rule(const QString &rulePath, QObject *parent)
     , _documentation("")
     , _lhs(0)
     , _rhs(0)
+	, _interface(0)
     , _condition("")
     , _options(Rule_DefaultBehaviour)
 {
@@ -43,6 +44,11 @@ Graph *Rule::lhs() const
 Graph *Rule::rhs() const
 {
     return _rhs;
+}
+
+Graph *Rule::interface() const
+{
+    return _interface;
 }
 
 const QString &Rule::condition() const
@@ -91,7 +97,15 @@ void Rule::setLhs(Graph *lhsGraph)
 void Rule::setRhs(Graph *rhsGraph)
 {
     _rhs = rhsGraph;
-    connect(_lhs, SIGNAL(statusChanged(FileStatus)), this, SLOT(rhsGraphChanged()));
+    connect(_rhs, SIGNAL(statusChanged(FileStatus)), this, SLOT(rhsGraphChanged()));
+    _status = Modified;
+    emit statusChanged(_status);
+}
+
+void Rule::setInterface(Graph *interfaceGraph)
+{
+    _rhs = interfaceGraph;
+    connect(_interface, SIGNAL(statusChanged(FileStatus)), this, SLOT(interfaceGraphChanged()));
     _status = Modified;
     emit statusChanged(_status);
 }
@@ -159,7 +173,8 @@ bool Rule::save()
     saveText += "}\n";
     saveText += "interface={";
 
-    // Write interface here
+    // Write interface here	
+    _interface->toAlternative();
 
     saveText += "}\nwhere ";
     saveText += _condition;
@@ -256,10 +271,17 @@ bool Rule::open()
         setLhs(new Graph(rule.lhs.get(), this));
     else
         setLhs(new Graph(QString(), false, this));
+
     if(rule.rhs.is_initialized())
         setRhs(new Graph(rule.rhs.get(), this));
     else
         setRhs(new Graph(QString(), false, this));
+
+    if(rule.interface.is_initialized())
+        setRhs(new Graph(rule.interface.get(), this));
+    else
+        setRhs(new Graph(QString(), false, this));
+
     if(rule.condition.is_initialized())
         setCondition(rule.condition.get().c_str());
     else
@@ -278,6 +300,12 @@ void Rule::lhsGraphChanged()
 }
 
 void Rule::rhsGraphChanged()
+{
+    _status = Modified;
+    emit statusChanged(_status);
+}
+
+void Rule::interfaceGraphChanged()
 {
     _status = Modified;
     emit statusChanged(_status);
