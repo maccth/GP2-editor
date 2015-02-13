@@ -104,7 +104,7 @@ void Rule::setRhs(Graph *rhsGraph)
 
 void Rule::setInterface(Graph *interfaceGraph)
 {
-    _rhs = interfaceGraph;
+    _interface = interfaceGraph;
     connect(_interface, SIGNAL(statusChanged(FileStatus)), this, SLOT(interfaceGraphChanged()));
     _status = Modified;
     emit statusChanged(_status);
