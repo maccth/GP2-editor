@@ -1,0 +1,20 @@
+# Do not track Qt Creator generated user files
+*.user
+*.pro.user.*
+
+# Don't track generated documentation
+docs/*
+
+# Don't track latex aux files
+project/gp_compiler_proposal.*
+!project/gp_compiler_proposal.tex
+project/project.*
+!project/project.tex
+!project/project.bib
+
+# Don't track backup files
+*~
+*autosave
+
+# Don't save OSX directory files
+*DS_STORE
