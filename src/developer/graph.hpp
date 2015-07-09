@@ -92,10 +92,12 @@ protected slots:
 protected:
     // Protected member functions
     bool openGraphT(const graph_t &inputGraph);
-    QString newId();
+    QString newNodeId();
+    QString newEdgeId();
 
     // Protected member variables
-    int _idCounter;
+    int _nodeIdCounter;
+    int _edgeIdCounter;
     QRect _canvas;
     std::vector<Node *> _nodes;
     std::vector<Edge *> _edges;

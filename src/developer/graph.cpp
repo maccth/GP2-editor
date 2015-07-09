@@ -14,7 +14,8 @@ namespace Developer {
 
 Graph::Graph(const QString &graphPath, bool autoInitialise, QObject *parent)
     : GPFile(graphPath, parent)
-    , _idCounter(1)
+    , _nodeIdCounter(1)
+    , _edgeIdCounter(1)
 {
     if(autoInitialise && !graphPath.isEmpty())
         open();
@@ -22,7 +23,8 @@ Graph::Graph(const QString &graphPath, bool autoInitialise, QObject *parent)
 
 Graph::Graph(const graph_t &inputGraph, QObject *parent)
     : GPFile(QString(), parent)
-    , _idCounter(1)
+    , _nodeIdCounter(1)
+    , _edgeIdCounter(1)
 {
     // We don't follow the normal open procedure here, since this is not coming
     // from a file. This is intended for create in-memory graph objects and
@@ -795,7 +797,7 @@ Edge *Graph::addEdge(Node *from, Node *to, const List &label)
 
     // Are the two nodes provided real nodes tracked by this graph
 
-    Edge *e = new Edge(newId(), from, to, label, this);
+    Edge *e = new Edge(newEdgeId(), from, to, label, this);
     connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
     _edges.push_back(e);
 
@@ -829,7 +831,7 @@ Node *Graph::addNode(const List &label, const QPointF &pos)
     // Is there already a node or edge with this label?
     // do we care if there is?
 
-    Node *n = new Node(newId(), label, pos, this);
+    Node *n = new Node(newNodeId(), label, pos, this);
     if(_nodes.size() == 0)
         n->setIsRoot(true);
     connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
@@ -996,14 +998,24 @@ void Graph::trackChange()
     emit statusChanged(_status);
 }
 
-QString Graph::newId()
+QString Graph::newNodeId()
 {
-    // Just find the first free integer, return as a string as the grammar
+    // Just find the first free integer, return as a string with prepended 'n'
     // allows for string identifiers
-    while(contains(QVariant(_idCounter).toString()))
-        ++_idCounter;
+    while(contains("n" + QVariant(_nodeIdCounter).toString()))
+        ++_nodeIdCounter;
 
-    return QVariant(_idCounter).toString();
+    return "n" + QVariant(_nodeIdCounter).toString();
+}
+
+
+QString Graph::newEdgeId()
+{
+    // Just find the first free integer, return as a string with prepended 'e'
+    while(contains("e" + QVariant(_edgeIdCounter).toString()))
+        ++_edgeIdCounter;
+
+    return "e" + QVariant(_edgeIdCounter).toString();
 }
 
 }
