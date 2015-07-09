@@ -14,6 +14,7 @@ namespace Developer {
 
 class Project;
 class Rule;
+class Graph;
 class RunConfig;
 
 class RunConfiguration : public QWidget
@@ -32,6 +33,9 @@ public slots:
     void updatePrograms();
     void updateGraphs();
     void runConfiguration();
+
+signals:
+    void obtainedResultGraph(Graph* resultGraph, RunConfig* runConfig);
     
 private:
     Ui::RunConfiguration *_ui;

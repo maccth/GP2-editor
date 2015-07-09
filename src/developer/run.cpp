@@ -7,6 +7,10 @@
 #include "project.hpp"
 #include "runconfiguration.hpp"
 
+namespace Ui {
+    class RunConfiguration;
+}
+
 namespace Developer {
 
 Run::Run(QWidget *parent)
@@ -61,6 +65,12 @@ void Run::setProject(Project *proj)
     _ui->addRunConfigurationButton->setEnabled(true);
 }
 
+void Run::handleResultGraph(Graph* resultGraph, RunConfig* runConfig)
+{
+    emit obtainedResultGraph(resultGraph, runConfig);
+}
+
+
 RunConfiguration *Run::addRunConfiguration(bool addToProject)
 {
     if(_initial)
@@ -75,8 +85,7 @@ RunConfiguration *Run::addRunConfiguration(bool addToProject)
         }
     }
 
-    RunConfiguration *runConfiguration = new RunConfiguration(_project,
-                                                       _ui->runConfigurations);
+    RunConfiguration *runConfiguration = new RunConfiguration(_project, _ui->runConfigurations);
     _ui->runConfigurations->layout()->addWidget(runConfiguration);
 
     if(addToProject)
@@ -85,6 +94,8 @@ RunConfiguration *Run::addRunConfiguration(bool addToProject)
 				RunConfig *runConfig = runConfiguration->getRunConfig();
 				_project->addRunConfig(runConfig);
     }
+
+    connect (runConfiguration, SIGNAL(obtainedResultGraph(Graph*, RunConfig*)), this, SLOT(handleResultGraph(Graph*, RunConfig*))  );
 
     return runConfiguration;
 }

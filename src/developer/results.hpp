@@ -15,7 +15,7 @@ namespace Developer {
 
 // Forward declaration
 class Project;
-class GPFile;
+class Graph;
 class RunConfig;
 class GraphWidget;
 
@@ -54,15 +54,13 @@ public slots:
     void graphClicked(QTreeWidgetItem *item);
 
     /*!
-     * \brief Slot to handle the project's file list changing
+     * \brief Slot to handle adding a result graph. The graph is added to the respective runConfig tree item.
      *
      * The tree is constructed with root nodes for each file type, then the list
      * of files under each type are appended to those nodes. The status of each
      * file affects how it should be displayed.
      */
-    void graphListChanged();
-
-    void graphStatusChanged(QString path, int status);
+    void addResultGraph(Graph* resultGraph, RunConfig* runConfig);
 
 signals:
     void graphHasFocus(GraphWidget *graphWidget);
@@ -71,11 +69,11 @@ signals:
 private:
     Ui::Results *_ui;
     Project *_project;
-    QMap<GPFile *, QTreeWidgetItem *> _treeMap;
-    GPFile *_currentFile;
+    QMap<Graph *, QTreeWidgetItem *> _graphMap;
+    //Graph *_currentGraph;
 
-    QMap<RunConfig *, GPFile *> _resultMap;
-    RunConfig *_currentConfig;
+    QMap<RunConfig *, QTreeWidgetItem *> _configMap;
+    //RunConfig *_currentConfig;
 };
 
 }

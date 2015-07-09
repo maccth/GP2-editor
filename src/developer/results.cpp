@@ -21,6 +21,12 @@ Results::Results(QWidget *parent)
     QTreeWidgetItem *root = new QTreeWidgetItem(items);
     root->setIcon(0, QIcon(QPixmap(":/icons/application-icon.png")));
     _ui->resultsTreeWidget->addTopLevelItem(root);
+
+
+    connect(_ui->graphEdit, SIGNAL(graphHasFocus(GraphWidget*)),
+            this, SLOT(handleGraphHasFocus(GraphWidget*)));
+    connect(_ui->graphEdit, SIGNAL(graphLostFocus(GraphWidget*)),
+            this, SLOT(handleGraphLostFocus(GraphWidget*)));
 }
 
 Results::~Results()
@@ -37,7 +43,7 @@ void Results::setProject(Project *project)
     }
 
     _project = project;
-    _currentFile = 0;
+    //_currentGraph = 0;
 
 		/* Set up run configurations
 		if(_project->runConfigurations().count() > 0)
@@ -51,13 +57,13 @@ void Results::setProject(Project *project)
       }
 
 
-		}*/
+		}
 
     connect(_project, SIGNAL(graphListChanged()), this, SLOT(graphListChanged()));
     connect(_project, SIGNAL(graphStatusChanged(QString,int)),
             this, SLOT(graphStatusChanged(QString,int))
             );
-    graphListChanged();
+    graphListChanged();*/
 }
 
 void Results::graphClicked(QTreeWidgetItem *item)
@@ -67,21 +73,70 @@ void Results::graphClicked(QTreeWidgetItem *item)
         return;
 
     // Handle a clicked result
-		//RunConfig* config = _project->runConfig(item->text(0));
-		{
 
-		}
+		Graph* graph = _graphMap.key(item);    // Slow search, maps are optimized for fast retrieval by key, not value
+    if (graph == 0)
+    {
+        qDebug() << "Could not find a corresponding Graph: " << item->text(0);
+        return;
+    }
+    
 
+    qDebug() << "Attempting to view Result: " << graph->fileName();
+
+    graph->open();
+
+    _ui->graphEdit->setEnabled(true);
+    _ui->graphEdit->setGraph(graph);
 }
 
-void Results::graphListChanged()
+void Results::addResultGraph(Graph* resultGraph, RunConfig* runConfig)
 {
+    // Check if config exists already in the tree structure
+    // If no, create it
+    QTreeWidgetItem* config;
+    QTreeWidgetItem* graph;
+    QStringList items;
+    if (!_configMap.contains(runConfig))
+    {
+        qDebug() << "Adding a new run configuration to Results View: " << runConfig->name();
 
-}
+        items << runConfig->name();
+        config = new QTreeWidgetItem(items);
 
-void Results::graphStatusChanged(QString path, int status)
-{
+        config->setIcon(0, QIcon(QPixmap(":/icons/small_folder.png")));
+        _ui->resultsTreeWidget->addTopLevelItem(config);
 
+        _configMap.insert(runConfig, config);
+    }
+    else
+    {
+        config = _configMap[runConfig];
+    }  
+
+    if (config == 0)
+    {
+        qDebug() << "Unable to add result config to Result View " << runConfig->name();    
+        return;
+    } 
+
+    // Check if result graph exists in tree structure
+    // If no, create it
+    if (!_graphMap.contains(resultGraph))
+    {
+        items.clear(); items << resultGraph->fileName();
+        graph = new QTreeWidgetItem(items);
+        graph->setToolTip(0, resultGraph->absolutePath()); 
+
+        config->addChild(graph); 
+        _graphMap.insert(resultGraph, graph);
+
+        _ui->resultsTreeWidget->expandItem(config);  
+    }
+    else
+    {
+        qDebug() << "Result graph already exists:" << runConfig->name() << " " << resultGraph->fileName();        
+    }
 }
 
 void Results::handleGraphHasFocus(GraphWidget *graphWidget)

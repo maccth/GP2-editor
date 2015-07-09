@@ -151,12 +151,14 @@ void RunConfiguration::runConfiguration()
 	  //hostgraph = "~/github/GP2Test/hostgraphs/1.graph";
 
 	  // Update the corresponding RunConfig object 
-	  //_config->setName(configName);
-	  //_config->setProgram(prog->name());
-	  //_config->setGraph(graph->fileName());
+	  _config->setName(configName);
+	  _config->setProgram(prog->name());
+	  _config->setGraph(graph->fileName());
 	
 	  /* Call the compiler and run the executable */
 	  run (programTmp, hostgraph, output);
+
+    emit obtainedResultGraph(resultGraph, _config);
 }
 
 QString RunConfiguration::rulesToQString(QVector<Rule *> rules)
@@ -233,7 +235,7 @@ int RunConfiguration::call(QString cmd)
     const char* command = ba.data();
 
     qDebug() << "  Command is: ";
-    qDebug() << "  " << QString(command);
+    qDebug() << QString(command);
 
 	  fp = popen(command, "r");
 	  char path[1035]; // output line

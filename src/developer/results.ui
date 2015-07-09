@@ -168,7 +168,7 @@
        </widget>
       </item-->
       <item>
-       <widget class="Developer::GraphWidget" name="graphWidget"/>
+       <widget class="Developer::GraphEdit" name="graphEdit"/>
       </item>
      </layout>
     </widget>
@@ -177,13 +177,34 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Developer::GraphWidget</class>
-   <extends>QGraphicsView</extends>
-   <header>graphview/graphwidget.hpp</header>
+   <class>Developer::GraphEdit</class>
+   <extends>QWidget</extends>
+   <header>graphedit.hpp</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
   <include location="icons.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>resultsTreeWidget</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>Results</receiver>
+   <slot>graphClicked(QTreeWidgetItem*)</slot>
+   <!--hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>453</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>801</y>
+    </hint>
+   </hints-->
+  </connection>
+ </connections>
+ <slots>
+  <slot>graphClicked(QTreeWidgetItem*)</slot>
+ </slots>
 </ui>
