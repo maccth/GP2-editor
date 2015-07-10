@@ -85,6 +85,8 @@ void RuleEdit::conditionChanged()
         return;
 
     _ui->conditionsEdit->parse();
+
+    _rule->setCondition(_ui->conditionsEdit->toPlainText().trimmed());
 }
 
 void RuleEdit::updateVariables()

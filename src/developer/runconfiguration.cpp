@@ -146,7 +146,6 @@ void RunConfiguration::runConfiguration()
     qDebug() << "Results dir is: " << results << ", exists: " <<  resultsDir.exists() << ", isReadable: " << resultsDir.isReadable();
 
     QString output = results + "/" + configName + + "_run" + QVariant(_runs).toString() + ".gpg"; //eg. project/results/RunConfig1_run1.gpg  or project/results/RunConfig1_run2.gpg etc.
-    Graph* resultGraph = new Graph(output, this);
 
 	  //hostgraph = "~/github/GP2Test/hostgraphs/1.graph";
 
@@ -157,7 +156,9 @@ void RunConfiguration::runConfiguration()
 	
 	  /* Call the compiler and run the executable */
 	  run (programTmp, hostgraph, output);
-
+    
+    qDebug() << "Attempting to open output graph."; 
+    Graph* resultGraph = new Graph(output, this);
     emit obtainedResultGraph(resultGraph, _config);
 }
 

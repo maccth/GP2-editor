@@ -48,6 +48,7 @@ public slots:
     void documentationChanged();
     void lhsChanged();
     void rhsChanged();
+    void interfaceChanged();
     void injectiveChanged(int index);
     void conditionChanged();
 

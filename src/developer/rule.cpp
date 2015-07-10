@@ -127,9 +127,10 @@ void Rule::setVariables(std::vector<param_t> &variables)
 
 void Rule::setCondition(const QString &conditionString)
 {
-    if(conditionString.isEmpty() || conditionString == _condition)
+    if(conditionString == _condition)
         return;
 
+    qDebug() << "Setting condition to: " << conditionString;
     _condition = conditionString;
     _status = Modified;
     emit statusChanged(_status);
@@ -256,14 +257,14 @@ QString Rule::toAlternative()
 
     saveText += "\n}\n";
 
-		if (!_condition.isEmpty())
+		if (!_condition.isEmpty() &&  (_condition != QString(" ")))
 		{
 			 	saveText+= "where ";
 				saveText += _condition;
 				saveText += "\n";
 		}
 	
-		//qDebug() << "    Saving rule content 3: \n" << saveText;
+    qDebug() << "    Saving rule condition: " << _condition;
 
 
 	return saveText;
@@ -369,7 +370,7 @@ bool Rule::open()
         setCondition(rule.condition.c_str());
     else
         setCondition(QString());*/
-		setCondition(rule.condition.c_str());
+		setCondition(QString(rule.condition.c_str()));
 
     _status = Normal;
     emit statusChanged(_status);
