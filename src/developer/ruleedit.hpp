@@ -48,7 +48,7 @@ public slots:
     void documentationChanged();
     void lhsChanged();
     void rhsChanged();
-    void interfaceChanged();
+    //void interfaceChanged();
     void injectiveChanged(int index);
     void conditionChanged();
 
@@ -59,10 +59,12 @@ public slots:
      *  the HelpDialog
      */
     void showInjectiveHelp();
+    void saveVariables();
 
 private:
     Ui::RuleEdit *_ui;
     Rule *_rule;
+
 };
 
 }

@@ -10,6 +10,7 @@
 #include "graph.hpp"
 
 #include <QFile>
+#include <QDebug>
 
 namespace Developer {
 
@@ -29,6 +30,8 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
     QStringList nodes = _edge->edge()->parent()->nodeIdentifiers();
 
     _ui->idEdit->setText(_edge->id());
+    _ui->idEdit->setReadOnly(true);
+
     _ui->labelEdit->setText(_edge->label());
 
     _ui->fromComboBox->addItems(nodes);
@@ -48,6 +51,14 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
 EditEdgeDialog::~EditEdgeDialog()
 {
     delete _ui;
+}
+
+void EditEdgeDialog::accept()
+{
+    qDebug() << "Edge Label is: " << _ui->labelEdit->text();
+    _edge->setLabel(_ui->labelEdit->text());
+
+    QDialog::accept();
 }
 
 }

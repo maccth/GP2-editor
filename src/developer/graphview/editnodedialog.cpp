@@ -8,6 +8,7 @@
 #include "listvalidator.hpp"
 
 #include <QFile>
+#include <QDebug>
 
 namespace Developer {
 
@@ -43,6 +44,8 @@ void EditNodeDialog::accept()
 {
     _node->setId(_ui->idEdit->text());
     _node->setLabel(_ui->labelEdit->text());
+
+    qDebug() << "Node Label is: " << _ui->labelEdit->text();
     _node->setIsRoot(_ui->rootCheckBox->isChecked());
     //_node->setMarked(_ui->markedCheckBox->isChecked());
     _node->setMark(QString());

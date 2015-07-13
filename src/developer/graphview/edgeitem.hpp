@@ -30,6 +30,7 @@ public:
 
     void setFrom(NodeItem *edgeFrom);
     void setTo(NodeItem *edgeTo);
+    void setLabel(const QString &itemLabel);
 
     void preserveEdge();
     void deleteEdge();

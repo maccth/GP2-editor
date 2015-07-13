@@ -161,6 +161,38 @@ void Rule::setInjectiveMatching(bool injective)
         _options &= ~Rule_InjectiveMatching;
 }
 
+void Rule::addVariables(param_t &variables)
+{
+    _variables.push_back(variables);    
+
+    _status = Modified;
+    emit statusChanged(_status);
+}
+
+
+void Rule::removeVariable(std::string &variable)
+{
+    for (std::vector<param_t>::iterator it = _variables.begin(); it != _variables.end(); ++it)
+    {
+      std::vector<std::string> varlist = it->variables;
+      for (std::vector<std::string>::iterator itt = varlist.begin(); itt != varlist.end(); ++itt)
+      {
+          std::string var = *itt;
+
+          // We found the variable to remove
+          if (var == variable)
+          {
+              varlist.erase(itt);
+              --itt;
+          }
+      }    
+    }  
+    
+
+    _status = Modified;
+    emit statusChanged(_status);
+}
+
 bool Rule::save()
 {
     // Some initial sanity checks
@@ -249,8 +281,8 @@ QString Rule::toAlternative()
 		for (std::vector<std::string>::iterator i = _interface.elements.begin(); 
 			i != _interface.elements.end();
 			++i)
-    	{
-			qDebug() << i->c_str() << " ";
+  	{
+			//qDebug() << i->c_str() << " ";
 			saveText += i->c_str(); 
 		 	if ( i != (_interface.elements.end() - 1)) saveText+= ", ";
 		}

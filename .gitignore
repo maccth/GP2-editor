@@ -18,3 +18,6 @@ project/project.*
 
 # Don't save OSX directory files
 *DS_STORE
+
+# Don't track object files
+*.o

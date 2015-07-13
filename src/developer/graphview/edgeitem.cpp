@@ -100,6 +100,14 @@ void EdgeItem::setTo(NodeItem *edgeTo)
     connect(_to, SIGNAL(shapeChanged()), this, SLOT(nodeMoved()));
 }
 
+void EdgeItem::setLabel(const QString &itemLabel)
+{
+    GraphItem::setLabel(itemLabel);
+
+    if(_edge != 0)
+        _edge->setLabel(List(itemLabel));
+}
+
 void EdgeItem::deleteEdge()
 {
     setItemState(GraphItem::GraphItem_Deleted);

@@ -996,6 +996,7 @@ void Graph::trackChange()
 {
     _status = Modified;
     emit statusChanged(_status);
+    emit graphChanged();
 }
 
 QString Graph::newNodeId()

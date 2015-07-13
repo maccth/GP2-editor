@@ -75,6 +75,9 @@ public:
     void setVariables(std::vector<param_t> &variables);
     void setCondition(const QString &conditionString);
 
+    void addVariables(param_t &variables);
+    void removeVariable(std::string &variable);
+
     void setOptions(int options);
     void setInjectiveMatching(bool injective);
 
