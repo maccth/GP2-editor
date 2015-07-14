@@ -18,8 +18,7 @@ The project uses CMake to produce build files across the supported platforms. Th
 
 The executable relies on the <a href="https://github.com/UoYCS-plasma/GP2/tree/master/Compiler">GP2 Compiler</a> being present.
 
-Building the GP2 Compiler
--------------------------
+#### Building the GP2 Compiler
 
 Start by obtaining the latest version of the Compiler
 ```
@@ -27,13 +26,12 @@ mkdir GP2
 cd GP2
 mkdir GP2-Compiler
 cd GP2-Compier
-git clone git@github.com:UoYCS-plasma/GP2.git
+git clone https://github.com/UoYCS-plasma/GP2.git
 ```
 
 Follow the install instructions from <a href="https://github.com/UoYCS-plasma/GP2/tree/master/Compiler">here</a>
 
-Building OGDF and Boost
---------------------------
+#### Building OGDF and Boost
 
 ```
 cd GP2
@@ -46,8 +44,7 @@ make install
 Next is Boost. http://sourceforge.net/projects/boost/files/boost/1.55.0/
 All you need to do is download the zip and extract it in the local root directory. No build required.
 
-Building Qt4
----------------------------
+#### Building Qt4
 
 Download **Qt 4.8** from  http://download.qt.io/archive/qt/4.8/4.8.5/ and extract it in the local GP2 directory
 ```
@@ -61,8 +58,7 @@ make/gmake install
 
 This step takes about an hour.
 
-Building the Editor
------------------------------
+#### Building the Editor
 
 First, obtain the code from https://github.com/ivaylohristakiev/GP2-editor.git
 
