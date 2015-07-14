@@ -21,6 +21,9 @@
 # Chris Bak note: On office computer, set the prefix path before calling by
 # export CMAKE_PREFIX_PATH=/local/sda5/ish503/root:/local/sda5/ish503/root/qt4:/local/sda5/ish503/root/boost_1_55_0/:/local/sda5/ish503/root/OGDF-source/:/local/sda5/ish503/root/OGDF-source/include/
 
+# Ivaylo Hristakiev note: Set the location of the GP2 compiler manually here
+SET(GP2_COMPILER_LOCATION "~/github/GP2/Compiler")
+
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
@@ -39,6 +42,7 @@ INCLUDE_DIRECTORIES(
     ${GP2_BINARY_DIR}
 )
 
+ADD_DEFINITIONS( -DCOMPILER_LOCATION="${GP2_COMPILER_LOCATION}" )
 
 INCLUDE(CheckIncludeFiles)
 
