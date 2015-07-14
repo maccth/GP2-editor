@@ -1,13 +1,10 @@
-GP Developer
-============
+# GP Editor
 
-Introduction
-------------
+## Introduction
 
-This is the working repository for GP Developer, the integrated development environment being constructed for <a href="https://www.cs.york.ac.uk/plasma/wiki/index.php?title=GP_(Graph_Programs)">GP2</a>, an experimental graph programming language developed by the University of York.
+This is the working repository for GP Editor, the integrated development environment being constructed for <a href="https://www.cs.york.ac.uk/plasma/wiki/index.php?title=GP_(Graph_Programs)">GP2</a>, an experimental graph programming language developed by the University of York.
 
-Compiling and Installing on Linux
-------------------------
+## Compiling and Installing on Linux
 
 The project uses CMake to produce build files across the supported platforms. The CMake build system currently requires:
 
