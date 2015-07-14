@@ -79,3 +79,5 @@ cmake ../GP2-editor
 make
 ```
 
+If everything went to plan, GP2 will install nicely and you can run the executable 'gpdeveloper' to open the editor!
+
