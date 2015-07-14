@@ -64,11 +64,13 @@ void RuleEdit::documentationChanged()
 void RuleEdit::lhsChanged()
 {
     updateVariables();
+    updateInterface();
 }
 
 void RuleEdit::rhsChanged()
 {
     updateVariables();
+    updateInterface();
 }
 
 void RuleEdit::injectiveChanged(int index)
@@ -293,7 +295,7 @@ void RuleEdit::saveVariables()
 
     QString saveText;
     // Debug the vector of results
-		for (std::vector<param_t>::iterator it = result.begin(); it != result.end(); ++it)
+		/*for (std::vector<param_t>::iterator it = result.begin(); it != result.end(); ++it)
 		{
 				param_t vvar = *it; 	// This is a list of variables of the same type
 				//qDebug() << "     " << vvar.type.c_str() <<": " ;
@@ -318,13 +320,48 @@ void RuleEdit::saveVariables()
 						} 
 				}
 		}
-    //qDebug() << "=======" ;
-    //qDebug() << saveText ;
-    //qDebug() << "=======" ;
+    qDebug() << "=======" ;
+    qDebug() << saveText ;
+    qDebug() << "=======" ;*/
     
     // Save the vector
     _rule->setVariables(result);
 }
+
+void RuleEdit::updateInterface()
+{
+    std::vector<Node *> lhsNodes = _rule->lhs()->nodes();
+    std::vector<Node *> rhsNodes = _rule->rhs()->nodes();
+
+    std::vector<std::string> elements;
+
+    QStringList debug;
+
+    // The interface is the set of nodes with same ids
+
+    for (std::vector<Node *>::const_iterator it = lhsNodes.begin(); it != lhsNodes.end(); it++)
+    {
+        Node* lhsNode = *it;
+        QString id = lhsNode->id();
+        for (std::vector<Node *>::const_iterator itt = rhsNodes.begin(); itt != rhsNodes.end(); itt++)
+        {
+            Node* rhsNode = *itt;
+            if (rhsNode->isPhantomNode()) continue;
+            if (rhsNode->id() == id)
+                { elements.push_back(id.toStdString()); debug << id; }         
+        }    
+    }
+
+    qDebug() << "The common nodes are: " << debug.join(" ");
+
+    interface_t result;
+    result.elements = elements;
+
+    _rule->setInterface(result);
+
+}
+
+
 
 
 }

@@ -65,6 +65,8 @@ private:
     Ui::RuleEdit *_ui;
     Rule *_rule;
 
+    void updateInterface();
+
 };
 
 }
