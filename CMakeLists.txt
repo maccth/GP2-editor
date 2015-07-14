@@ -22,7 +22,7 @@
 # export CMAKE_PREFIX_PATH=/local/sda5/ish503/root:/local/sda5/ish503/root/qt4:/local/sda5/ish503/root/boost_1_55_0/:/local/sda5/ish503/root/OGDF-source/:/local/sda5/ish503/root/OGDF-source/include/
 
 # Ivaylo Hristakiev note: Set the location of the GP2 compiler manually here
-SET(GP2_COMPILER_LOCATION "~/github/GP2/Compiler")
+SET(GP2_COMPILER_LOCATION "~/github/GP2/Compiler")  # Change this 
 
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
@@ -49,17 +49,17 @@ INCLUDE(CheckIncludeFiles)
 SET(QT_MIN_VERSION "4.8.0")
 FIND_PACKAGE(Qt4 REQUIRED)
 
-SET(BOOST_INCLUDE_DIR /local/sda5/ish503/root)
+SET(BOOST_INCLUDE_DIR /local/sda5/ish503/root)  # Change this
 FIND_PACKAGE(Boost 1.49.0 REQUIRED)
-
-SET(OGDF_INCLUDE_DIR /local/sda5/ish503/root/OGDF-source)
+  
+SET(OGDF_INCLUDE_DIR /local/sda5/ish503/root/OGDF-source) # Change this 
 
 # Find OGDF
 FIND_PATH(OGDF_INCLUDE_DIR ogdf/basic/basic.h)
 IF(WIN32)
     FIND_LIBRARY(OGDF_LIBRARY libOGDF)
 ELSE()
-    FIND_LIBRARY(OGDF_LIBRARY OGDF /local/sda5/ish503/root/OGDF-build/lib64)
+    FIND_LIBRARY(OGDF_LIBRARY OGDF /local/sda5/ish503/root/OGDF-build/lib64) # Change this
 ENDIF()
 
 SET(QT_USE_QTMAIN true)
