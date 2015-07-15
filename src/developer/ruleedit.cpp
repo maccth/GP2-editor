@@ -121,11 +121,15 @@ void RuleEdit::updateVariables()
     // Obtain all variables that are currently declared in the rule specification
     QStringList variables;
     std::vector<param_t> varDeclarations = _rule->variables();
+    _ui->variablesWidget->setRowCount(0);       // the table will be automatically exapnded
+    _ui->variablesWidget->setColumnCount(2);
+    _ui->variablesWidget->setSortingEnabled(false);
+
     for (std::vector<param_t>::const_iterator it = varDeclarations.begin(); it != varDeclarations.end(); ++it)
     {
         QString varType = QString::fromStdString(it->type);  
         std::vector<std::string> varList = it->variables;  
-        qDebug() << "RuleEdit::updateVariables(): the rule has " << varList.size() << " variables of type " << varType;
+        //qDebug() << "RuleEdit::updateVariables(): the rule has " << varList.size() << " variables of type " << varType;
         for (std::vector<std::string>::const_iterator itt = varList.begin(); itt != varList.end(); ++itt)
         {
             QString variable = QString::fromStdString(*itt);
@@ -137,9 +141,15 @@ void RuleEdit::updateVariables()
             // Add to the Variables Widget with respective type properly selected
             QTableWidgetItem *item = new QTableWidgetItem(variable);
             item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+            //qDebug() << "RuleEdit::updateVariables(): adding variable " << variable << " at position " << _ui->variablesWidget->rowCount() ;
 
-            _ui->variablesWidget->setItem(variables.length()-1, 0, item);
+            _ui->variablesWidget->insertRow( _ui->variablesWidget->rowCount() );
+            _ui->variablesWidget->setItem(_ui->variablesWidget->rowCount() -1, 0, item);
+            //_ui->variablesWidget->setItem(row, 0, new QTableWidgetItem("Hello"));
     
+            if ( !_ui->variablesWidget->item(_ui->variablesWidget->rowCount()-1, 0) )
+                ;//qDebug() << "Addition was unsuccessful";
+
             QComboBox *comboBox = new QComboBox(_ui->variablesWidget);
             comboBox->addItems(types);
 
@@ -151,7 +161,8 @@ void RuleEdit::updateVariables()
             else if (varType == "list") comboBox->setCurrentIndex(0);
 
             connect(comboBox, SIGNAL(activated(int)), this, SLOT(saveVariables()));
-            _ui->variablesWidget->setCellWidget(variables.length()-1, 1, comboBox);
+
+            _ui->variablesWidget->setCellWidget(_ui->variablesWidget->rowCount() -1, 1, comboBox);
         }
         
     }
@@ -226,6 +237,7 @@ void RuleEdit::saveVariables()
     for (int i = 0; i < table->rowCount(); ++i)
     {
         QTableWidgetItem *widget = table->item(i, 0);
+        if (!widget) continue;
         QString var = widget->text();
 
         QString type = ((QComboBox*) table->cellWidget(i, 1))->currentText();
@@ -330,6 +342,9 @@ void RuleEdit::saveVariables()
 
 void RuleEdit::updateInterface()
 {
+    if (_rule == 0)
+      return;
+
     std::vector<Node *> lhsNodes = _rule->lhs()->nodes();
     std::vector<Node *> rhsNodes = _rule->rhs()->nodes();
 
