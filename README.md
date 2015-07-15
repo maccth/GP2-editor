@@ -33,7 +33,7 @@ Follow the install instructions from <a href="https://github.com/UoYCS-plasma/GP
 ```
 $ cd GP2
 $ mkdir OGDF-build
-$ unzip ogdf.v2012.07.zip
+$ unzip -a ogdf.v2012.07.zip
 $ cd OGDF-source
 $ cmake -DCMAKE_INSTALL_PREFIX=../OGDF-build
 $ make
@@ -48,7 +48,7 @@ Download **Qt 4.8** from  http://download.qt.io/archive/qt/4.8/4.8.5/ and extrac
 ```
 $ cd GP2
 $ mkdir qt4
-$ unzip qt-everywhere-opensource-src-4.8.5.zip
+$ unzip -a qt-everywhere-opensource-src-4.8.5.zip
 $ cd qt-everywhere-opensource-src-4.8.5
 $ ./configure -prefix ../qt4/
 $ make/gmake (the configure script will tell you which command to run)

@@ -21,3 +21,10 @@ project/project.*
 
 # Don't track object files
 *.o
+
+# Don't track Qt Creator files
+GP2-editor.config 
+GP2-editor.creator 
+GP2-editor.files 
+GP2-editor.includes
+
