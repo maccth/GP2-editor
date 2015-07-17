@@ -117,7 +117,7 @@ void RuleEdit::updateVariables()
 
     graphVariables.removeDuplicates();
 
-    qDebug() << "RuleEdit::updateVariables(): the variables in LHS+RHS are " << graphVariables.join(" ");
+    //qDebug() << "RuleEdit::updateVariables(): the variables in LHS+RHS are " << graphVariables.join(" ");
 
     // Obtain all variables that are currently declared in the rule specification
     QStringList variables;
@@ -167,7 +167,7 @@ void RuleEdit::updateVariables()
         }
         
     }
-    qDebug() << "RuleEdit::updateVariables(): the declared variables are " << variables.join(" ");
+    //qDebug() << "RuleEdit::updateVariables(): the declared variables are " << variables.join(" ");
 
     
     // Remove all the LHS variables from the RHS set, those that
@@ -180,7 +180,7 @@ void RuleEdit::updateVariables()
         if(diff.contains(variable))
             diff.removeOne(variable);
     }
-    qDebug() << "RuleEdit::updateVariables(): the bad variables in RHS are " << diff.join(" ");
+    //qDebug() << "RuleEdit::updateVariables(): the bad variables in RHS are " << diff.join(" ");
 
     // Check which graph variables are already declared in the rule specification
     // If already declared, no need to add it again to the Variables Widget   
@@ -191,7 +191,7 @@ void RuleEdit::updateVariables()
              {graphVariables.removeOne(variable); --i;}
     }
 
-    qDebug() << "RuleEdit::updateVariables(): the undeclared variables in LHS+RHS are " << graphVariables.join(" ");
+    //qDebug() << "RuleEdit::updateVariables(): the undeclared variables in LHS+RHS are " << graphVariables.join(" ");
 
     _ui->variablesWidget->setRowCount(graphVariables.length() + variables.length());
 
