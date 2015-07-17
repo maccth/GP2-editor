@@ -99,13 +99,13 @@ MainWindow::MainWindow(QWidget *parent)
     restoreWindowDimensions();
     updateRecentProjects();
 
-    QSettings settings;
+    /*QSettings settings;
     if(settings.value("FirstRun", true).toBool())
     {
         FirstRunDialog dialog(this);
         dialog.exec();
         settings.setValue("FirstRun", false);
-    }
+    }*/
 }
 
 MainWindow::~MainWindow()

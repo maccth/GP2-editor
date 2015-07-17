@@ -697,7 +697,7 @@ bool Project::initProject(const QString &targetPath, const QString &projectName,
         dir.mkpath(targetPath);
     }
 
-    // Check for subdirectories called "rules", "programs" or "graphs" - create
+    // Check for subdirectories called "rules", "programs", "graphs" or "results" - create
     // them automatically if they don't exist.
     QString path = targetPath;
     if(path.at(targetPath.length()-1) != dir.separator())
@@ -705,6 +705,7 @@ bool Project::initProject(const QString &targetPath, const QString &projectName,
     QString rulesPath = path + "rules";
     QString programsPath = path + "programs";
     QString graphsPath = path + "graphs";
+    QString resultsPath = path + "results";
 
     QDir rules(rulesPath);
     if(!rules.exists())
@@ -717,6 +718,10 @@ bool Project::initProject(const QString &targetPath, const QString &projectName,
     QDir graphs(graphsPath);
     if(!graphs.exists())
         graphs.mkpath(graphsPath);
+
+    QDir results(resultsPath);
+    if(!results.exists())
+        results.mkpath(resultsPath);
 
     QFile file(dir.filePath(projectName + GP_PROJECT_EXTENSION));
     _path = dir.filePath(projectName + GP_PROJECT_EXTENSION);

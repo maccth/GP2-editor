@@ -9,6 +9,7 @@
 #include "graph.hpp"
 
 #include <QDebug>
+#include <QComboBox>
 
 namespace Developer {
 
@@ -30,7 +31,7 @@ void RuleEdit::setRule(Rule *rule)
     _rule = rule;
 
     _ui->nameEdit->setText(_rule->name());
-    _ui->documentationEdit->setPlainText(_rule->documentation());
+    //_ui->documentationEdit->setPlainText(_rule->documentation());
     _ui->rhsGraph->setLinkedGraph(0);
     _ui->lhsGraph->setGraph(_rule->lhs());
     connect(_rule->lhs(), SIGNAL(graphChanged()),
@@ -58,7 +59,7 @@ void RuleEdit::nameChanged(QString name)
 
 void RuleEdit::documentationChanged()
 {
-    _rule->setDocumentation(_ui->documentationEdit->toPlainText());
+    //_rule->setDocumentation(_ui->documentationEdit->toPlainText());
 }
 
 void RuleEdit::lhsChanged()

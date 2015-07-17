@@ -9,6 +9,8 @@
 
 #include <QFile>
 #include <QByteArray>
+#include <QFileInfo>
+#include <QFile>
 
 #include <stdlib.h>  /* system, NULL, EXIT_FAILURE */
 
@@ -150,6 +152,14 @@ void RunConfiguration::runConfiguration()
     qDebug() << "Results dir is: " << results << ", exists: " <<  resultsDir.exists() << ", isReadable: " << resultsDir.isReadable();
 
     QString output = results + "/" + configName + + "_run" + QVariant(_runs).toString() + ".gpg"; //eg. project/results/RunConfig1_run1.gpg  or project/results/RunConfig1_run2.gpg etc.
+    QFileInfo checkFile(output);
+    if (checkFile.exists())
+    {
+        qDebug() << "Truncating the file: " << output;
+        QFile outputGraph(output);
+        outputGraph.open(QFile::WriteOnly|QFile::Truncate);
+        outputGraph.close();
+    }
 
 	  //hostgraph = "~/github/GP2Test/hostgraphs/1.graph";
 

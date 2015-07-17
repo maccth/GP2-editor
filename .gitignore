@@ -22,6 +22,9 @@ project/project.*
 # Don't track object files
 *.o
 
+# Ignore the top level CMAKE script
+CMakeLists.txt
+
 # Don't track Qt Creator files
 GP2-editor.config 
 GP2-editor.creator 

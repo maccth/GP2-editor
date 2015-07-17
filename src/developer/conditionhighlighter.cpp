@@ -105,6 +105,7 @@ QTextCharFormat ConditionHighlighter::format(int type) const
                     );
         return ret;
     case Comma:
+    case StringSeparator:
     case ListSeparator:
     case OpeningParen:
     case ClosingParen:

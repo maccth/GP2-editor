@@ -47,6 +47,8 @@ QRegExp ConditionEditor::pattern(int type) const
         return QRegExp("[a-zA-Z0-9_]{1,63}");
     case ListSeparator:
         return QRegExp(":");
+    case StringSeparator:
+        return QRegExp("\\.");
     case Comma:
         return QRegExp(",");
     case OpeningParen:
@@ -220,6 +222,11 @@ void ConditionEditor::handleLexeme(ConditionLexemes lexeme, int matchLength)
         token->lexeme = ConditionLexeme_Error;
         token->description = tr("Unexpected identifier");
         _tokens.push_back(token);
+        return;
+    case StringSeparator:
+            // Accept it
+            _tokens.push_back(token);
+            _wantsValue = true;
         return;
     case ListSeparator:
             // Accept it

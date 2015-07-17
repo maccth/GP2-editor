@@ -14,6 +14,8 @@ enum ConditionLexemes
     Empty,
     //! List separator operator ":"
     ListSeparator,
+    //! String separator operator "."
+    StringSeparator,
     //! Comma separator ","
     Comma,
     //! String contained within quotes
