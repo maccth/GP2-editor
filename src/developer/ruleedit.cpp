@@ -42,7 +42,7 @@ void RuleEdit::setRule(Rule *rule)
     _ui->rhsGraph->setLinkedGraph(_rule->lhs());
     _ui->conditionsEdit->setPlainText(_rule->condition());
 
-    qDebug() << "** Updating variables";
+    //qDebug() << "** Updating variables";
     updateVariables();
 }
 
