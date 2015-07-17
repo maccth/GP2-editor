@@ -40,12 +40,12 @@ void ProgramEdit::setProgram(Program *program)
     _program = program;
     _programCache = _program->program();
     _documentationCache = _program->documentation();
-    _ui->documentationEdit->setPlainText(_program->documentation());
+    //_ui->documentationEdit->setPlainText(_program->documentation());
     _ui->editor->setPlainText(_program->program());
     _ui->editor->parse();
     _setUp = true;
 
-    _ui->documentationEdit->setEnabled(_program->status() != GPFile::ReadOnly);
+    //_ui->documentationEdit->setEnabled(_program->status() != GPFile::ReadOnly);
     _ui->editor->setEnabled(_program->status() != GPFile::ReadOnly);
 }
 
@@ -55,7 +55,7 @@ void ProgramEdit::textEdited()
         return;
 
     QString prog = _ui->editor->toPlainText();
-    QString docs = _ui->documentationEdit->toPlainText();
+    //QString docs = _ui->documentationEdit->toPlainText();
     if(_program != 0
             && _programCache != prog)
     {
@@ -63,12 +63,12 @@ void ProgramEdit::textEdited()
         _programCache = prog;
         _program->setProgram(prog);
     }
-    else if(_program != 0
+    /*else if(_program != 0
             && _documentationCache != docs)
     {
         _programCache = docs;
         _program->setDocumentation(docs);
-    }
+    }*/
 }
 
 }
