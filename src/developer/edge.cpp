@@ -5,12 +5,12 @@
 
 namespace Developer {
 
-Edge::Edge(const QString &edgeId, Node *fromNode, Node *toNode, const List &edgeLabel, Graph *parent)
+Edge::Edge(const QString &edgeId, Node *fromNode, Node *toNode, const List &edgeLabel, const QString &edgeMark, Graph *parent)
     : _parent(parent)
     , _id(edgeId)
     , _from(fromNode)
     , _to(toNode)
-    , _mark("")
+    , _mark(edgeMark)
     , _isBidirectional(false)
     , _label(edgeLabel)
     , _phantom(false)

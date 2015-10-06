@@ -20,7 +20,7 @@ class Edge : public QObject
 
 public:
     Edge(const QString &edgeId, Node *fromNode, Node *toNode,
-         const List &edgeLabel, Graph *parent);
+         const List &edgeLabel, const QString &edgeMark,  Graph *parent);
 
     QString id() const;
     Node *from() const;

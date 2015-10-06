@@ -124,6 +124,7 @@ void GraphScene::setGraph(Graph *newGraph)
             Node *n = _graph->addNode(
                         lhsNode->id(),
                         lhsNode->label(),
+                        lhsNode->mark(),
                         lhsNode->pos()
                         );
 
@@ -571,7 +572,7 @@ void GraphScene::addNode(const QPointF &position, bool automatic)
 {
     QString label = QString("n") + QVariant(static_cast<int>(_graph->nodes().size()+1)
                                         ).toString();
-    Node *n = _graph->addNode(label, position);
+    Node *n = _graph->addNode(label, QString("none"), position);
 
     NodeItem *nodeItem = new NodeItem(n);
 
@@ -812,6 +813,7 @@ void GraphScene::linkedGraphAddedNode(Node *nodeItem)
         Node *n = _graph->addNode(
                     nodeItem->id(),
                     nodeItem->label(),
+                    nodeItem->mark(),
                     nodeItem->pos());
         if(n == 0)
         {

@@ -39,13 +39,14 @@ NodeItem::NodeItem(Node *node, QGraphicsItem *parent)
         setItemState(GraphItem_Deleted);
 }
 
-NodeItem::NodeItem(const QString &nodeId, const QString &nodeLabel, bool root,
+NodeItem::NodeItem(const QString &nodeId, const QString &nodeLabel, const QString &nodeMark, bool root,
                    QGraphicsItem *parent)
     : GraphItem(nodeId, nodeLabel, "node", parent)
     , _node(0)
     , _nodeShape(Ellipse)
     , _isRoot(root)
     , _hover(false)
+    , _mark(nodeMark)
 {
     setZValue(NODE_Z_VALUE);
 
@@ -255,7 +256,7 @@ QRectF NodeItem::boundingRect() const
     if(_isRoot)
         borderWidth *= 1.5;
 
-    qreal width  = borderWidth + leftPadding + metrics.width(label())
+    qreal width  = borderWidth + leftPadding + metrics.width( (label() != "" )? label() : QString("a"))     // Minimum label width is 1
             + rightPadding + borderWidth;
     qreal height = borderWidth + topPadding + metrics.height() + bottomPadding
             + borderWidth + 1 + metrics.height() + 1;

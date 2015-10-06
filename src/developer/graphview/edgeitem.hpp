@@ -21,16 +21,18 @@ public:
     explicit EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
                       QGraphicsItem *parent = 0);
     explicit EdgeItem(const QString &edgeId, NodeItem *edgeFrom,
-                      NodeItem *edgeTo, const QString &edgeLabel = QString(),
+                      NodeItem *edgeTo, const QString &edgeLabel = QString(), const QString &edgeMark = QString(),
                       QGraphicsItem *parent = 0);
 
     Edge *edge() const;
     NodeItem *from() const;
     NodeItem *to() const;
+    QString mark() const;
 
     void setFrom(NodeItem *edgeFrom);
     void setTo(NodeItem *edgeTo);
     void setLabel(const QString &itemLabel);
+    void setMark(const QString &mark);
 
     void preserveEdge();
     void deleteEdge();
@@ -72,6 +74,8 @@ private:
     QMap<qreal, QPainterPath> _arrowHeads;
     NodeItem *_from;
     NodeItem *_to;
+    bool _isBidirectional;
+    QString _mark;
     bool _hover;
 };
 

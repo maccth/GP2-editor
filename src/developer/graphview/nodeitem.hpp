@@ -26,6 +26,7 @@ public:
     explicit NodeItem(Node *node, QGraphicsItem *parent = 0);
     explicit NodeItem(const QString &nodeId,
                       const QString &nodeLabel = QString(),
+                      const QString &nodeMark = QString(),
                       bool root = false,
                       QGraphicsItem *parent = 0);
 

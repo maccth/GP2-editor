@@ -661,8 +661,8 @@ QString Graph::toAlternative() const
 
         result += QString(", ") + n->label().toString();
 
-        //if(n->mark())
-        result += n->mark();
+        if(n->mark() != QString()  && n->mark() != QString("none"))
+            result += "#" + n->mark();
 
         result += QString(" (") + QVariant(n->pos().x()).toString() + ", "
                 + QVariant(n->pos().y()).toString() + ") )";
@@ -690,11 +690,18 @@ QString Graph::toAlternative() const
             result += "\n      ";
 
         result += "(" + e->id();
-				if(e->isBidirectional())
-					result += "(B)";
 
-				result += ", " + e->from()->id() + ", " + e->to()->id()
-                + ", " + e->label().toString() + ")";
+        if(e->isBidirectional())
+                result += "(B)";
+
+        result += ", " + e->from()->id() + ", " + e->to()->id()
+                + ", " + e->label().toString();
+
+
+        if(e->mark() != QString()  && e->mark() != QString("none"))
+            result += "#" + e->mark();
+
+        result += ")";
     }
     if(!added)
         result += "\n    |";
@@ -774,12 +781,12 @@ void Graph::setCanvas(const QRect &rect)
     _canvas = rect;
 }
 
-Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label)
+Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label, const QString &mark)
 {
     if(contains(id))
         return 0;
 
-    Edge *e = new Edge(id, from, to, label, this);
+    Edge *e = new Edge(id, from, to, label, mark, this);
     connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
     _edges.push_back(e);
 
@@ -791,13 +798,13 @@ Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label)
     return e;
 }
 
-Edge *Graph::addEdge(Node *from, Node *to, const List &label)
+Edge *Graph::addEdge(Node *from, Node *to, const List &label, const QString &mark)
 {
     // Is there already a node or edge with this label?
 
     // Are the two nodes provided real nodes tracked by this graph
 
-    Edge *e = new Edge(newEdgeId(), from, to, label, this);
+    Edge *e = new Edge(newEdgeId(), from, to, label, mark, this);
     connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
     _edges.push_back(e);
 
@@ -809,12 +816,12 @@ Edge *Graph::addEdge(Node *from, Node *to, const List &label)
     return e;
 }
 
-Node *Graph::addNode(const QString &id, const List &label, const QPointF &pos)
+Node *Graph::addNode(const QString &id, const List &label, const QString &mark, const QPointF &pos)
 {
     if(contains(id))
         return 0;
 
-    Node *n = new Node(id, label, pos, this);
+    Node *n = new Node(id, label, mark, pos, this);
     connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
     _nodes.push_back(n);
 
@@ -826,12 +833,12 @@ Node *Graph::addNode(const QString &id, const List &label, const QPointF &pos)
     return n;
 }
 
-Node *Graph::addNode(const List &label, const QPointF &pos)
+Node *Graph::addNode(const List &label, const QString &mark, const QPointF &pos)
 {
     // Is there already a node or edge with this label?
     // do we care if there is?
 
-    Node *n = new Node(newNodeId(), label, pos, this);
+    Node *n = new Node(newNodeId(), label, mark, pos, this);
     if(_nodes.size() == 0)
         n->setIsRoot(true);
     connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
@@ -933,22 +940,22 @@ bool Graph::openGraphT(const graph_t &inputGraph)
 {
     for(size_t i = 0; i < inputGraph.nodes.size(); ++i)
     {
-					node_t node = inputGraph.nodes.at(i);
-					if(contains(node.id.c_str()))
-					{
-							qDebug() << "    Duplicate ID found: " << node.id.c_str();
-							qDebug() << "    Graph parsing failed.";
-							emit openComplete();
-							return false;
-					}
+        node_t node = inputGraph.nodes.at(i);
+        if(contains(node.id.c_str()))
+        {
+                        qDebug() << "    Duplicate ID found: " << node.id.c_str();
+                        qDebug() << "    Graph parsing failed.";
+                        emit openComplete();
+                        return false;
+        }
 
-					Node *n = new Node(node.id.c_str(), List(node.label),
-										         QPointF(node.xPos, node.yPos), this);
-					n->setMark(QString(node.label.mark.c_str()));
+        Node *n = new Node(node.id.c_str(), List(node.label), QString(node.label.mark.c_str()),
+                                                         QPointF(node.xPos, node.yPos), this);
+        //n->setMark(QString(node.label.mark.c_str()));
 
-					connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
-					emit nodeAdded(n);
-					_nodes.push_back(n);
+        connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
+        emit nodeAdded(n);
+        _nodes.push_back(n);
     }
 
     for(size_t i = 0; i < inputGraph.edges.size(); ++i)
@@ -983,7 +990,7 @@ bool Graph::openGraphT(const graph_t &inputGraph)
             return false;
         }
 
-        Edge *e = new Edge(edge.id.c_str(), from, to, List(edge.label), this);
+        Edge *e = new Edge(edge.id.c_str(), from, to, List(edge.label), QString(edge.label.mark.c_str()), this);
         connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
         emit edgeAdded(e);
         _edges.push_back(e);

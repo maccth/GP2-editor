@@ -24,7 +24,9 @@ EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
     , _from(edgeFrom)
     , _to(edgeTo)
     , _hover(false)
+    , _mark(edge->mark())
 {
+    qDebug() <<  "initial EdgeItem::mark = " << edge->mark();
     setZValue(EDGE_Z_VALUE);
 
     setAcceptHoverEvents(true);
@@ -37,12 +39,13 @@ EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
 }
 
 EdgeItem::EdgeItem(const QString &edgeId, NodeItem *edgeFrom, NodeItem *edgeTo,
-                   const QString &edgeLabel, QGraphicsItem *parent)
+                   const QString &edgeLabel, const QString &edgeMark, QGraphicsItem *parent)
     : GraphItem(edgeId, edgeLabel, "edge", parent)
     , _edge(0)
     , _from(edgeFrom)
     , _to(edgeTo)
     , _hover(false)
+    , _mark(edgeMark)
 {
     setZValue(EDGE_Z_VALUE);
 
@@ -68,6 +71,20 @@ NodeItem *EdgeItem::from() const
 NodeItem *EdgeItem::to() const
 {
     return _to;
+}
+
+QString EdgeItem::mark() const
+{
+    qDebug() <<  "EdgeItem::mark = " <<_mark;
+    return _mark;
+}
+
+void EdgeItem::setMark(const QString &mark)
+{
+    _mark = mark;
+
+    if(_edge != 0)
+        _edge->setMark(mark);
 }
 
 void EdgeItem::setFrom(NodeItem *edgeFrom)

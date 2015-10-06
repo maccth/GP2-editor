@@ -8,13 +8,13 @@
 
 namespace Developer {
 
-Node::Node(const QString &nodeId, const List &nodeLabel, const QPointF &nodePos, Graph *parent)
+Node::Node(const QString &nodeId, const List &nodeLabel, const QString &nodeMark, const QPointF &nodePos, Graph *parent)
     : QObject(parent)
     , _id(nodeId)
     , _label(nodeLabel)
     , _pos(nodePos)
     , _isRoot(false)
-    , _mark("")
+    , _mark(nodeMark)
     , _parent(parent)
     , _phantom(false)
 {
