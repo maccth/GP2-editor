@@ -80,7 +80,7 @@ $ make
 
 If everything went to plan, GP2 will install nicely and you can run the executable 'gpdeveloper' to open the editor!
 
-# Updating the Editor
+## Updating the Editor
 
 ```
 cd ~/GP2/GP2-editor
@@ -90,7 +90,7 @@ git pull
 cp ../CMakeLists.txt .
 ```
 
-# Rebuilding the Editor
+## Rebuilding the Editor
 
 ```
 cd ~/GP2/GP2-build 
@@ -99,7 +99,7 @@ make
 ./gpdeveloper &
 ```
 
-# Update the Compiler
+## Updating the Compiler
 
 ```
 cd ~/GP2/GP2-Compiler

@@ -23,12 +23,12 @@
 
 
 extern "C" {
-#include "translate/help/globals.h"
-#include "translate/help/error.h"
+#include "translate/globals.h"
+#include "translate/error.h"
 #include "translate/ast.h"
 #include "translate/parser.h"
-#include "translate/help/pretty.h"
-#include "translate/help/prettyGraph.h"
+#include "translate/pretty.h"
+#include "translate/prettyGraph.h"
 }
 
 #include "translate/translate.hpp"
@@ -84,7 +84,7 @@ graph_t parseAlternativeGraph(const QString &graphPath)
                   << std::endl;
     } */
 
-		ret = Developer::translateGraph(ast_host_graph);
+    ret = Developer::translateGraph(ast_host_graph);
     return ret;
 }
 

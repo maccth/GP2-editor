@@ -69,8 +69,8 @@
 #line 35 "gpparser.y"
 
 #define YYDEBUG 1
-#include "help/globals.h"
-#include "help/error.h"
+#include "globals.h"
+#include "error.h"
 
 #include "ast.h"
 

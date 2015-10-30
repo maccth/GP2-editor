@@ -368,7 +368,7 @@ void RuleEdit::updateInterface()
         }    
     }
 
-    qDebug() << "The common nodes are: " << debug.join(" ");
+    //qDebug() << "The common nodes are: " << debug.join(" ");
 
     interface_t result;
     result.elements = elements;

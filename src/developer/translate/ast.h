@@ -9,16 +9,15 @@
   prototypes for AST freeing functions.
 
 /////////////////////////////////////////////////////////////////////////// */
+#ifndef INC_AST_H
+#define INC_AST_H 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#ifndef INC_AST_H
-#define INC_AST_H 
-
-#include "help/error.h"
-#include "help/globals.h"
+#include "error.h"
+#include "globals.h"
 
 /* The functions after each struct definition are AST node constructors. The
  * constructors are called from the Bison parser (gpparser.y) which provides 
@@ -335,8 +334,9 @@ void freeASTNode(GPNode *node);
 void freeASTEdge(GPEdge *edge);
 void freeASTLabel(GPLabel *label);
 
-#endif /* INC_AST_H */
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* INC_AST_H */

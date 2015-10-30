@@ -120,71 +120,12 @@ SET(GPDeveloper_QRC_SRCS
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${GP2_SOURCE_DIR})
 
 
-
-
-include(ExternalProject)
-ExternalProject_Add(
-		GP2_TRANSALTE
-		PREFIX ${GP2_SOURCE_DIR}/src/developer/translate # Root dir for entire project
-		#--Configure step-------------
-    SOURCE_DIR ${GP2_SOURCE_DIR}/src/developer/translate            # Source dir to be used for build
-		CONFIGURE_COMMAND ""
-		#--Build step-----------------
-		BUILD_COMMAND make translate.o		# Command to drive the native build
-		BUILD_IN_SOURCE 1         				# Use source dir for build dir
-		 #--Install step---------------
-    INSTALL_COMMAND ""    # Command to drive install after build
-)
-
-ExternalProject_Add(
-		GP2_LEX
-		PREFIX ${GP2_SOURCE_DIR}/src/developer/translate # Root dir for entire project
-		#--Configure step-------------
-    SOURCE_DIR ${GP2_SOURCE_DIR}/src/developer/translate # Source dir to be used for build
-		CONFIGURE_COMMAND ""
-		#--Build step-----------------
-		BUILD_COMMAND make gplex.o		# Command to drive the native build
-		BUILD_IN_SOURCE 1         				# Use source dir for build dir
-		 #--Install step---------------
-    INSTALL_COMMAND ""    # Command to drive install after build
-)
-
-ExternalProject_Add(
-		GP2_PARSE
-		PREFIX ${GP2_SOURCE_DIR}/src/developer/translate # Root dir for entire project
-		#--Configure step-------------
-    SOURCE_DIR ${GP2_SOURCE_DIR}/src/developer/translate            # Source dir to be used for build
-		CONFIGURE_COMMAND ""
-		#--Build step-----------------
-		BUILD_COMMAND make parser.o		# Command to drive the native build
-		BUILD_IN_SOURCE 1         				# Use source dir for build dir
-		 #--Install step---------------
-    INSTALL_COMMAND ""    # Command to drive install after build
-)
-
-SET(TRANSLATE_HELPER
-#		${GP2_SOURCE_DIR}/src/developer/translate/translate.o
-		${GP2_SOURCE_DIR}/src/developer/translate/gplex.o
-		${GP2_SOURCE_DIR}/src/developer/translate/parser.o
-		${GP2_SOURCE_DIR}/src/developer/translate/ast.o
-		${GP2_SOURCE_DIR}/src/developer/translate/help/pretty.o
-		${GP2_SOURCE_DIR}/src/developer/translate/help/prettyGraph.o
-)
-
-
-set_source_files_properties(
-	${TRANSLATE_HELPER}
-	PROPERTIES
-	EXTERNAL_OBJECT TRUE  # Identifies this as an object file
-  GENERATED TRUE  			# Avoids need for file to exist at configure-time
-)
-
 # We need to link against the Qt libraries located in the top-level
 # CMakeLists.txt
 if(WIN32)
-SET(GPDeveloper_LINK_LIBS ${QT_LIBRARIES} ${OGDF_LIBRARY} ${libGP_NAME} ${TRANSLATE_HELPER} psapi)
+SET(GPDeveloper_LINK_LIBS ${QT_LIBRARIES} ${OGDF_LIBRARY} ${libGP_NAME} libTranslate psapi)
 ELSE()
-SET(GPDeveloper_LINK_LIBS ${QT_LIBRARIES} ${OGDF_LIBRARY} ${libGP_NAME} ${TRANSLATE_HELPER})
+SET(GPDeveloper_LINK_LIBS ${QT_LIBRARIES} ${OGDF_LIBRARY} ${libGP_NAME} libTranslate)
 ENDIF()
 
 # These lines tell the build system to perform the tasks mentioned above

@@ -18,40 +18,19 @@
 #   src/gpmake/CMakeLists.txt       - GP2 build tool
 #
 
-# Chris Bak note: On office computer, set the prefix path before calling by
+# Note: On office computer, set the prefix path before calling by
 # export CMAKE_PREFIX_PATH=/local/sda5/ish503/root:/local/sda5/ish503/root/qt4:/local/sda5/ish503/root/boost_1_55_0/:/local/sda5/ish503/root/OGDF-source/:/local/sda5/ish503/root/OGDF-source/include/
-
-# Ivaylo Hristakiev note: Set the location of the GP2 compiler manually here
-SET(GP2_COMPILER_LOCATION "~/github/GP2/Compiler")  # Change this 
-
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(GP2)
 
-SET(GP2_VERSION_MAJOR 1)
-SET(GP2_VERSION_MINOR 0)
-
-INCLUDE_DIRECTORIES(
-    ${CMAKE_SOURCE_DIR}
-    ${GP2_SOURCE_DIR}/src/developer
-    ${GP2_SOURCE_DIR}/src/libgp
-    ${GP2_SOURCE_DIR}/src/gprc
-    ${GP2_SOURCE_DIR}/src/gpxc
-    ${GP2_SOURCE_DIR}/src/gpmake
-    ${GP2_BINARY_DIR}
-)
-
-ADD_DEFINITIONS( -DCOMPILER_LOCATION="${GP2_COMPILER_LOCATION}" )
-
-INCLUDE(CheckIncludeFiles)
-
-SET(QT_MIN_VERSION "4.8.0")
-FIND_PACKAGE(Qt4 REQUIRED)
+# Note: Set the location of the various components manually here
+SET(GP2_COMPILER_LOCATION "~/github/GP2/Compiler")  # Change this 
 
 SET(BOOST_INCLUDE_DIR /local/sda5/ish503/root)  # Change this
 FIND_PACKAGE(Boost 1.49.0 REQUIRED)
-  
+
 SET(OGDF_INCLUDE_DIR /local/sda5/ish503/root/OGDF-source) # Change this 
 
 # Find OGDF
@@ -61,6 +40,31 @@ IF(WIN32)
 ELSE()
     FIND_LIBRARY(OGDF_LIBRARY OGDF /local/sda5/ish503/root/OGDF-build/lib64) # Change this
 ENDIF()
+
+
+SET(GP2_VERSION_MAJOR 1)
+SET(GP2_VERSION_MINOR 0)
+
+INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}
+    ${GP2_SOURCE_DIR}/src/developer/translate   #defines libTranslate
+    ${GP2_SOURCE_DIR}/src/developer
+    ${GP2_SOURCE_DIR}/src/libgp
+    ${GP2_SOURCE_DIR}/src/gprc
+    ${GP2_SOURCE_DIR}/src/gpxc
+    ${GP2_SOURCE_DIR}/src/gpmake
+    ${GP2_BINARY_DIR}
+)
+
+add_subdirectory(${GP2_SOURCE_DIR}/src/developer/translate)
+
+ADD_DEFINITIONS( -DCOMPILER_LOCATION="${GP2_COMPILER_LOCATION}" )
+
+INCLUDE(CheckIncludeFiles)
+
+SET(QT_MIN_VERSION "4.8.0")
+FIND_PACKAGE(Qt4 REQUIRED)
+
 
 SET(QT_USE_QTMAIN true)
 SET(QT_USE_QTXML true)
@@ -94,7 +98,7 @@ IF(CMAKE_COMPILER_IS_MSVC)
 ENDIF(CMAKE_COMPILER_IS_MSVC)
 
 # Build libGP
-#INCLUDE("src/libgp/CMakeLists.txt")
+INCLUDE("src/libgp/CMakeLists.txt")
 
 # We want to be able to link against libGP, so make sure that the directory is checked when linking
 LINK_DIRECTORIES(${GP2_BINARY_DIR})

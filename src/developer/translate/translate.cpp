@@ -1,6 +1,6 @@
 #include "translate.hpp"
-#include "help/globals.h"
-#include "help/error.h"
+#include "globals.h"
+#include "error.h"
 #include <sstream>	// for stringstream
 
 namespace Developer {
