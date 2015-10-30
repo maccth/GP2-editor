@@ -17,7 +17,7 @@
 
 namespace Developer {
 
-EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
+EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo, bool isBidirectional,
                    QGraphicsItem *parent)
     : GraphItem(edge->id(), edge->label().toString(), "edge", parent)
     , _edge(edge)
@@ -25,8 +25,8 @@ EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
     , _to(edgeTo)
     , _hover(false)
     , _mark(edge->mark())
+    , _isBidirectional(isBidirectional)
 {
-    qDebug() <<  "initial EdgeItem::mark = " << edge->mark();
     setZValue(EDGE_Z_VALUE);
 
     setAcceptHoverEvents(true);
@@ -39,13 +39,14 @@ EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
 }
 
 EdgeItem::EdgeItem(const QString &edgeId, NodeItem *edgeFrom, NodeItem *edgeTo,
-                   const QString &edgeLabel, const QString &edgeMark, QGraphicsItem *parent)
+                   const QString &edgeLabel, const QString &edgeMark, bool isBidirectional, QGraphicsItem *parent)
     : GraphItem(edgeId, edgeLabel, "edge", parent)
     , _edge(0)
     , _from(edgeFrom)
     , _to(edgeTo)
     , _hover(false)
     , _mark(edgeMark)
+    , _isBidirectional(isBidirectional)
 {
     setZValue(EDGE_Z_VALUE);
 
@@ -73,9 +74,13 @@ NodeItem *EdgeItem::to() const
     return _to;
 }
 
+bool EdgeItem::isBidirectional() const
+{
+    return _isBidirectional;
+}
+
 QString EdgeItem::mark() const
 {
-    qDebug() <<  "EdgeItem::mark = " <<_mark;
     return _mark;
 }
 
@@ -85,6 +90,14 @@ void EdgeItem::setMark(const QString &mark)
 
     if(_edge != 0)
         _edge->setMark(mark);
+}
+
+void EdgeItem::setBidirectional(bool isBidirectional)
+{
+    _isBidirectional = isBidirectional;
+
+    if(_edge != 0)
+        _edge->setIsBidirectional(isBidirectional);
 }
 
 void EdgeItem::setFrom(NodeItem *edgeFrom)

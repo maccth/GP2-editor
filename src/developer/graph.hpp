@@ -64,10 +64,10 @@ signals:
 
 public slots:
     void setCanvas(const QRect &rect);
-    Node *addNode(const QString &id, const List &label = List(), const QString &mark = QString(), const QPointF &pos = QPointF());
-    Node *addNode(const List &label = List(), const QString &mark = QString(), const QPointF &pos = QPointF());
-    Edge *addEdge(const QString &id, Node *from, Node *to, const List &label = List(), const QString &mark = QString());
-    Edge *addEdge(Node *from, Node *to, const List &label = List(), const QString &mark = QString());
+    Node *addNode(const QString &id, const List &label = List(), const QString &mark = QString(), bool isRoot = false, const QPointF &pos = QPointF());
+    Node *addNode(const List &label = List(), const QString &mark = QString(), bool isRoot = false, const QPointF &pos = QPointF());
+    Edge *addEdge(const QString &id, Node *from, Node *to, const List &label = List(), const QString &mark = QString(), bool isBidirectional = false);
+    Edge *addEdge(Node *from, Node *to, const List &label = List(), const QString &mark = QString(), bool isBidirectional = false);
 
     /*!
      * \brief Remove the node with the given ID from the graph if it exists

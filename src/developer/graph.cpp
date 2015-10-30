@@ -781,12 +781,12 @@ void Graph::setCanvas(const QRect &rect)
     _canvas = rect;
 }
 
-Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label, const QString &mark)
+Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label, const QString &mark, bool isBidirectional)
 {
     if(contains(id))
         return 0;
 
-    Edge *e = new Edge(id, from, to, label, mark, this);
+    Edge *e = new Edge(id, from, to, label, mark, isBidirectional, this);
     connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
     _edges.push_back(e);
 
@@ -798,13 +798,13 @@ Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label,
     return e;
 }
 
-Edge *Graph::addEdge(Node *from, Node *to, const List &label, const QString &mark)
+Edge *Graph::addEdge(Node *from, Node *to, const List &label, const QString &mark, bool isBidirectional)
 {
     // Is there already a node or edge with this label?
 
     // Are the two nodes provided real nodes tracked by this graph
 
-    Edge *e = new Edge(newEdgeId(), from, to, label, mark, this);
+    Edge *e = new Edge(newEdgeId(), from, to, label, mark, isBidirectional, this);
     connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
     _edges.push_back(e);
 
@@ -816,12 +816,12 @@ Edge *Graph::addEdge(Node *from, Node *to, const List &label, const QString &mar
     return e;
 }
 
-Node *Graph::addNode(const QString &id, const List &label, const QString &mark, const QPointF &pos)
+Node *Graph::addNode(const QString &id, const List &label, const QString &mark, bool isRoot, const QPointF &pos)
 {
     if(contains(id))
         return 0;
 
-    Node *n = new Node(id, label, mark, pos, this);
+    Node *n = new Node(id, label, mark, isRoot, pos, this);
     connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
     _nodes.push_back(n);
 
@@ -833,12 +833,12 @@ Node *Graph::addNode(const QString &id, const List &label, const QString &mark, 
     return n;
 }
 
-Node *Graph::addNode(const List &label, const QString &mark, const QPointF &pos)
+Node *Graph::addNode(const List &label, const QString &mark, bool isRoot, const QPointF &pos)
 {
     // Is there already a node or edge with this label?
     // do we care if there is?
 
-    Node *n = new Node(newNodeId(), label, mark, pos, this);
+    Node *n = new Node(newNodeId(), label, mark, isRoot, pos, this);
     if(_nodes.size() == 0)
         n->setIsRoot(true);
     connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
@@ -949,7 +949,7 @@ bool Graph::openGraphT(const graph_t &inputGraph)
                         return false;
         }
 
-        Node *n = new Node(node.id.c_str(), List(node.label), QString(node.label.mark.c_str()),
+        Node *n = new Node(node.id.c_str(), List(node.label), QString(node.label.mark.c_str()), QVariant(node.isRoot).toBool(),
                                                          QPointF(node.xPos, node.yPos), this);
         //n->setMark(QString(node.label.mark.c_str()));
 
@@ -990,7 +990,8 @@ bool Graph::openGraphT(const graph_t &inputGraph)
             return false;
         }
 
-        Edge *e = new Edge(edge.id.c_str(), from, to, List(edge.label), QString(edge.label.mark.c_str()), this);
+        qDebug() << "graph.cpp: " << edge.isBidirectional;
+        Edge *e = new Edge(edge.id.c_str(), from, to, List(edge.label), QString(edge.label.mark.c_str()), edge.isBidirectional, this);
         connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
         emit edgeAdded(e);
         _edges.push_back(e);

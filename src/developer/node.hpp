@@ -22,7 +22,7 @@ class Node : public QObject
     Q_OBJECT
 
 public:
-    Node(const QString &nodeId, const List &nodeLabel = List(),  const QString &nodeMark = QString("none"),
+    Node(const QString &nodeId, const List &nodeLabel = List(), const QString &nodeMark = QString("none"), bool isRoot = false,
          const QPointF &nodePos = QPointF(), Graph *parent = 0);
 
     QString id() const;

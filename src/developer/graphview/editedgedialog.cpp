@@ -34,6 +34,9 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
 
     _ui->labelEdit->setText(_edge->label());
 
+    qDebug() << _edge->isBidirectional();
+    _ui->bidirectionalBox->setChecked(_edge->isBidirectional());
+
     //_ui->fromComboBox->addItems(nodes);
     //_ui->toComboBox->addItems(nodes);
 
@@ -70,7 +73,6 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
     icon.addPixmap(px);        //use our icon again
     _ui->markComboBox->addItem(icon,"green");
 
-    qDebug() << _edge->mark();
     int currentMarkIndex = _ui->markComboBox->findText(_edge->mark());
     if (currentMarkIndex != -1)
         _ui->markComboBox->setCurrentIndex(currentMarkIndex);
@@ -91,6 +93,7 @@ void EditEdgeDialog::accept()
     // qDebug() << "Edge Label is: " << _ui->labelEdit->text();
     _edge->setLabel(_ui->labelEdit->text());
     _edge->setMark(_ui->markComboBox->currentText());
+    _edge->setBidirectional(_ui->bidirectionalBox->isChecked());
 
     QDialog::accept();
 }

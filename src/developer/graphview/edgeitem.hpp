@@ -18,21 +18,23 @@ class EdgeItem : public GraphItem
 {
     Q_OBJECT
 public:
-    explicit EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
+    explicit EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo, bool isBidirectional = false,
                       QGraphicsItem *parent = 0);
     explicit EdgeItem(const QString &edgeId, NodeItem *edgeFrom,
-                      NodeItem *edgeTo, const QString &edgeLabel = QString(), const QString &edgeMark = QString(),
+                      NodeItem *edgeTo, const QString &edgeLabel = QString(), const QString &edgeMark = QString(), bool isBidirectional = false,
                       QGraphicsItem *parent = 0);
 
     Edge *edge() const;
     NodeItem *from() const;
     NodeItem *to() const;
     QString mark() const;
+    bool isBidirectional() const;
 
     void setFrom(NodeItem *edgeFrom);
     void setTo(NodeItem *edgeTo);
     void setLabel(const QString &itemLabel);
     void setMark(const QString &mark);
+    void setBidirectional(bool isBidirectional);
 
     void preserveEdge();
     void deleteEdge();

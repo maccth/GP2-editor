@@ -5,13 +5,13 @@
 
 namespace Developer {
 
-Edge::Edge(const QString &edgeId, Node *fromNode, Node *toNode, const List &edgeLabel, const QString &edgeMark, Graph *parent)
+Edge::Edge(const QString &edgeId, Node *fromNode, Node *toNode, const List &edgeLabel, const QString &edgeMark, bool isBidirectional, Graph *parent)
     : _parent(parent)
     , _id(edgeId)
     , _from(fromNode)
     , _to(toNode)
     , _mark(edgeMark)
-    , _isBidirectional(false)
+    , _isBidirectional(isBidirectional)
     , _label(edgeLabel)
     , _phantom(false)
 {

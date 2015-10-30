@@ -125,6 +125,7 @@ void GraphScene::setGraph(Graph *newGraph)
                         lhsNode->id(),
                         lhsNode->label(),
                         lhsNode->mark(),
+                        lhsNode->isRoot(),
                         lhsNode->pos()
                         );
 
@@ -218,7 +219,9 @@ void GraphScene::setGraph(Graph *newGraph)
                         lhsEdge->id(),
                         rhsFrom,
                         rhsTo,
-                        lhsEdge->label()
+                        lhsEdge->label(),
+                        lhsEdge->mark(),
+                        lhsEdge->isBidirectional()
                         );
 
             if(e == 0)
@@ -572,7 +575,7 @@ void GraphScene::addNode(const QPointF &position, bool automatic)
 {
     QString label = QString("n") + QVariant(static_cast<int>(_graph->nodes().size()+1)
                                         ).toString();
-    Node *n = _graph->addNode(label, QString("none"), position);
+    Node *n = _graph->addNode(label, QString("none"), false, position);
 
     NodeItem *nodeItem = new NodeItem(n);
 
@@ -814,6 +817,7 @@ void GraphScene::linkedGraphAddedNode(Node *nodeItem)
                     nodeItem->id(),
                     nodeItem->label(),
                     nodeItem->mark(),
+                    nodeItem->isRoot(),
                     nodeItem->pos());
         if(n == 0)
         {
@@ -852,7 +856,7 @@ void GraphScene::linkedGraphAddedEdge(Edge *edgeItem)
         }
 
         // New node, copy it across as a phantom
-        Edge *e = _graph->addEdge(edgeItem->id(), from, to, edgeItem->label());
+        Edge *e = _graph->addEdge(edgeItem->id(), from, to , edgeItem->label(), edgeItem->mark(), edgeItem->isBidirectional());
         if(e == 0)
         {
             qDebug() << "Failed to add edge from linked graph: "

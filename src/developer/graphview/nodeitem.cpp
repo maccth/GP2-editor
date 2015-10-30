@@ -26,6 +26,7 @@ NodeItem::NodeItem(Node *node, QGraphicsItem *parent)
     , _hover(false)
     , _mark(node->mark())
 {
+    qDebug() << "isRoot: " << node->isRoot();
     setZValue(NODE_Z_VALUE);
 
     setAcceptHoverEvents(true);
