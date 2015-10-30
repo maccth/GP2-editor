@@ -90,6 +90,15 @@ git pull
 cp ../CMakeLists.txt .
 ```
 
+Note: It is always useful to check how much is the CMakeLists.txt different by using
+```
+git diff CMakeLists.txt
+```
+If anything else than location of libraries is different, getting the latest CMakeLists.txt and reediting it is best.
+``
+git reset CMakeLists.txt
+``
+
 ## Rebuilding the Editor
 
 ```
