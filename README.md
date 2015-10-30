@@ -29,7 +29,7 @@ $ git clone https://github.com/UoYCS-plasma/GP2.git
 Follow the install instructions from <a href="https://github.com/UoYCS-plasma/GP2/tree/master/Compiler">here</a>
 
 #### Building OGDF and Boost
-
+The required version can be downloaded from <a href="https://www.dropbox.com/s/pzgm1ge843pbgoz/ogdf.v2012.07.zip?dl=0">here</a>
 ```
 $ cd GP2
 $ mkdir OGDF-build
@@ -68,7 +68,7 @@ $ cd GP2-editor
 $ git clone https://github.com/ivaylohristakiev/GP2-editor.git
 ```
 
-Next, edit the **CMakeLists.txt** and edit occurences marked with _Change this_ .  Also note the comment about exporting CMAKE_PREFIX_PATH. This ensures CMake searches in the right places for the libraries (otherwise it will search /usr/local/... and find nothing).
+Next, edit the **CMakeLists.txt** and edit occurrences marked with _Change this_ .  Also note the comment about exporting CMAKE_PREFIX_PATH. This ensures CMake searches in the right places for the libraries (otherwise it will search /usr/local/... and find nothing).
 
 ```
 $ cd GP2
@@ -83,7 +83,7 @@ If everything went to plan, GP2 will install nicely and you can run the executab
 ## Updating the Editor
 
 ```
-cd ~/GP2/GP2-editor
+cd GP2/GP2-editor
 cp CMakeLists.txt ..
 git checkout -- CMakeLists.txt
 git pull
@@ -93,7 +93,7 @@ cp ../CMakeLists.txt .
 ## Rebuilding the Editor
 
 ```
-cd ~/GP2/GP2-build 
+cd GP2/GP2-build 
 cmake ../GP2-editor
 make
 ./gpdeveloper &
@@ -102,7 +102,7 @@ make
 ## Updating the Compiler
 
 ```
-cd ~/GP2/GP2-Compiler
+cd GP2/GP2-Compiler
 git pull
 cd src
 make clean
