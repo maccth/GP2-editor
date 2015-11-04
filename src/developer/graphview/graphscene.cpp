@@ -573,9 +573,9 @@ void GraphScene::resizeToContents()
 
 void GraphScene::addNode(const QPointF &position, bool automatic)
 {
-    QString label = QString("n") + QVariant(static_cast<int>(_graph->nodes().size()+1)
+    QString id = QString("n") + QVariant(static_cast<int>(_graph->nodes().size()+1)
                                         ).toString();
-    Node *n = _graph->addNode(label, QString("none"), false, position);
+    Node *n = _graph->addNode(id, QString(), QString("none"), false, position);
 
     NodeItem *nodeItem = new NodeItem(n);
 
@@ -1068,7 +1068,10 @@ void GraphScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                     qDebug() << "Edge creation failed to find nodes.";
                     return;
                 }
-                Edge *e = _graph->addEdge(from, to, newLabel);
+
+                QString id = QString("e") + QVariant(static_cast<int>(_graph->edges().size()+1)
+                                                    ).toString();
+                Edge *e = _graph->addEdge( id ,from, to, newLabel);
                 EdgeItem *edgeItem = new EdgeItem(e, _fromNode, node);
 
                 if(_linkedGraph != 0)

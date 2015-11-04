@@ -19,7 +19,7 @@ namespace Developer {
 
 EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo, bool isBidirectional,
                    QGraphicsItem *parent)
-    : GraphItem(edge->id(), edge->label().toString(), "edge", parent)
+    : GraphItem(edge->id(), edge->label(), "edge", parent)
     , _edge(edge)
     , _from(edgeFrom)
     , _to(edgeTo)
@@ -135,7 +135,7 @@ void EdgeItem::setLabel(const QString &itemLabel)
     GraphItem::setLabel(itemLabel);
 
     if(_edge != 0)
-        _edge->setLabel(List(itemLabel));
+        _edge->setLabel(itemLabel);
 }
 
 void EdgeItem::deleteEdge()
@@ -569,13 +569,18 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawPath(painterPath);
 
     // Draw the pointer on the end
-    QPainterPath arrowPath;
-    if(_from == _to)
-        arrowPath = arrowHead(-0.05);
-    else
-        arrowPath = arrowHead();
-    painter->setBrush(lineColour);
-    painter->drawPath(arrowPath);
+    // ONLY IF EDGE IS NOT BIDIRECTIONAL
+    if (!_isBidirectional)
+    {
+        QPainterPath arrowPath;
+        if(_from == _to)
+            arrowPath = arrowHead(-0.05);
+        else
+            arrowPath = arrowHead();
+        painter->setBrush(lineColour);
+        painter->drawPath(arrowPath);
+    }
+
 
     // Now draw the label
     painter->setPen(textColour);
@@ -589,12 +594,14 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawText(QPointF(-xOffset,-3), label());
 
     // Draw the edge ID
+    /*
     QColor idColour = textColour;
     idColour.setAlpha(80);
     painter->setPen(idColour);
     xOffset = metrics.width(id())/2;
     qreal yOffset = metrics.height()-3;
     painter->drawText(QPointF(-xOffset, yOffset), id());
+    */
 }
 
 void EdgeItem::nodeMoved()

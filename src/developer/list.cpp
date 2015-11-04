@@ -139,8 +139,8 @@ List::List(const QString &labelStr)
             }
             else
             {
-                qDebug() << "Unexpected char " << labelStr.at(labelPos) << " at "
-                         << "position " << labelPos << ", was expecting a list "
+                qDebug() << "Unexpected char " << labelStr.at(labelPos) << " at"
+                         << "position " << labelPos << ", was expecting a list"
                          << "value separator (:).";
                 _clean = false;
                 ++labelPos;

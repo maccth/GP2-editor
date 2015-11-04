@@ -5,7 +5,7 @@
 
 namespace Developer {
 
-Edge::Edge(const QString &edgeId, Node *fromNode, Node *toNode, const List &edgeLabel, const QString &edgeMark, bool isBidirectional, Graph *parent)
+Edge::Edge(const QString &edgeId, Node *fromNode, Node *toNode, const QString &edgeLabel, const QString &edgeMark, bool isBidirectional, Graph *parent)
     : _parent(parent)
     , _id(edgeId)
     , _from(fromNode)
@@ -32,7 +32,7 @@ Node *Edge::to() const
     return _to;
 }
 
-List Edge::label() const
+QString Edge::label() const
 {
     return _label;
 }
@@ -85,7 +85,7 @@ void Edge::setTo(Node *toNode)
     emit toChanged(toNode);
 }
 
-void Edge::setLabel(const List &edgeLabel)
+void Edge::setLabel(const QString &edgeLabel)
 {
     _label = edgeLabel;
     emit edgeChanged();

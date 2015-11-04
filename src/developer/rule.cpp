@@ -240,61 +240,56 @@ QString Rule::toAlternative()
 
     // Collect variables here
 		
-		for (std::vector<param_t>::iterator it = _variables.begin(); it != _variables.end(); ++it)
-		{
-				param_t vvar = *it; 	// This is a list of variables of the same type
-				//qDebug() << "     " << vvar.type.c_str() <<": " ;
-				for (std::vector<std::string>::iterator itt = vvar.variables.begin(); 
-						 itt != vvar.variables.end();
-						 ++itt )
-				{
-					std::string var = *itt;
-				  //qDebug() << "          " << var.c_str();
-					saveText += var.c_str();
-					if (itt != vvar.variables.end() - 1) 
-						saveText += ", ";
-					else
-						{ 
-							saveText += " : "; 
-							saveText+= vvar.type.c_str() ; 
+    for (std::vector<param_t>::iterator it = _variables.begin(); it != _variables.end(); ++it)
+    {
+        param_t varList = *it; 	// This is a list of variables of the same type
+        //qDebug() << "     " << varList.type.c_str() <<": " ;
+        for (std::vector<std::string>::iterator itt = varList.variables.begin();
+                                               itt != varList.variables.end();
+                                               ++itt )
+        {
+            std::string var = *itt;
+            //qDebug() << "          " << var.c_str();
+            saveText += var.c_str();
+            if (itt != varList.variables.end() - 1)
+                saveText += ", ";
+            else
+                {
+                    saveText += " : ";
+                    saveText+= varList.type.c_str() ;
 							
-							if (it != (_variables.end() - 1))			
-								saveText += ";";			
-				
-							saveText += "\n"; 
-						} 
-				}
-		}
+                    if (it != (_variables.end() - 1)) saveText += ";";
+                    saveText += "\n";
+                }
+        }
+    }
 		
     saveText += ")\n";
-		//qDebug() << "    Saving rule content 1: \n" << saveText;
     saveText += _lhs->toAlternative();
     saveText += "\n=>\n";
     saveText += _rhs->toAlternative();
     saveText += "\n";
 
-		//qDebug() << "    Saving rule content 2: \n" << saveText;
-
-    // Write interface here
+    //  Interface
     saveText += "interface = \n{\n";
 
-		for (std::vector<std::string>::iterator i = _interface.elements.begin(); 
-			i != _interface.elements.end();
-			++i)
-  	{
-			//qDebug() << i->c_str() << " ";
-			saveText += i->c_str(); 
-		 	if ( i != (_interface.elements.end() - 1)) saveText+= ", ";
-		}
+    for (std::vector<std::string>::iterator i = _interface.elements.begin();
+                                            i != _interface.elements.end();
+                                            ++i)
+    {
+        //qDebug() << i->c_str() << " ";
+        saveText += i->c_str();
+        if ( i != (_interface.elements.end() - 1)) saveText+= ", ";
+    }
 
     saveText += "\n}\n";
 
-		if (!_condition.isEmpty() &&  (_condition != QString(" ")))
-		{
-			 	saveText+= "where ";
-				saveText += _condition;
-				saveText += "\n";
-		}
+    if (!_condition.isEmpty() &&  (_condition != QString(" ")))
+    {
+        saveText+= "where ";
+        saveText += _condition;
+        saveText += "\n";
+    }
 	
     qDebug() << "    Saving rule condition: " << _condition;
 
@@ -390,8 +385,8 @@ bool Rule::open()
     else
         setRhs(new Graph(QString(), false, this));*/
 
-		setLhs(new Graph(rule.lhs, this));
-		setRhs(new Graph(rule.rhs, this)); 
+    setLhs(new Graph(rule.lhs, this));
+    setRhs(new Graph(rule.rhs, this));
 
     _interface = rule.interface;
 

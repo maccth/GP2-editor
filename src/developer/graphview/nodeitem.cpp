@@ -19,7 +19,7 @@
 namespace Developer {
 
 NodeItem::NodeItem(Node *node, QGraphicsItem *parent)
-    : GraphItem(node->id(), node->label().toString(), "node", parent)
+    : GraphItem(node->id(), node->label(), "node", parent)
     , _node(node)
     , _nodeShape(Ellipse)
     , _isRoot(node->isRoot())
@@ -102,7 +102,7 @@ void NodeItem::setLabel(const QString &itemLabel)
     recalculate();
 
     if(_node != 0)
-        _node->setLabel(List(itemLabel));
+        _node->setLabel(itemLabel);
 }
 
 void NodeItem::setIsRoot(bool root)

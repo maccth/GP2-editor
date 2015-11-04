@@ -6,8 +6,7 @@
 
 #include <QPointF>
 #include <QObject>
-
-#include "list.hpp"
+#include <vector>
 
 namespace Developer {
 
@@ -22,11 +21,11 @@ class Node : public QObject
     Q_OBJECT
 
 public:
-    Node(const QString &nodeId, const List &nodeLabel = List(), const QString &nodeMark = QString("none"), bool isRoot = false,
+    Node(const QString &nodeId, const QString &nodeLabel = QString(), const QString &nodeMark = QString("none"), bool isRoot = false,
          const QPointF &nodePos = QPointF(), Graph *parent = 0);
 
     QString id() const;
-    List label() const;
+    QString label() const;
     QPointF pos() const;
     qreal xPos() const;
     qreal yPos() const;
@@ -44,7 +43,7 @@ public:
     Graph *parent() const;
 
     void setId(const QString &nodeId);
-    void setLabel(const List &nodeLabel);
+    void setLabel(const QString &nodeLabel);
     void setPos(const QPointF &nodePos);
     void setPos(qreal x, qreal y);
     void setIsRoot(bool root);
@@ -54,17 +53,17 @@ public:
 signals:
     void nodeChanged();
     void idChanged(QString id);
-    void labelChanged(List label);
+    void labelChanged(QString label);
     void isRootChanged(bool root);
     void markChanged(QString mark);
     void isPhantomNodeChanged(bool phantom);
 
 private:
     QString _id;
-    List _label;
-    QPointF _pos;
-    bool _isRoot;
+    QString _label;
     QString _mark;
+    bool _isRoot;
+    QPointF _pos;
     Graph *_parent;
     bool _phantom;
 };

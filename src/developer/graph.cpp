@@ -3,6 +3,7 @@
  */
 #include "graph.hpp"
 #include "graphparser.hpp"
+#include "list.hpp"
 
 #include <QSettings>
 #include <QDomDocument>
@@ -445,13 +446,13 @@ QStringList Graph::variables() const
     for(nodeConstIter iter = _nodes.begin(); iter != _nodes.end(); ++iter)
     {
         Node *n = *iter;
-        result += n->label().variables();
+        result += List(n->label()).variables();
     }
 
     for(edgeConstIter iter = _edges.begin(); iter != _edges.end(); ++iter)
     {
         Edge *e = *iter;
-        result += e->label().variables();
+        result += List(e->label()).variables();
     }
 
     result.removeDuplicates();
@@ -535,7 +536,7 @@ QString Graph::toGxl(bool keepLayout) const
         QDomElement node = doc.createElement("node");
 
         node.setAttribute("id", n->id());
-        node.setAttribute("label", n->label().toString());
+        node.setAttribute("label", n->label());
         if(n->isRoot())
             node.setAttribute("root", "true");
         if(keepLayout)
@@ -555,7 +556,7 @@ QString Graph::toGxl(bool keepLayout) const
         QDomElement edge = doc.createElement("edge");
 
         edge.setAttribute("id", e->id());
-        edge.setAttribute("label", e->label().toString());
+        edge.setAttribute("label", e->label());
         edge.setAttribute("from", e->from()->id());
         edge.setAttribute("to", e->to()->id());
 
@@ -588,7 +589,7 @@ QString Graph::toDot(bool keepLayout) const
             id = QString("\"") + id + "\"";
 
         result += "\n    " + id + " [";
-        result += "label=\"" + n->label().toString() + "\"";
+        result += "label=\"" + n->label() + "\"";
         if(n->isRoot())
             result += ",root=\"true\"";
         if(keepLayout)
@@ -616,7 +617,7 @@ QString Graph::toDot(bool keepLayout) const
 
         result += "\n    " + fromId + " -> " + toId + " [";
         result += "id=\"" + e->id() + "\"";
-        result += ",label=\"" + e->label().toString() + "\"";
+        result += ",label=\"" + e->label() + "\"";
         result += "];";
     }
 
@@ -659,7 +660,7 @@ QString Graph::toAlternative() const
         if(n->isRoot())
             result += "(R)";
 
-        result += QString(", ") + n->label().toString();
+        result += QString(", ") + n->label();
 
         if(n->mark() != QString()  && n->mark() != QString("none"))
             result += "#" + n->mark();
@@ -695,7 +696,7 @@ QString Graph::toAlternative() const
                 result += "(B)";
 
         result += ", " + e->from()->id() + ", " + e->to()->id()
-                + ", " + e->label().toString();
+                + ", " + e->label();
 
 
         if(e->mark() != QString()  && e->mark() != QString("none"))
@@ -750,7 +751,7 @@ QString Graph::toLaTeX() const
         result += QString("    \\node [style={draw=blue!75,circle,thick,fill=blue!20}] (") + n->id() + ") at ("
                 + QVariant(pos.x()).toString() + ","
                 + QVariant(pos.y()).toString() + ") { "
-                + n->label().toString() + " };\n";
+                + n->label() + " };\n";
     }
 
     result += "\n";
@@ -781,7 +782,7 @@ void Graph::setCanvas(const QRect &rect)
     _canvas = rect;
 }
 
-Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label, const QString &mark, bool isBidirectional)
+Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const QString &label, const QString &mark, bool isBidirectional)
 {
     if(contains(id))
         return 0;
@@ -798,7 +799,8 @@ Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const List &label,
     return e;
 }
 
-Edge *Graph::addEdge(Node *from, Node *to, const List &label, const QString &mark, bool isBidirectional)
+/*
+Edge *Graph::addEdge(Node *from, Node *to, const QString &label, const QString &mark, bool isBidirectional)
 {
     // Is there already a node or edge with this label?
 
@@ -815,8 +817,9 @@ Edge *Graph::addEdge(Node *from, Node *to, const List &label, const QString &mar
 
     return e;
 }
+*/
 
-Node *Graph::addNode(const QString &id, const List &label, const QString &mark, bool isRoot, const QPointF &pos)
+Node *Graph::addNode(const QString &id, const QString &label, const QString &mark, bool isRoot, const QPointF &pos)
 {
     if(contains(id))
         return 0;
@@ -833,7 +836,8 @@ Node *Graph::addNode(const QString &id, const List &label, const QString &mark, 
     return n;
 }
 
-Node *Graph::addNode(const List &label, const QString &mark, bool isRoot, const QPointF &pos)
+/*
+Node *Graph::addNode(const QString &label, const QString &mark, bool isRoot, const QPointF &pos)
 {
     // Is there already a node or edge with this label?
     // do we care if there is?
@@ -851,6 +855,7 @@ Node *Graph::addNode(const List &label, const QString &mark, bool isRoot, const 
 
     return n;
 }
+*/
 
 bool Graph::removeEdge(const QString &id)
 {
@@ -949,7 +954,7 @@ bool Graph::openGraphT(const graph_t &inputGraph)
                         return false;
         }
 
-        Node *n = new Node(node.id.c_str(), List(node.label), QString(node.label.mark.c_str()), QVariant(node.isRoot).toBool(),
+        Node *n = new Node(node.id.c_str(), List(node.label).toString(), QString(node.label.mark.c_str()), QVariant(node.isRoot).toBool(),
                                                          QPointF(node.xPos, node.yPos), this);
         //n->setMark(QString(node.label.mark.c_str()));
 
@@ -990,8 +995,8 @@ bool Graph::openGraphT(const graph_t &inputGraph)
             return false;
         }
 
-        qDebug() << "graph.cpp: " << edge.isBidirectional;
-        Edge *e = new Edge(edge.id.c_str(), from, to, List(edge.label), QString(edge.label.mark.c_str()), edge.isBidirectional, this);
+        //qDebug() << "graph.cpp: " << edge.isBidirectional;
+        Edge *e = new Edge(edge.id.c_str(), from, to, List(edge.label).toString(), QString(edge.label.mark.c_str()), edge.isBidirectional, this);
         connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
         emit edgeAdded(e);
         _edges.push_back(e);

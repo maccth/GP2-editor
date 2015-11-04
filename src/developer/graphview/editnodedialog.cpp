@@ -56,8 +56,8 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
     if (currentMarkIndex != -1)
         _ui->markComboBox->setCurrentIndex(currentMarkIndex);
 
-    _labelValidator = new ListValidator(this);
-    _ui->labelEdit->setValidator(_labelValidator);
+    //_labelValidator = new ListValidator(this);
+    //_ui->labelEdit->setValidator(_labelValidator);
 }
 
 EditNodeDialog::~EditNodeDialog()

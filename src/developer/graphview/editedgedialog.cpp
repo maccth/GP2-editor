@@ -79,8 +79,8 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
 
 
 
-    _labelValidator = new ListValidator(this);
-    _ui->labelEdit->setValidator(_labelValidator);
+    //_labelValidator = new ListValidator(this);
+    //_ui->labelEdit->setValidator(_labelValidator);
 }
 
 EditEdgeDialog::~EditEdgeDialog()

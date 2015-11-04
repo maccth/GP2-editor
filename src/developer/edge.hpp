@@ -20,12 +20,12 @@ class Edge : public QObject
 
 public:
     Edge(const QString &edgeId, Node *fromNode, Node *toNode,
-         const List &edgeLabel, const QString &edgeMark, bool isBidirectional,  Graph *parent);
+         const QString &edgeLabel, const QString &edgeMark, bool isBidirectional,  Graph *parent);
 
     QString id() const;
     Node *from() const;
     Node *to() const;
-    List label() const;
+    QString label() const;
 	QString mark() const;
     bool isBidirectional() const;
     bool isPhantomEdge() const;
@@ -35,7 +35,7 @@ public:
     void setId(const QString &edgeId);
     void setFrom(Node *fromNode);
     void setTo(Node *toNode);
-    void setLabel(const List &edgeLabel);
+    void setLabel(const QString &edgeLabel);
     void setMark(const QString &mark);
     void setIsBidirectional(bool bidirectional);
     void setPhantom(bool phantom);
@@ -45,7 +45,7 @@ signals:
     void idChanged(QString id);
     void fromChanged(Node *fromNode);
     void toChanged(Node *toNode);
-    void labelChanged(List label);
+    void labelChanged(QString label);
     void markChanged(QString mark);
     void isBidirectionalChanged(bool bidirectional);
     void isPhantomEdgeChanged(bool phantom);
@@ -54,11 +54,13 @@ private:
     Graph *_parent;
 
     QString _id;
-    Node *_from;
-    Node *_to;
-    List _label;
+
+    QString _label;
     QString _mark;
     bool _isBidirectional;
+
+    Node *_from;
+    Node *_to;
     bool _phantom;
 };
 
