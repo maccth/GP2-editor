@@ -508,45 +508,34 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     }
     else
     {
-        if(_hover)
+        // default
+        lineColour = settings.value("GraphView/Edges/Background",
+                             QColor(0x11,0x11,0x11) // black
+                             ).value<QColor>();
+
+        if (_mark == "red")
+            lineColour = settings.value("GraphView/Edges/ColourRed",
+                                 QColor(0xee,0x77,0x77) // light red
+                                 ).value<QColor>();
+
+        if (_mark == "green")
+            lineColour = settings.value("GraphView/Edges/ColourGreen",
+                                 QColor(0x60,0xcb,0x60) // green
+                                 ).value<QColor>();
+
+        if (_mark == "blue")
+            lineColour = settings.value("GraphView/Edges/ColourBlue",
+                                 QColor(0x22,0x70,0xee) // blue
+                                 ).value<QColor>();
+
+        if (_mark == "any")
+            lineColour = settings.value("GraphView/Edges/ColourAny",
+                                 QColor(0x00,0xff,0xcc) // cyan-ish
+                                 ).value<QColor>();
+
+        if (_hover)
         {
-            switch(itemState())
-            {
-            case GraphItem_New:
-                lineColour  = settings.value("GraphView/Edges/HoverColourNew",
-                                             QColor(0x33,0xff,0x33)).value<QColor>();
-                break;
-            case GraphItem_Deleted:
-            case GraphItem_Invalid:
-                lineColour  = settings.value("GraphView/Edges/HoverColourDeleted",
-                                             QColor(0xff,0x33,0x33, 0x55)).value<QColor>();
-                break;
-            case GraphItem_Normal:
-            default:
-                lineColour  = settings.value("GraphView/Edges/HoverColour",
-                                             QColor(0x33,0x33,0xdd)).value<QColor>();
-                break;
-            }
-        }
-        else
-        {
-            switch(itemState())
-            {
-            case GraphItem_New:
-                lineColour  = settings.value("GraphView/Edges/ColourNew",
-                                             QColor(0x33,0xdd,0x33)).value<QColor>();
-                break;
-            case GraphItem_Deleted:
-            case GraphItem_Invalid:
-                lineColour  = settings.value("GraphView/Edges/ColourDeleted",
-                                             QColor(0xdd,0x33,0x33, 0x55)).value<QColor>();
-                break;
-            case GraphItem_Normal:
-            default:
-                lineColour  = settings.value("GraphView/Edges/Colour",
-                                             QColor(0x33,0x33,0x33)).value<QColor>();
-                break;
-            }
+            lineColour = lineColour.lighter(110);
         }
     }
 
@@ -560,11 +549,15 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     QPen pen(lineColour);
     pen.setWidth(lineWidth);
+    if (_mark == "dashed")
+    {
+        pen.setStyle(Qt::DotLine);
+    }
     painter->setPen(pen);
     painter->setBrush(Qt::NoBrush);
     painter->setFont(font);
 
-    // Draw the arrow
+    // Draw the line
     QPainterPath painterPath = path();
     painter->drawPath(painterPath);
 

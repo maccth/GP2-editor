@@ -346,97 +346,60 @@ QColor NodeItem::backgroundColor(const QStyleOptionGraphicsItem *option) const
     }
     else
     {
-        switch(itemState())
+        // default
+        ret = settings.value("GraphView/Nodes/Background",
+                             QColor(0xe5,0xe5,0xff) // light blue-ish
+                             ).value<QColor>();
+
+        if (_mark == "red")
+            ret = settings.value("GraphView/Nodes/Borders/ColourRed",
+                                 QColor(0xff,0x88,0x88) // light red
+                                 ).value<QColor>();
+
+        if (_mark == "green")
+            ret = settings.value("GraphView/Nodes/Borders/ColourGreen",
+                                 QColor(0x70,0xdb,0x70) // green
+                                 ).value<QColor>();
+
+        if (_mark == "blue")
+            ret = settings.value("GraphView/Nodes/Borders/ColourBlue",
+                                 QColor(0x33,0x85,0xff) // light blue
+                                 ).value<QColor>();
+
+        if (_mark == "grey")
+            ret = settings.value("GraphView/Nodes/Borders/ColourShaded",
+                                 QColor(0xb2,0xb2,0xb2) // light gray
+                                 ).value<QColor>();
+
+        if (_mark == "any")
+            ret = settings.value("GraphView/Nodes/Borders/ColourAny",
+                                 QColor(0x00,0xff,0xcc) // cyan-ish
+                                 ).value<QColor>();
+
+        if (_hover)
         {
-        case GraphItem_New:
-            ret = settings.value("GraphView/Nodes/Borders/ColourNew",
-                                 QColor(0xcd,0xff,0xc6,0xaa) // green
-                                 ).value<QColor>();
-            break;
-        case GraphItem_Deleted:
-        case GraphItem_Invalid:
-            ret = settings.value("GraphView/Nodes/Borders/ColourDeleted",
-                                 QColor(0xff,0xaa,0xaa,0x55) // light red
-                                 ).value<QColor>();
-            break;
-        case GraphItem_Normal:
-        default:
-            ret = settings.value("GraphView/Nodes/Background",
-                                 QColor(0xcc,0xcc,0xff) // light blue
-                                 ).value<QColor>();
-            break;
+            ret = ret.lighter(140);
         }
 
-        // Is this a hover-ed node or a marked node? If yes, lighten or darken the
-        // colour as appropriate
-        if(_hover && (_mark != ""))
-            ret = ret.lighter(110);
-        if(!_hover && (_mark == ""))
-            ret = ret.darker(110);
     }
-
 
     return ret;
 }
 
 QColor NodeItem::borderColor(const QStyleOptionGraphicsItem *option) const
 {
-    QSettings settings;
+    QColor ret;
 
-    if(option->state & QStyle::State_Selected)
+    ret = backgroundColor(option).darker(200);
+
+
+    if (_isRoot)
     {
-        return settings.value("GraphView/Nodes/Borders/SelectedColour",
-                              QColor(0xff,0xff,0x66) // yellow
-                              ).value<QColor>();
-    }
-    else
-    {
-        if(_hover)
-        {
-            switch(itemState())
-            {
-            case GraphItem_New:
-                return settings.value("GraphView/Nodes/Borders/HoverColourNew",
-                                      QColor(0xcc,0xff,0xcc) // light green
-                                      ).value<QColor>();
-            case GraphItem_Deleted:
-            case GraphItem_Invalid:
-                return settings.value("GraphView/Nodes/Borders/HoverColourDeleted",
-                                      QColor(0xff,0xaa,0xaa,0x55) // light red
-                                      ).value<QColor>();
-            case GraphItem_Normal:
-            default:
-                return settings.value("GraphView/Nodes/Borders/HoverColour",
-                                      QColor(0xcc,0xcc,0xff) // blue
-                                      ).value<QColor>();
-            }
-
-        }
-        else
-        {
-            switch(itemState())
-            {
-            case GraphItem_New:
-                return settings.value("GraphView/Nodes/Borders/HoverColourNew",
-                                      QColor(0xaa,0xff,0xaa) // green
-                                      ).value<QColor>();
-            case GraphItem_Deleted:
-            case GraphItem_Invalid:
-                return settings.value("GraphView/Nodes/Borders/HoverColourDeleted",
-                                      QColor(0xff,0x8f,0x8f,0x55) // red
-                                      ).value<QColor>();
-            case GraphItem_Normal:
-            default:
-                return settings.value("GraphView/Nodes/Borders/Colour",
-                                      QColor(0xaa,0xaa,0xff) // blue
-                                      ).value<QColor>();
-            }
-
-        }
+        ret = ret.darker(110);
     }
 
-    // Shouldn't happen
-    return QColor();
+    return ret;
+
 }
 
 void NodeItem::positionChanged()
