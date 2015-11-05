@@ -84,6 +84,9 @@ graph_t parseAlternativeGraph(const QString &graphPath)
                   << std::endl;
     } */
 
+
+    reverseGraphAST(ast_host_graph);
+
     ret = Developer::translateGraph(ast_host_graph);
     return ret;
 }
