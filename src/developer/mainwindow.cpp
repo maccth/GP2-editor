@@ -246,7 +246,7 @@ void MainWindow::setProjectActive(bool state)
     if(state)
     {
         // Show the quick run widget
-        _ui->quickRunWidget->setVisible(true);
+        _ui->quickRunWidget->setVisible(false);
 
         // Enable all tabs
         _ui->tabWidget->setTabEnabled("default", 1, true);
@@ -523,8 +523,8 @@ void MainWindow::layoutTreeTopToBottom()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -544,8 +544,8 @@ void MainWindow::layoutTreeRightToLeft()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -565,8 +565,8 @@ void MainWindow::layoutTreeBottomToTop()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -586,8 +586,8 @@ void MainWindow::layoutTreeLeftToRight()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -607,8 +607,8 @@ void MainWindow::layoutRadialTree()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -628,8 +628,8 @@ void MainWindow::layoutSugiyama()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -649,8 +649,8 @@ void MainWindow::layoutFPP()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -670,8 +670,8 @@ void MainWindow::layoutPlanarDraw()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -691,8 +691,8 @@ void MainWindow::layoutPlanarStraight()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -712,8 +712,8 @@ void MainWindow::layoutSchnyder()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -733,8 +733,8 @@ void MainWindow::layoutPlanarizationGrid()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -754,8 +754,8 @@ void MainWindow::layoutCircular()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -775,8 +775,8 @@ void MainWindow::layoutSpring()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -796,8 +796,8 @@ void MainWindow::layoutDavidsonHarel()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -817,8 +817,8 @@ void MainWindow::layoutFMMM()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }
@@ -838,8 +838,8 @@ void MainWindow::layoutGEM()
         QMessageBox::information(
                     this,
                     tr("Layout Failed"),
-                    tr("The layout mechanism failed with a precondition error "
-                       "error. Ensure that the layout mechanism selected is "
+                    tr("The layout mechanism failed with a precondition error. "
+                       "Ensure that the layout mechanism selected is "
                        "appropriate for the provided graph."));
     }
 }

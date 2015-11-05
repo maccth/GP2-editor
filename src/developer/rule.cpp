@@ -283,7 +283,6 @@ QString Rule::toAlternative()
     }
 
     saveText += "\n}\n";
-
     if (!_condition.isEmpty() &&  (_condition != QString(" ")))
     {
         saveText+= "where ";
@@ -291,10 +290,10 @@ QString Rule::toAlternative()
         saveText += "\n";
     }
 	
-    qDebug() << "    Saving rule condition: " << _condition;
+    //qDebug() << "    Saving rule condition: " << _condition;
 
 
-	return saveText;
+    return saveText;
 }
 
 bool Rule::saveAs(const QString &filePath)
