@@ -549,6 +549,9 @@
    </property>
   </action>
   <action name="actionOptions">
+  <property name="enabled">
+   <bool>false</bool>
+  </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/small_wrench.png</normaloff>:/icons/small_wrench.png</iconset>
