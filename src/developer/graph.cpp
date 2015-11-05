@@ -665,8 +665,8 @@ QString Graph::toAlternative() const
         if(n->mark() != QString()  && n->mark() != QString("none"))
             result += "#" + n->mark();
 
-        result += QString(" (") + QVariant(n->pos().x()).toString() + ", "
-                + QVariant(n->pos().y()).toString() + ") )";
+        result += QString(" (") + QVariant(n->pos().x() < 0 ? -(n->pos().x()) : n->pos().x()).toString() + ", "
+                + QVariant( n->pos().y() < 0 ? -(n->pos().y()) : n->pos().y()).toString() + ") )";
     }
     if(!added)
         result += "\n    |";
