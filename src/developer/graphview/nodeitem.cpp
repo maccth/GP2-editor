@@ -23,6 +23,7 @@ NodeItem::NodeItem(Node *node, QGraphicsItem *parent)
     , _node(node)
     , _nodeShape(Ellipse)
     , _isRoot(node->isRoot())
+    , _isInterface(node->isInterface())
     , _hover(false)
     , _mark(node->mark())
 {
@@ -278,7 +279,7 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     QFont font = settings.value("GraphView/Nodes/Font", qApp->font()
                                 ).value<QFont>();
     QColor textColour = settings.value("GraphView/Nodes/TextColour",
-                                       QColor(0x33,0x33,0x33)
+                                       QColor(0x11,0x11,0x11)
                                          ).value<QColor>();
     qreal borderWidth = settings.value("GraphView/Nodes/Borders/Width", 2
                                        ).toDouble();
@@ -326,8 +327,18 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     // Draw the node ID
     QColor idColour = textColour;
-    idColour.setAlpha(80);
+
+    if(_node->isInterface())
+    {
+        font.setWeight(QFont::DemiBold);
+    }
+    else
+    {
+        font.setWeight(QFont::Light);
+    }
+
     painter->setPen(idColour);
+    painter->setFont(font);
     qreal xOffset = (pathRect.width()/2)-metrics.width(id())/2;
     qreal yOffset = pathRect.height() + metrics.height() + 1;
     painter->drawText(QPointF(xOffset, yOffset), id());
@@ -348,7 +359,7 @@ QColor NodeItem::backgroundColor(const QStyleOptionGraphicsItem *option) const
     {
         // default
         ret = settings.value("GraphView/Nodes/Background",
-                             QColor(0xe5,0xe5,0xff) // light blue-ish
+                             QColor(0xe9,0xe9,0xff) // light gray-ish
                              ).value<QColor>();
 
         if (_mark == "red")
@@ -373,7 +384,7 @@ QColor NodeItem::backgroundColor(const QStyleOptionGraphicsItem *option) const
 
         if (_mark == "any")
             ret = settings.value("GraphView/Nodes/Borders/ColourAny",
-                                 QColor(0x00,0xff,0xcc) // cyan-ish
+                                 QColor(0xee,0x82,0xee) // purple-ish
                                  ).value<QColor>();
 
         if (_hover)
@@ -390,7 +401,7 @@ QColor NodeItem::borderColor(const QStyleOptionGraphicsItem *option) const
 {
     QColor ret;
 
-    ret = backgroundColor(option).darker(200);
+    ret = backgroundColor(option).darker(120);
 
 
     if (_isRoot)

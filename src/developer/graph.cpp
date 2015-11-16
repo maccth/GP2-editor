@@ -15,8 +15,8 @@ namespace Developer {
 
 Graph::Graph(const QString &graphPath, bool autoInitialise, QObject *parent)
     : GPFile(graphPath, parent)
-    , _nodeIdCounter(1)
-    , _edgeIdCounter(1)
+    , _nodeIdCounter(0)
+    , _edgeIdCounter(0)
 {
     if(autoInitialise && !graphPath.isEmpty())
         open();
@@ -24,8 +24,8 @@ Graph::Graph(const QString &graphPath, bool autoInitialise, QObject *parent)
 
 Graph::Graph(const graph_t &inputGraph, QObject *parent)
     : GPFile(QString(), parent)
-    , _nodeIdCounter(1)
-    , _edgeIdCounter(1)
+    , _nodeIdCounter(0)
+    , _edgeIdCounter(0)
 {
     // We don't follow the normal open procedure here, since this is not coming
     // from a file. This is intended for create in-memory graph objects and
@@ -61,16 +61,16 @@ bool Graph::save()
     QString saveText;
     switch(type)
     {
-    case AlternativeGraph:
-        saveText = toAlternative();
-        break;
-    case GxlGraph:
-        saveText = toGxl();
-        break;
-    case DotGraph:
-    default:
-        saveText = toDot();
-        break;
+        case AlternativeGraph:
+            saveText = toAlternative();
+            break;
+        case GxlGraph:
+            saveText = toGxl();
+            break;
+        case DotGraph:
+        default:
+            saveText = toDot();
+            break;
     }
 
     ++_internalChanges;
@@ -227,11 +227,11 @@ bool Graph::open()
 
     qDebug() << "Opening graph file: " << _path;
 
-	  if ( (_fp ==0) || !_fp->exists())
-		{
-    		qDebug() << "    Graph file does not exist." << _path;
-				return false;
-		}
+    if ( (_fp ==0) || !_fp->exists())
+    {
+        qDebug() << "    Graph file does not exist." << _path;
+        return false;
+    }
 
     QString contents = _fp->readAll();
     //std::string contentsString = contents.toStdString();
@@ -475,7 +475,7 @@ bool Graph::containsEdge(const QString &id) const
     return (edge(id) != 0);
 }
 
-QString Graph::toString(int outputType, bool keepLayout) const
+QString Graph::toString(int outputType, bool keepLayout)
 {
     QSettings settings;
 
@@ -626,7 +626,7 @@ QString Graph::toDot(bool keepLayout) const
     return result;
 }
 
-QString Graph::toAlternative() const
+QString Graph::toAlternative()
 {
     QString result = "[";
     // First add the canvas
@@ -639,6 +639,15 @@ QString Graph::toAlternative() const
     // Add the nodes
     bool added = false;
     bool first = true;
+
+    // sort the _nodes according to node ids
+    // The compiler requires that order of nodes is their ids
+    // Otherwise, the node ids get changed
+    // eg. if list is (n2, n1, n3) then they are inserted into the compiler graph datastructure as (n0, n1, n2) where n2 has been renamed to n0 and n3 to n2
+
+    std::sort(_nodes.begin(), _nodes.end(), Developer::compareNodes);
+
+
     for(size_t i = 0; i < _nodes.size(); ++i)
     {
         Node *n = _nodes.at(i);
@@ -660,13 +669,19 @@ QString Graph::toAlternative() const
         if(n->isRoot())
             result += "(R)";
 
-        result += QString(", ") + n->label();
+        result += QString(", ") +
+                ((n->label() == QString("") || n->label() == QString() ) ? QString("empty") : n->label()) ;
 
         if(n->mark() != QString()  && n->mark() != QString("none"))
             result += "#" + n->mark();
 
-        result += QString(" (") + QVariant(n->pos().x() < 0 ? -(n->pos().x()) : n->pos().x()).toString() + ", "
-                + QVariant( n->pos().y() < 0 ? -(n->pos().y()) : n->pos().y()).toString() + ") )";
+        result += QString(" (")
+                // QVariant(n->pos().x() < 0 ? -(n->pos().x()) : n->pos().x()).toString()
+                + QVariant(n->pos().x()).toString()
+                + ", "
+                // QVariant( n->pos().y() < 0 ? -(n->pos().y()) : n->pos().y()).toString()
+                + QVariant(n->pos().y()).toString()
+                + ") )";
     }
     if(!added)
         result += "\n    |";
@@ -696,7 +711,8 @@ QString Graph::toAlternative() const
                 result += "(B)";
 
         result += ", " + e->from()->id() + ", " + e->to()->id()
-                + ", " + e->label();
+                + ", " +
+                ((e->label() == QString("") || e->label() == QString() ) ? QString("empty") : e->label()) ;
 
 
         if(e->mark() != QString()  && e->mark() != QString("none"))
@@ -819,12 +835,12 @@ Edge *Graph::addEdge(Node *from, Node *to, const QString &label, const QString &
 }
 */
 
-Node *Graph::addNode(const QString &id, const QString &label, const QString &mark, bool isRoot, const QPointF &pos)
+Node *Graph::addNode(const QString &id, const QString &label, const QString &mark, bool isRoot, bool isInterface, const QPointF &pos)
 {
     if(contains(id))
         return 0;
 
-    Node *n = new Node(id, label, mark, isRoot, pos, this);
+    Node *n = new Node(id, label, mark, isRoot, isInterface, pos, this);
     connect(n, SIGNAL(nodeChanged()), this, SLOT(trackChange()));
     _nodes.push_back(n);
 
@@ -954,7 +970,9 @@ bool Graph::openGraphT(const graph_t &inputGraph)
                         return false;
         }
 
-        Node *n = new Node(node.id.c_str(), List(node.label).toString(), QString(node.label.mark.c_str()), QVariant(node.isRoot).toBool(),
+        QString label = List(node.label).toString();
+
+        Node *n = new Node(node.id.c_str(), (label == QString("empty"))  ? QString(""): label, QString(node.label.mark.c_str()), QVariant(node.isRoot).toBool(), false,
                                                          QPointF(node.xPos, node.yPos), this);
         //n->setMark(QString(node.label.mark.c_str()));
 
@@ -996,7 +1014,9 @@ bool Graph::openGraphT(const graph_t &inputGraph)
         }
 
         //qDebug() << "graph.cpp: " << edge.isBidirectional;
-        Edge *e = new Edge(edge.id.c_str(), from, to, List(edge.label).toString(), QString(edge.label.mark.c_str()), edge.isBidirectional, this);
+        QString label = List(edge.label).toString();
+
+        Edge *e = new Edge(edge.id.c_str(), from, to, (label == QString("empty"))  ? QString(""): label , QString(edge.label.mark.c_str()), edge.isBidirectional, this);
         connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
         emit edgeAdded(e);
         _edges.push_back(e);
@@ -1014,6 +1034,9 @@ void Graph::trackChange()
 
 QString Graph::newNodeId()
 {
+    // Reset counter
+    _nodeIdCounter = 0;
+
     // Just find the first free integer, return as a string with prepended 'n'
     // allows for string identifiers
     while(contains("n" + QVariant(_nodeIdCounter).toString()))
@@ -1025,6 +1048,9 @@ QString Graph::newNodeId()
 
 QString Graph::newEdgeId()
 {
+    // Reset counter
+    _edgeIdCounter = 0;
+
     // Just find the first free integer, return as a string with prepended 'e'
     while(contains("e" + QVariant(_edgeIdCounter).toString()))
         ++_edgeIdCounter;

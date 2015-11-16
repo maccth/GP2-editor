@@ -14,16 +14,7 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>9</number>
-   </property>
-   <property name="topMargin">
-    <number>9</number>
-   </property>
-   <property name="rightMargin">
-    <number>9</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>9</number>
    </property>
    <item>
@@ -174,7 +165,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Only match when the following condition evaluates to true:</string>
+         <string>Only match when:</string>
         </property>
        </widget>
       </item>
@@ -198,9 +189,7 @@
    <header>conditioneditor.hpp</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>nameEdit</sender>

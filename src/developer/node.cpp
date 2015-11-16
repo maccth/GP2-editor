@@ -8,12 +8,15 @@
 
 namespace Developer {
 
-Node::Node(const QString &nodeId, const QString &nodeLabel, const QString &nodeMark, bool isRoot, const QPointF &nodePos, Graph *parent)
+
+
+Node::Node(const QString &nodeId, const QString &nodeLabel, const QString &nodeMark, bool isRoot, bool isInterface, const QPointF &nodePos, Graph *parent)
     : QObject(parent)
     , _id(nodeId)
     , _label(nodeLabel)
     , _pos(nodePos)
     , _isRoot(isRoot)
+    , _isInterface(isInterface)
     , _mark(nodeMark)
     , _parent(parent)
     , _phantom(false)
@@ -24,6 +27,7 @@ Node::Node(const QString &nodeId, const QString &nodeLabel, const QString &nodeM
         _id.remove(QRegExp("\\((r|R)\\)$"));
     }
 }
+
 
 QString Node::id() const
 {
@@ -53,6 +57,11 @@ qreal Node::yPos() const
 bool Node::isRoot() const
 {
     return _isRoot;
+}
+
+bool Node::isInterface() const
+{
+    return _isInterface;
 }
 
 QString Node::mark() const
@@ -141,6 +150,13 @@ void Node::setIsRoot(bool root)
     emit isRootChanged(root);
 }
 
+void Node::setIsInterface(bool isInterface)
+{
+    _isInterface = isInterface;
+    emit nodeChanged();
+    emit isInterfaceChanged(isInterface);
+}
+
 void Node::setMark(const QString &mark)
 {
     _mark = mark;
@@ -154,5 +170,13 @@ void Node::setPhantom(bool phantom)
     emit nodeChanged();
     emit isPhantomNodeChanged(phantom);
 }
+
+
+
+bool compareNodes (Node* node, Node* otherNode)
+{
+    return (QString::compare(node->id(), otherNode->id()) < 0);
+}
+
 
 }

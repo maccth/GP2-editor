@@ -110,8 +110,8 @@ struct interface_t
     //std::string lhsId;
     //! The ID of the RHS node
     //std::string rhsId;
-	//! The IDs of interface elements
-	std::vector<std::string> elements;
+    //! The IDs of interface elements
+    std::vector<std::string> elements;
 };
 
 /*!

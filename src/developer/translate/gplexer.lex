@@ -99,8 +99,7 @@ extern int parse_target;
           				        "string.\n", yylineno);                   
                                    return 0; }  
 
-[-+]?[0-9]*\.[0-9]+([eE][-+]?[0-9]+)? { yylval.dnum = atof(yytext); return DNUM; } 
-[-+]?[0-9]+              { yylval.num = atoi(yytext); return NUM; } 
+
 
  /* GP2 keywords */ 
 Main		    return MAIN;
@@ -139,6 +138,7 @@ string		    return STRING;
 atom     	    return ATOM;  
 list		    return LIST;  
 
+[-+]?[0-9]*\.[0-9]+([eE][-+]?[0-9]+)? { yylval.dnum = atof(yytext); return DNUM; }
  
 "(" |		  
 ")" |		  
@@ -167,6 +167,8 @@ list		    return LIST;
 "!="		 return NEQ; 
 ">="	         return GTEQ; 
 "<="	         return LTEQ; 
+
+[0-9]+              { yylval.num = atoi(yytext); return NUM; }
 
 
  /* Procedure identifiers must start with a capital letter.

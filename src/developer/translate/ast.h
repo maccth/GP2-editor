@@ -49,16 +49,16 @@ typedef struct List {
     struct {
 			 string rule_name;
        struct GPRule *rule;
-    } rule_call;                       /* RULES */
-    struct List *variables;            /* INT_DECLARATIONS, CHAR_DECLARATIONS,
-                                        * STRING_DECLARATIONS, ATOM_DECLARATIONS,
-                                        * LIST_DECLARATIONS */ 
+    } rule_call;                        /* RULES */
+    struct List *variables;             /* INT_DECLARATIONS, CHAR_DECLARATIONS,
+                                         * STRING_DECLARATIONS, ATOM_DECLARATIONS,
+                                         * LIST_DECLARATIONS */
 							
-		string variable_name;	  				   /* VARIABLE_LIST */
-		string node_id;						       	 /* INTERFACE_LIST */
-    struct GPNode *node; 	       /* NODE_LIST */   
-    struct GPEdge *edge; 	       /* EDGE_LIST */   
-    struct GPAtom *atom;               /* GP_LIST */
+                string variable_name;	/* VARIABLE_LIST */
+                string node_id;         /* INTERFACE_LIST */
+    struct GPNode *node;                /* NODE_LIST */
+    struct GPEdge *edge;                /* EDGE_LIST */
+    struct GPAtom *atom;                /* GP_LIST */
   };
   struct List *next;
 } List;
@@ -201,25 +201,25 @@ GPCondition *newASTBinaryExp(ConditionType exp_type, YYLTYPE location,
 
 /* Definition of AST nodes for atomic expressions. */
 typedef struct GPAtom {
-  int id;
-  AtomType type;
-  YYLTYPE location;
-  union {
-    int number; 	 	  /* INTEGER_CONSTANT */
-    string string;		  /* STRING_CONSTANT */
-    struct {
-			 char* name;
-       GPType type;             
-    } variable;                   /* VARIABLE, LENGTH */
+    int id;
+    AtomType type;
+    YYLTYPE location;
+    union {
+        int number;             /* INTEGER_CONSTANT */
+        string string;          /* STRING_CONSTANT */
+        struct {
+            char* name;
+            GPType type;
+        } variable;             /* VARIABLE, LENGTH */
 
+        char* node_id;          /* INDEGREE, OUTDEGREE */
+        struct GPAtom *neg_exp; /* NEG */
 
-	 	char* node_id;  /* INDEGREE, OUTDEGREE */
-    struct GPAtom *neg_exp; 	  /* NEG */
-    struct { 
-      struct GPAtom *left_exp;
-      struct GPAtom *right_exp;
-    } bin_op; 		   	  /* ADD, SUBTRACT, MULTIPLY, DIVIDE, CONCAT */
-  };
+        struct {
+            struct GPAtom *left_exp;
+            struct GPAtom *right_exp;
+        } bin_op;               /* ADD, SUBTRACT, MULTIPLY, DIVIDE, CONCAT */
+    };
 } GPAtom;
 
 GPAtom *makeGPAtom(YYLTYPE location, AtomType type);

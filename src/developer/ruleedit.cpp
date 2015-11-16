@@ -28,6 +28,11 @@ RuleEdit::~RuleEdit()
 
 void RuleEdit::setRule(Rule *rule)
 {
+    if (_rule == rule)
+        return;
+    //disconnect(_rule->lhs(), SIGNAL(graphChanged()), this, SLOT(lhsChanged()));
+    //disconnect(_rule->rhs(), SIGNAL(graphChanged()), this, SLOT(rhsChanged()));
+
     _rule = rule;
 
     _ui->nameEdit->setText(_rule->name());
@@ -40,10 +45,13 @@ void RuleEdit::setRule(Rule *rule)
     connect(_rule->rhs(), SIGNAL(graphChanged()),
             this, SLOT(rhsChanged()));
     //_ui->rhsGraph->setLinkedGraph(_rule->lhs());
+
+    //qDebug () << "ruleedit.cpp: Changing editor condition:" << _rule->condition() << "|" << _ui->conditionsEdit->toPlainText().trimmed();
     _ui->conditionsEdit->setPlainText(_rule->condition());
 
     //qDebug() << "** Updating variables";
     updateVariables();
+
 }
 
 void RuleEdit::showInjectiveHelp()
@@ -70,6 +78,7 @@ void RuleEdit::lhsChanged()
 
 void RuleEdit::rhsChanged()
 {
+    //qDebug () << "ruleedit.cpp: RHS changed";
     updateVariables();
     updateInterface();
 }
@@ -248,7 +257,6 @@ void RuleEdit::saveVariables()
         else if (type == "String") stringVars << var;
         else if (type == "Integer") intVars << var;
         else if (type == "Character") charVars << var;
-
     }
   
     //qDebug() << "Found this many variables: " << QVariant(listVars.length() + atomVars.length() + stringVars.length() + intVars.length() + charVars.length()).toString();    
@@ -374,6 +382,9 @@ void RuleEdit::updateInterface()
     result.elements = elements;
 
     _rule->setInterface(result);
+
+
+    // Redraw the graphs because interface nodes should have bolded identifiers
 
 }
 

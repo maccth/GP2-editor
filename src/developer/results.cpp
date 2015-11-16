@@ -74,7 +74,7 @@ void Results::graphClicked(QTreeWidgetItem *item)
 
     // Handle a clicked result
 
-		Graph* graph = _graphMap.key(item);    // Slow search, maps are optimized for fast retrieval by key, not value
+    Graph* graph = _graphMap.key(item);    // Slow search, maps are optimized for fast retrieval by key, not value
     if (graph == 0)
     {
         qDebug() << "Could not find a corresponding Graph: " << item->text(0);

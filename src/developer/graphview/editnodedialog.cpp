@@ -9,6 +9,7 @@
 
 #include <QFile>
 #include <QDebug>
+#include <QSettings>
 
 namespace Developer {
 
@@ -31,25 +32,44 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
 
     _ui->markComboBox->addItem("none");//set our icon
 
-    QPixmap px(15,15);//create pixmap,size choose yourself, by your taste
-    px.fill(QColor(Qt::cyan));//all pixmap will be red
+    QSettings settings;
+    //create pixmap and choose size
+    QPixmap px(15,15);
+    QColor color;
+
+    color = settings.value("GraphView/Nodes/ColourAny",
+                           QColor(0xee,0x82,0xee) // purple-ish
+                           ).value<QColor>();
+    px.fill(color);
     QIcon icon(px);
-    _ui->markComboBox->addItem(icon,"any");//set our icon
+    _ui->markComboBox->addItem(icon,"any");
 
-    px.fill(QColor(Qt::gray)); //use our pixmap again, but with another color
-    icon.addPixmap(px);       //use our icon again
-    _ui->markComboBox->addItem(icon,"grey");//set our icon
+    color = settings.value("GraphView/Nodes/ColourShaded",
+                           QColor(0xb2,0xb2,0xb2) // light gray
+                           ).value<QColor>();
+    px.fill(color);  //use our pixmap again, but with another color
+    icon.addPixmap(px);         //use our icon again
+    _ui->markComboBox->addItem(icon,"grey");
 
-    px.fill(QColor(Qt::red)); //use our pixmap again, but with another color
-    icon.addPixmap(px);       //use our icon again
-    _ui->markComboBox->addItem(icon,"red");//set our icon
+    color = settings.value("GraphView/Nodes/ColourRed",
+                           QColor(0xee,0x77,0x77) // light red
+                           ).value<QColor>();
+    px.fill(color);  //use our pixmap again, but with another color
+    icon.addPixmap(px);         //use our icon again
+    _ui->markComboBox->addItem(icon,"red");
 
-    px.fill(QColor(Qt::blue));//use our pixmap again, but with another color
-    icon.addPixmap(px);       //use our icon again
+    color = settings.value("GraphView/Nodes/ColourBlue",
+                           QColor(0x22,0x70,0xee) // blue
+                           ).value<QColor>();
+    px.fill(color);  //use our pixmap again, but with another color
+    icon.addPixmap(px);         //use our icon again
     _ui->markComboBox->addItem(icon,"blue");
 
-    px.fill(QColor(Qt::green));//use our pixmap again, but with another color
-    icon.addPixmap(px);        //use our icon again
+    color = settings.value("GraphView/Nodes/ColourGreen",
+                           QColor(0x60,0xcb,0x60) // green
+                           ).value<QColor>();
+    px.fill(color);     //use our pixmap again, but with another color
+    icon.addPixmap(px);             //use our icon again
     _ui->markComboBox->addItem(icon,"green");
 
     int currentMarkIndex = _ui->markComboBox->findText(_node->mark());

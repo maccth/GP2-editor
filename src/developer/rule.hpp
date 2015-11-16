@@ -75,7 +75,7 @@ public:
     void setVariables(std::vector<param_t> &variables);
     void setCondition(const QString &conditionString);
 
-    void addVariables(param_t &variables);
+//    void addVariables(param_t &variables);
     void removeVariable(std::string &variable);
 
     void setOptions(int options);
@@ -102,6 +102,7 @@ private:
 		std::vector<param_t> _variables;
     QString _condition;
     int _options;
+    bool _initialOpen;
 };
 
 }

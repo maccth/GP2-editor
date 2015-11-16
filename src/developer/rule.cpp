@@ -21,8 +21,10 @@ Rule::Rule(const QString &rulePath, QObject *parent)
     , _condition("")
     , _options(Rule_DefaultBehaviour)
 {
+    _initialOpen = true;
     if(!rulePath.isEmpty())
         open();
+    _initialOpen = false;
 }
 
 const QString &Rule::name() const
@@ -86,22 +88,40 @@ void Rule::setDocumentation(const QString &docString)
         return;
 
     _documentation = docString;
+
+    if (_initialOpen)
+        return;
+
     _status = Modified;
     emit statusChanged(_status);
 }
 
 void Rule::setLhs(Graph *lhsGraph)
 {
+    if (_rhs != 0)
+        disconnect(_lhs, SIGNAL(statusChanged(FileStatus)), this, SLOT(lhsGraphChanged()));
+
     _lhs = lhsGraph;
     connect(_lhs, SIGNAL(statusChanged(FileStatus)), this, SLOT(lhsGraphChanged()));
+
+    if (_initialOpen)
+        return;
+
     _status = Modified;
     emit statusChanged(_status);
 }
 
 void Rule::setRhs(Graph *rhsGraph)
 {
+    if (_rhs != 0)
+        disconnect(_rhs, SIGNAL(statusChanged(FileStatus)), this, SLOT(rhsGraphChanged()));
+
     _rhs = rhsGraph;
     connect(_rhs, SIGNAL(statusChanged(FileStatus)), this, SLOT(rhsGraphChanged()));
+
+    if (_initialOpen)
+        return;
+
     _status = Modified;
     emit statusChanged(_status);
 }
@@ -112,6 +132,10 @@ void Rule::setInterface(interface_t &interface)
     _interface = interface;
 		// Graph is an Qobject, but interface_t is not; TODO: rethink how to fix this
     //connect(_interface, SIGNAL(statusChanged(FileStatus)), this, SLOT(interfaceChanged()));
+
+    if (_initialOpen)
+        return;
+
     _status = Modified;
     emit statusChanged(_status);
 }
@@ -119,19 +143,25 @@ void Rule::setInterface(interface_t &interface)
 void Rule::setVariables(std::vector<param_t> &variables)
 {
     _variables = variables;
-		// Graph is an Qobject, but std::vector<param_t> is not; TODO: rethink how to fix this
+    // Graph is an Qobject, but std::vector<param_t> is not; TODO: rethink how to fix this
     //connect(_variables, SIGNAL(statusChanged(FileStatus)), this, SLOT(variablesChanged()));
-    _status = Modified;
-    emit statusChanged(_status);
+    // qDebug() << "rule.cpp: Variables modified";
+
+    // Right now variables are inferred, no need to emit a modify
+
+    //if (_initialOpen) return;
+    //_status = Modified;
+    //emit statusChanged(_status);
 }
 
 void Rule::setCondition(const QString &conditionString)
 {
-    if(conditionString == _condition)
+    if(_condition.compare(conditionString) == 0)
         return;
 
-    qDebug() << "Setting condition to: " << conditionString;
     _condition = conditionString;
+
+    if (_initialOpen) return;
     _status = Modified;
     emit statusChanged(_status);
 }
@@ -161,13 +191,16 @@ void Rule::setInjectiveMatching(bool injective)
         _options &= ~Rule_InjectiveMatching;
 }
 
+/*
 void Rule::addVariables(param_t &variables)
 {
     _variables.push_back(variables);    
 
+    qDebug() << "rule.cpp: Variables modified";
     _status = Modified;
     emit statusChanged(_status);
 }
+*/
 
 
 void Rule::removeVariable(std::string &variable)
@@ -189,8 +222,11 @@ void Rule::removeVariable(std::string &variable)
     }  
     
 
-    _status = Modified;
-    emit statusChanged(_status);
+    // qDebug() << "rule.cpp: Variable modified: " << QVariant(variable.c_str()).toString();
+
+    // Right now variables are inferred, no need to emit a modify
+    //_status = Modified;
+    //emit statusChanged(_status);
 }
 
 bool Rule::save()
@@ -205,7 +241,7 @@ bool Rule::save()
     qDebug() << "Saving rule file: " << _fp->fileName();
 
     
-		QString saveText = toAlternative();
+    QString saveText = toAlternative();
 
     ++_internalChanges;
     int status = _fp->write(QVariant(saveText).toByteArray());
@@ -348,17 +384,17 @@ bool Rule::open()
 
     qDebug() << "Opening rule file: " << _path;
 
-	  if ( (_fp == 0) ||  !_fp->exists())
-		{
-    		qDebug() << "    Rule file does not exist." << _path;
-				return false;
-		}
+    if ( (_fp == 0) ||  !_fp->exists())
+    {
+        qDebug() << "    Rule file does not exist." << _path;
+        return false;
+    }
 
     QString ruleContents = _fp->readAll();
     if(ruleContents.isEmpty())
         return false;
 
-    std::string ruleString = ruleContents.toStdString();
+    //std::string ruleString = ruleContents.toStdString();
 
     rule_t rule = parseRule(absolutePath());
 
@@ -367,12 +403,12 @@ bool Rule::open()
 
     setName(rule.id.c_str());
 
-		QString docString = rule.documentation.c_str();
-		// Strip opening whitespace and the first * if one exists, this allows for
-		// common C/C++/Java-style multiline comments such as the top of this file
-		docString.replace(QRegExp("\n\\s*\\*\\s*"), "\n");
-		docString = docString.trimmed();
-		setDocumentation(docString);
+    QString docString = rule.documentation.c_str();
+    // Strip opening whitespace and the first * if one exists, this allows for
+    // common C/C++/Java-style multiline comments such as the top of this file
+    docString.replace(QRegExp("\n\\s*\\*\\s*"), "\n");
+    docString = docString.trimmed();
+    setDocumentation(docString);
 
 		/*
     if(rule.lhs != NULL)
@@ -389,14 +425,36 @@ bool Rule::open()
 
     _interface = rule.interface;
 
-		setVariables(rule.parameters);
+    std::vector<std::string> elements = _interface.elements;
+    for(std::vector<std::string>::iterator it = elements.begin(); it != elements.end() ; ++it)
+    {
+        QString var = QString::fromStdString(*it);
+        if(_lhs->containsNode(var))
+        {
+            Node* node = _lhs->node(var);
+            node->setIsInterface(true);
+        }
+        else
+            qDebug() << "Warning: Node" << var << "is not contained in LHS of rule"  << _name <<", but it is in the interface";
+
+        if(_rhs->containsNode(var))
+        {
+            Node* node = _rhs->node(var);
+            node->setIsInterface(true);
+        }
+        else
+            qDebug() << "Warning: Node" << var << "is not contained in RHS of rule"  << _name <<", but it is in the interface";
+    }
+
+    setVariables(rule.parameters);
 
 		/*
     if(rule.condition)
         setCondition(rule.condition.c_str());
     else
         setCondition(QString());*/
-		setCondition(QString(rule.condition.c_str()));
+    // qDebug() << "  rule.cpp: Setting condition to:" << QString(rule.condition.c_str());
+    setCondition(QString(rule.condition.c_str()));
 
     _status = Normal;
     emit statusChanged(_status);

@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "error.h"
 #include <sstream>	// for stringstream
+#include <QDebug>
 
 namespace Developer {
 
@@ -22,71 +23,74 @@ void reverseRuleAST(GPRule *rule);
  */
 atom_t 			translateAtom(GPAtom* atom)
 {
-	atom_t result;
-	if (!atom) return result;
-  switch(atom->type)
-	{
-		case VARIABLE:					result = std::string( atom->variable.name ); break;
+    atom_t result;
+    if (!atom) return result;
+    std::stringstream s;
+    switch(atom->type)
+    {
+    case VARIABLE:
+        result = std::string( atom->variable.name );
+        break;
 
-		case INTEGER_CONSTANT:	result = atom->number; break;
-		case STRING_CONSTANT:		
-				{std::stringstream s;
-				s << "\"" << atom->string << "\"";
-				result = s.str(); 
-				break;}
+    case INTEGER_CONSTANT:
+        result = atom->number;
+        break;
+    case STRING_CONSTANT:
+        s << "\"" << atom->string << "\"";
+        result = s.str();
+        break;
 
-		case NEG:								
-				{std::stringstream s;
-				s << "-" << translateAtom(atom->neg_exp);
-				result = s.str(); 
-				break;}
+    case NEG:
+        s << "-" << translateAtom(atom->neg_exp);
+        result = s.str();
+        break;
 
-		case LENGTH:						
-				{std::stringstream s;
-				s << "length(" << std::string( atom->variable.name ) << ")";
-				result = s.str(); 
-				break;}
-		case INDEGREE:				
-				{std::stringstream s;
-				s << "indeg(" << atom->node_id << ")";
-				result = s.str(); 
-				break;}
-		case OUTDEGREE:			
-				{std::stringstream s;
-				s << "outdeg(" << atom->node_id << ")";
-				result = s.str(); 
-				break;}
-		case ADD:	
-				{std::stringstream s;
-				s << translateAtom(atom->bin_op.left_exp) << "+" << translateAtom(atom->bin_op.right_exp);
-				result = s.str(); 
-				break;}
-		case SUBTRACT:
-				{std::stringstream s;
-				s << translateAtom(atom->bin_op.left_exp) << "-" << translateAtom(atom->bin_op.right_exp);
-				result = s.str(); 
-				break;}
-		case MULTIPLY:
-				{std::stringstream s;
-				s << translateAtom(atom->bin_op.left_exp) << "*" << translateAtom(atom->bin_op.right_exp);
-				result = s.str(); 
-				break;}
-		case DIVIDE:
-				{std::stringstream s;
-				s << translateAtom(atom->bin_op.left_exp) << "/" << translateAtom(atom->bin_op.right_exp);
-				result = s.str(); 
-				break;}
-		case CONCAT:
-				{std::stringstream s;
-				s << translateAtom(atom->bin_op.left_exp) << "." << translateAtom(atom->bin_op.right_exp);
-				result = s.str(); 
-				break;}
+    case LENGTH:
+        s << "length(" << std::string( atom->variable.name ) << ")";
+        result = s.str();
+        break;
 
-		default: print_to_console("Unknown conversion of GPAtom (in translate): %d", atom->type); break;
+    case INDEGREE:
+        s << "indeg(" << atom->node_id << ")";
+        result = s.str();
+        break;
 
-	}
+    case OUTDEGREE:
+        s << "outdeg(" << atom->node_id << ")";
+        result = s.str();
+        break;
 
-  return result;
+    case ADD:
+        s << translateAtom(atom->bin_op.left_exp) << "+" << translateAtom(atom->bin_op.right_exp);
+        result = s.str();
+        break;
+
+    case SUBTRACT:
+        s << translateAtom(atom->bin_op.left_exp) << "-" << translateAtom(atom->bin_op.right_exp);
+        result = s.str();
+        break;
+
+    case MULTIPLY:
+        s << translateAtom(atom->bin_op.left_exp) << "*" << translateAtom(atom->bin_op.right_exp);
+        result = s.str();
+        break;
+
+    case DIVIDE:
+        s << translateAtom(atom->bin_op.left_exp) << "/" << translateAtom(atom->bin_op.right_exp);
+        result = s.str();
+        break;
+
+    case CONCAT:
+        s << translateAtom(atom->bin_op.left_exp) << "." << translateAtom(atom->bin_op.right_exp);
+        result = s.str();
+        break;
+
+    default:
+        print_to_console("translate.cpp: Unknown conversion of GPAtom (%d)", atom->type); break;
+
+    }
+
+    return result;
 }
 
 /*  Translates a GPLabel AST into a label_t struct
@@ -267,79 +271,79 @@ std::string translateCondition(GPCondition* condition)
 {
 	std::string result;
 	if (condition == NULL) return result;
+        std::stringstream s;
 	switch(condition->type)
 	{
-		case INT_CHECK: 		result = "int( "; result+= condition->var; result += " )" ; break;
-		case CHAR_CHECK: 		result = "char( "; result+= condition->var; result += " )" ; break; 
-		case STRING_CHECK: 	result = "string( "; result+= condition->var; result += " )" ; break; 
-		case ATOM_CHECK: 		result = "atom( "; result+= condition->var; result += " )" ; break; 
+                case INT_CHECK:         result = "int( "; result+= condition->var; result += " )" ; break;
+                case CHAR_CHECK:        result = "char( "; result+= condition->var; result += " )" ; break;
+                case STRING_CHECK: 	result = "string( "; result+= condition->var; result += " )" ; break;
+                case ATOM_CHECK:        result = "atom( "; result+= condition->var; result += " )" ; break;
 
 		case EQUAL:  				
-				result =  translateConditionList(condition->list_cmp.left_list); 
-				result+= "="; 
-				result+= translateConditionList(condition->list_cmp.right_list); 
-				break;
+                    result =  translateConditionList(condition->list_cmp.left_list);
+                    result+= "=";
+                    result+= translateConditionList(condition->list_cmp.right_list);
+                    break;
  
 		case NOT_EQUAL: 
-				result =  translateConditionList(condition->list_cmp.left_list); 
-				result+= "!="; 
-				result+= translateConditionList(condition->list_cmp.right_list); 
-				break; 
+                    result =  translateConditionList(condition->list_cmp.left_list);
+                    result+= "!=";
+                    result+= translateConditionList(condition->list_cmp.right_list);
+                    break;
 
-		case GREATER: 
-				{ std::stringstream s;
-				s << translateAtom(condition->atom_cmp.left_exp); 
-				s << ">"; 
-				s << translateAtom(condition->atom_cmp.right_exp);
-        result = s.str(); }
-				break;
+                case GREATER:
+                    s << translateAtom(condition->atom_cmp.left_exp);
+                    s << ">";
+                    s << translateAtom(condition->atom_cmp.right_exp);
+                    result = s.str();
+                    break;
 
-		case GREATER_EQUAL: 
-				{ std::stringstream s;
-				s << translateAtom(condition->atom_cmp.left_exp); 
-				s << ">="; 
-				s << translateAtom(condition->atom_cmp.right_exp);
-        result = s.str(); }
-				break;
+                case GREATER_EQUAL:
+                    s << translateAtom(condition->atom_cmp.left_exp);
+                    s << ">=";
+                    s << translateAtom(condition->atom_cmp.right_exp);
+                    result = s.str();
+                    break;
 
-		case LESS: 
-				{ std::stringstream s;
-				s << translateAtom(condition->atom_cmp.left_exp); 
-				s << "<"; 
-				s << translateAtom(condition->atom_cmp.right_exp);
-        result = s.str(); }
-				break;
+                case LESS:
+                    s << translateAtom(condition->atom_cmp.left_exp);
+                    s << "<";
+                    s << translateAtom(condition->atom_cmp.right_exp);
+                    result = s.str();
+                    break;
 
-		case LESS_EQUAL: 
-				{ std::stringstream s;
-				s << translateAtom(condition->atom_cmp.left_exp); 
-				s << "<="; 
-				s << translateAtom(condition->atom_cmp.right_exp);
-        result = s.str(); }
-				break;
+                case LESS_EQUAL:
+                    s << translateAtom(condition->atom_cmp.left_exp);
+                    s << "<=";
+                    s << translateAtom(condition->atom_cmp.right_exp);
+                    result = s.str();
+                    break;
  
-		case BOOL_NOT: 			result = "not "; result+= translateCondition(condition->not_exp); break;
+                case BOOL_NOT:
+                    result = "not ";
+                    result+= translateCondition(condition->not_exp);
+                    break;
 		case BOOL_OR: 
-				result = translateCondition(condition->bin_exp.left_exp); 
-				result+= " or "; 
-				result+= translateCondition(condition->bin_exp.right_exp); 
-				break;
+                    result = translateCondition(condition->bin_exp.left_exp);
+                    result+= " or ";
+                    result+= translateCondition(condition->bin_exp.right_exp);
+                    break;
 
 		case BOOL_AND: 
-				result = translateCondition(condition->bin_exp.left_exp); 
-				result+= " and "; 
-				result+= translateCondition(condition->bin_exp.right_exp); 
-				break;
+                    result = translateCondition(condition->bin_exp.left_exp);
+                    result+= " and ";
+                    result+= translateCondition(condition->bin_exp.right_exp);
+                    break;
 
 		case EDGE_PRED: 
-				result = " edge( "; 
-				result+= condition->edge_pred.source; 
-				result += " , "; 
-				result+= condition->edge_pred.target;
-				if (condition->edge_pred.label != NULL) 
-					result+= ListToString((translateLabel(condition->edge_pred.label)).values); 
-				result += " ) "; 
-				break;
+                    result = "edge( ";
+                    result+= condition->edge_pred.source;
+                    result += ", ";
+                    result+= condition->edge_pred.target;
+                    if (condition->edge_pred.label != NULL)
+                            result+= ListToString((translateLabel(condition->edge_pred.label)).values);
+                    result += " )";
+                    break;
 
 		default: break;
 	}
@@ -453,16 +457,17 @@ std::vector<edge_t> translateEdges(List* edges)
  */
 void reverseConditionAST(GPCondition *condition)
 {
-	switch(condition->type)
-	{
-		case INT_CHECK: 
+    switch(condition->type)
+    {
+    case INT_CHECK:
     case CHAR_CHECK: 
     case STRING_CHECK: 
     case ATOM_CHECK: break;
 
     case EDGE_PRED: 
-				// struct GPLabel has a pointer (to a List) called gp_list
-				condition->edge_pred.label->gp_list = reverse(condition->edge_pred.label->gp_list);
+                                // struct GPLabel has a pointer (to a List) called gp_list
+                                if (condition->edge_pred.label)  // edge predicate has OPTIONAL label
+                                    condition->edge_pred.label->gp_list = reverse(condition->edge_pred.label->gp_list);
 				break;
 
     case EQUAL: 
@@ -473,6 +478,7 @@ void reverseConditionAST(GPCondition *condition)
 
     case BOOL_NOT: 
 				reverseConditionAST(condition->not_exp);
+                                break;
 
     case BOOL_OR: 
     case BOOL_AND:
@@ -485,8 +491,8 @@ void reverseConditionAST(GPCondition *condition)
     case LESS: 
     case LESS_EQUAL: 
 
-		default: break;
-	}
+    default: break;
+    }
 
 }
 
@@ -496,12 +502,15 @@ void reverseConditionAST(GPCondition *condition)
  */
 void reverseRuleAST(GPRule *rule)
 {
-	if (rule->variables) rule->variables = reverse(rule->variables);
-	if (rule->interface) rule->interface = reverse(rule->interface);
+    if (rule == 0)
+        return;
 
-	if (rule->condition) reverseConditionAST(rule->condition);
-	if (rule->lhs) reverseGraphAST(rule->lhs);
-	if (rule->rhs) reverseGraphAST(rule->rhs);
+    if (rule->variables) rule->variables = reverse(rule->variables);
+    if (rule->interface) rule->interface = reverse(rule->interface);
+
+    if (rule->condition) reverseConditionAST(rule->condition);
+    if (rule->lhs) reverseGraphAST(rule->lhs);
+    if (rule->rhs) reverseGraphAST(rule->rhs);
 }
 
 }

@@ -48,12 +48,15 @@ public:
     bool containsNode(const QString &id) const;
     bool containsEdge(const QString &id) const;
 
-    QString toString(int outputType = DefaultGraph, bool keepLayout = true) const;
+    QString toString(int outputType = DefaultGraph, bool keepLayout = true);
     QString toGxl(bool keepLayout = true) const;
     QString toDot(bool keepLayout = true) const;
-    QString toAlternative() const;
+    QString toAlternative();
     QString toLaTeX() const;
 
+
+    QString newNodeId();
+    QString newEdgeId();
 
 signals:
     void graphChanged();
@@ -65,7 +68,7 @@ signals:
 
 public slots:
     void setCanvas(const QRect &rect);
-    Node *addNode(const QString &id, const QString &label = QString(), const QString &mark = QString(), bool isRoot = false, const QPointF &pos = QPointF());
+    Node *addNode(const QString &id, const QString &label = QString(), const QString &mark = QString(), bool isRoot = false, bool isInterface = false, const QPointF &pos = QPointF());
     //Node *addNode(const QString &label = QString(), const QString &mark = QString(), bool isRoot = false, const QPointF &pos = QPointF());
     Edge *addEdge(const QString &id, Node *from, Node *to, const QString &label = QString(), const QString &mark = QString(), bool isBidirectional = false);
     //Edge *addEdge(Node *from, Node *to, const QString &label = QString(), const QString &mark = QString(), bool isBidirectional = false);
@@ -93,8 +96,6 @@ protected slots:
 protected:
     // Protected member functions
     bool openGraphT(const graph_t &inputGraph);
-    QString newNodeId();
-    QString newEdgeId();
 
     // Protected member variables
     int _nodeIdCounter;

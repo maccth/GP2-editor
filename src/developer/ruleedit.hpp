@@ -53,13 +53,13 @@ public slots:
     void conditionChanged();
 
     void updateVariables();
+    void saveVariables();
 
     /*!
      * \brief Slot to handle displaying the "injective matching" help page from
      *  the HelpDialog
      */
     void showInjectiveHelp();
-    void saveVariables();
 
 private:
     Ui::RuleEdit *_ui;

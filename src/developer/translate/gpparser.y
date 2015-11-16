@@ -397,10 +397,15 @@ Edge: '(' EdgeID Bidirection ',' NodeID ',' NodeID ',' Label ')'
 					  if($5) free($5); if($7) free($7); }
 
  /* Layout information for the editor. This is ignored by the parser. */
-Position: '(' DNUM ',' DNUM ')'           { } 
-	| '(' NUM ',' NUM ')'           { } 
-	| '(' DNUM ',' NUM ')'           { } 
-	| '(' NUM ',' DNUM ')'           { } 
+ Position: '(' DNUM ',' DNUM ')'         { }
+         | '(' NUM ',' NUM ')'           { }
+         | '(' NUM ',' '-' NUM ')'           { }
+         | '(' '-' NUM ','  NUM ')'           { }
+         | '(' '-' NUM ',' '-' NUM ')'           { }
+         | '(' DNUM ',' NUM ')'          { }
+         | '(' DNUM ',' '-' NUM ')'          { }
+         | '(' NUM ',' DNUM ')'          { }
+         | '(' '-' NUM ',' DNUM ')'          { }
 
 
 RootNode: /* empty */ 

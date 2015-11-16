@@ -397,26 +397,26 @@ struct yy_trans_info
 static yyconst flex_int16_t yy_accept[360] =
     {   0,
         0,    0,    0,    0,    7,    7,    0,    0,   74,   72,
-       70,   71,   50,    5,   60,   41,   42,   55,   53,   48,
-       54,   51,   56,   11,   52,   49,   58,   59,   57,   67,
-       67,   45,   46,   68,   68,   68,   68,   68,   68,   68,
-       68,   68,   68,   68,   68,   68,   68,   68,   68,   43,
-       47,   44,    3,    2,    9,    8,    7,    6,    7,   73,
-       70,   64,    4,    0,    0,    0,   11,   10,    1,   69,
-       11,   66,   61,   65,   67,   67,   68,   68,   68,   68,
-       68,   68,   68,   68,   68,   68,   68,   68,   13,   68,
-       68,   68,   68,   22,   68,   68,   68,   68,   68,   68,
+       70,   71,   49,    5,   59,   40,   41,   54,   52,   47,
+       53,   50,   55,   66,   51,   48,   57,   58,   56,   67,
+       67,   44,   45,   68,   68,   68,   68,   68,   68,   68,
+       68,   68,   68,   68,   68,   68,   68,   68,   68,   42,
+       46,   43,    3,    2,    9,    8,    7,    6,    7,   73,
+       70,   63,    4,    0,    0,    0,    0,   39,    1,   69,
+       66,   65,   60,   64,   67,   67,   68,   68,   68,   68,
+       68,   68,   68,   68,   68,   68,   68,   68,   11,   68,
+       68,   68,   68,   20,   68,   68,   68,   68,   68,   68,
 
-       68,    3,    7,   63,   62,    0,   69,   67,   67,   68,
-       21,   35,   68,   68,   68,   68,   68,   68,   68,   68,
-       68,   68,   68,   36,   68,   68,   23,   68,   30,   68,
-       68,   68,   14,   68,    7,    0,   10,   67,   12,   68,
-       39,   32,   68,   37,   68,   24,   16,   68,   18,   68,
-       33,   68,   68,   68,   40,   68,   17,   68,   15,   68,
-        7,   67,   68,   19,   68,   28,   31,   25,   68,   68,
-       68,   68,   20,    7,   67,   68,   34,   68,   29,   26,
-       38,    7,   67,   68,   68,    7,   67,   68,   68,    7,
-       67,   68,   27,    7,   67,   68,    7,   67,   68,    7,
+       68,    3,    7,   62,   61,    0,   69,   67,   67,   68,
+       19,   33,   68,   68,   68,   68,   68,   68,   68,   68,
+       68,   68,   68,   34,   68,   68,   21,   68,   28,   68,
+       68,   68,   12,   68,    7,    0,   39,   67,   10,   68,
+       37,   30,   68,   35,   68,   22,   14,   68,   16,   68,
+       31,   68,   68,   68,   38,   68,   15,   68,   13,   68,
+        7,   67,   68,   17,   68,   26,   29,   23,   68,   68,
+       68,   68,   18,    7,   67,   68,   32,   68,   27,   24,
+       36,    7,   67,   68,   68,    7,   67,   68,   68,    7,
+       67,   68,   25,    7,   67,   68,    7,   67,   68,    7,
 
        67,   68,    7,   67,   68,    7,   67,   68,    7,   67,
        68,    7,   67,   68,    7,   67,   68,    7,   67,   68,
@@ -1183,238 +1183,238 @@ case YY_STATE_EOF(IN_STRING):
           				        "string.\n", yylineno);                   
                                    return 0; }  
 	YY_BREAK
+/* GP2 keywords */ 
 case 10:
 YY_RULE_SETUP
-#line 102 "gplexer.lex"
-{ yylval.dnum = atof(yytext); return DNUM; } 
+#line 105 "gplexer.lex"
+return MAIN;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 103 "gplexer.lex"
-{ yylval.num = atoi(yytext); return NUM; } 
+#line 106 "gplexer.lex"
+return IF;
 	YY_BREAK
-/* GP2 keywords */ 
 case 12:
 YY_RULE_SETUP
-#line 106 "gplexer.lex"
-return MAIN;
+#line 107 "gplexer.lex"
+return TRY;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 107 "gplexer.lex"
-return IF;
+#line 108 "gplexer.lex"
+return THEN;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 108 "gplexer.lex"
-return TRY;
+#line 109 "gplexer.lex"
+return ELSE;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 109 "gplexer.lex"
-return THEN;
+#line 110 "gplexer.lex"
+return SKIP;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 110 "gplexer.lex"
-return ELSE;
+#line 111 "gplexer.lex"
+return FAIL;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 111 "gplexer.lex"
-return SKIP;
+#line 112 "gplexer.lex"
+return BREAK;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 112 "gplexer.lex"
-return FAIL;
+#line 113 "gplexer.lex"
+return WHERE;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 113 "gplexer.lex"
-return BREAK;
+#line 114 "gplexer.lex"
+return AND;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 114 "gplexer.lex"
-return WHERE;
+#line 115 "gplexer.lex"
+return OR;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 115 "gplexer.lex"
-return AND;
+#line 116 "gplexer.lex"
+return NOT;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 116 "gplexer.lex"
-return OR;
+#line 117 "gplexer.lex"
+return EDGETEST;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 117 "gplexer.lex"
-return NOT;
+#line 118 "gplexer.lex"
+return INDEG;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 118 "gplexer.lex"
-return EDGETEST;
+#line 119 "gplexer.lex"
+return OUTDEG;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 119 "gplexer.lex"
-return INDEG;
+#line 120 "gplexer.lex"
+return INTERFACE;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 120 "gplexer.lex"
-return OUTDEG;
+#line 121 "gplexer.lex"
+return _EMPTY;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 121 "gplexer.lex"
-return INTERFACE;
-	YY_BREAK
-case 28:
-YY_RULE_SETUP
 #line 122 "gplexer.lex"
-return _EMPTY;
-	YY_BREAK
-case 29:
-YY_RULE_SETUP
-#line 123 "gplexer.lex"
 return _LENGTH;
 	YY_BREAK
 /* Keywords for node and edge marks */
-case 30:
+case 28:
+YY_RULE_SETUP
+#line 125 "gplexer.lex"
+{ yylval.mark = RED; return MARK; } 
+	YY_BREAK
+case 29:
 YY_RULE_SETUP
 #line 126 "gplexer.lex"
-{ yylval.mark = RED; return MARK; } 
+{ yylval.mark = GREEN; return MARK; } 
+	YY_BREAK
+case 30:
+YY_RULE_SETUP
+#line 127 "gplexer.lex"
+{ yylval.mark = BLUE; return MARK; } 
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 127 "gplexer.lex"
-{ yylval.mark = GREEN; return MARK; } 
+#line 128 "gplexer.lex"
+{ yylval.mark = GREY; return MARK; } 
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 128 "gplexer.lex"
-{ yylval.mark = BLUE; return MARK; } 
-	YY_BREAK
-case 33:
-YY_RULE_SETUP
 #line 129 "gplexer.lex"
-{ yylval.mark = GREY; return MARK; } 
-	YY_BREAK
-case 34:
-YY_RULE_SETUP
-#line 130 "gplexer.lex"
 { yylval.mark = DASHED; return MARK; }
 	YY_BREAK
 /* Any has a distinct token since it cannot appear in the host graph and
     therefore must be distinguished from the other marks. */
-case 35:
+case 33:
 YY_RULE_SETUP
-#line 133 "gplexer.lex"
+#line 132 "gplexer.lex"
 { yylval.mark = ANY; return ANY_MARK; } 
 	YY_BREAK
 /* Keywords for GP2 types */
-case 36:
+case 34:
+YY_RULE_SETUP
+#line 135 "gplexer.lex"
+return INT;  
+	YY_BREAK
+case 35:
 YY_RULE_SETUP
 #line 136 "gplexer.lex"
-return INT;  
+return CHARACTER;
+	YY_BREAK
+case 36:
+YY_RULE_SETUP
+#line 137 "gplexer.lex"
+return STRING;  
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 137 "gplexer.lex"
-return CHARACTER;
+#line 138 "gplexer.lex"
+return ATOM;  
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 138 "gplexer.lex"
-return STRING;  
+#line 139 "gplexer.lex"
+return LIST;  
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 139 "gplexer.lex"
-return ATOM;  
+#line 141 "gplexer.lex"
+{ yylval.dnum = atof(yytext); return DNUM; }
 	YY_BREAK
 case 40:
-YY_RULE_SETUP
-#line 140 "gplexer.lex"
-return LIST;  
-	YY_BREAK
-case 41:
 #line 144 "gplexer.lex"
-case 42:
+case 41:
 #line 145 "gplexer.lex"
-case 43:
+case 42:
 #line 146 "gplexer.lex"
-case 44:
+case 43:
 #line 147 "gplexer.lex"
-case 45:
+case 44:
 #line 148 "gplexer.lex"
-case 46:
+case 45:
 #line 149 "gplexer.lex"
-case 47:
+case 46:
 #line 150 "gplexer.lex"
-case 48:
+case 47:
 #line 151 "gplexer.lex"
-case 49:
+case 48:
 #line 152 "gplexer.lex"
-case 50:
+case 49:
 #line 153 "gplexer.lex"
-case 51:
+case 50:
 #line 154 "gplexer.lex"
-case 52:
+case 51:
 #line 155 "gplexer.lex"
-case 53:
+case 52:
 #line 156 "gplexer.lex"
-case 54:
+case 53:
 #line 157 "gplexer.lex"
-case 55:
+case 54:
 #line 158 "gplexer.lex"
-case 56:
+case 55:
 #line 159 "gplexer.lex"
-case 57:
+case 56:
 #line 160 "gplexer.lex"
-case 58:
+case 57:
 #line 161 "gplexer.lex"
-case 59:
+case 58:
 #line 162 "gplexer.lex"
-case 60:
+case 59:
 YY_RULE_SETUP
 #line 162 "gplexer.lex"
 return yytext[0];
 	YY_BREAK
-case 61:
+case 60:
 YY_RULE_SETUP
 #line 164 "gplexer.lex"
 return ARROW;
 	YY_BREAK
-case 62:
+case 61:
 YY_RULE_SETUP
 #line 165 "gplexer.lex"
 return ROOT;
 	YY_BREAK
-case 63:
+case 62:
 YY_RULE_SETUP
 #line 166 "gplexer.lex"
 return BIDIRECTIONAL;
 	YY_BREAK
-case 64:
+case 63:
 YY_RULE_SETUP
 #line 167 "gplexer.lex"
 return NEQ; 
 	YY_BREAK
-case 65:
+case 64:
 YY_RULE_SETUP
 #line 168 "gplexer.lex"
 return GTEQ; 
 	YY_BREAK
-case 66:
+case 65:
 YY_RULE_SETUP
 #line 169 "gplexer.lex"
 return LTEQ; 
+	YY_BREAK
+case 66:
+YY_RULE_SETUP
+#line 171 "gplexer.lex"
+{ yylval.num = atoi(yytext); return NUM; }
 	YY_BREAK
 /* Procedure identifiers must start with a capital letter.
   * All other identifiers start with a lowercase letter.
@@ -1422,12 +1422,12 @@ return LTEQ;
   * so these strings need to be explicitly freed. */  
 case 67:
 YY_RULE_SETUP
-#line 176 "gplexer.lex"
+#line 178 "gplexer.lex"
 { yylval.id = strdup(yytext); return PROCID; } /* other characters may be allowed. */
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 177 "gplexer.lex"
+#line 179 "gplexer.lex"
 { yylval.id = strdup(yytext); return ID; }
 	YY_BREAK
 /* This rule catches an invalid identifier: a sequence of digits followed
@@ -1437,7 +1437,7 @@ YY_RULE_SETUP
   * also set to prevent semantic checking from starting. */
 case 69:
 YY_RULE_SETUP
-#line 184 "gplexer.lex"
+#line 186 "gplexer.lex"
 { print_to_console("Error (%s): Identifiers must "
      			              	"start with a letter.\n", yytext); 
 		                print_to_log("%d.%d-%d.%d: Invalid identifier: "
@@ -1449,29 +1449,29 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 193 "gplexer.lex"
+#line 195 "gplexer.lex"
 /* ignore white space */
 	YY_BREAK
 case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
-#line 194 "gplexer.lex"
+#line 196 "gplexer.lex"
 { yycolumn = 1; }  /* reset yycolumn on newline */
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(IN_CHAR):
-#line 195 "gplexer.lex"
+#line 197 "gplexer.lex"
 { return 0; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 196 "gplexer.lex"
+#line 198 "gplexer.lex"
 { printf("Error: Invalid symbol '%c'\n", yytext[0]);
 			return 0; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 200 "gplexer.lex"
+#line 202 "gplexer.lex"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
 #line 1478 "gplex.c"
@@ -2482,7 +2482,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 200 "gplexer.lex"
+#line 202 "gplexer.lex"
 
 
 

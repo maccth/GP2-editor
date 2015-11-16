@@ -78,6 +78,7 @@ private:
     Node *_node;
     NodeShapes _nodeShape;
     bool _isRoot;
+    bool _isInterface;
     bool _hover;
     QString _mark;
     QPainterPath _shape;

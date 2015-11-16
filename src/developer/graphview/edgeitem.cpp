@@ -530,7 +530,7 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
         if (_mark == "any")
             lineColour = settings.value("GraphView/Edges/ColourAny",
-                                 QColor(0x00,0xff,0xcc) // cyan-ish
+                                 QColor(0xee,0x82,0xee) // purple-ish
                                  ).value<QColor>();
 
         if (_hover)
