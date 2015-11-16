@@ -70,6 +70,7 @@ QTextCharFormat ConditionHighlighter::format(int type) const
                         ).value<QFont>()
                     );
         return ret;
+    case QuotedString:
     case Integer:
         ret.setForeground(settings.value(
                               "Editor/Types/Number/Foreground",
@@ -87,23 +88,22 @@ QTextCharFormat ConditionHighlighter::format(int type) const
                         ).value<QFont>()
                     );
         return ret;
-    case QuotedString:
-        ret.setForeground(settings.value(
-                              "Editor/Types/QuotedString/Foreground",
-                              QColor(Qt::red)
-                              ).value<QColor>()
-                          );
-        ret.setBackground(settings.value(
-                              "Editor/Types/QuotedString/Background",
-                              background
-                              ).value<QColor>()
-                          );
-        ret.setFont(settings.value(
-                        "Editor/Types/QuotedString/Font",
-                        defaultFont
-                        ).value<QFont>()
-                    );
-        return ret;
+//        ret.setForeground(settings.value(
+//                              "Editor/Types/QuotedString/Foreground",
+//                              QColor(Qt::red)
+//                              ).value<QColor>()
+//                          );
+//        ret.setBackground(settings.value(
+//                              "Editor/Types/QuotedString/Background",
+//                              background
+//                              ).value<QColor>()
+//                          );
+//        ret.setFont(settings.value(
+//                        "Editor/Types/QuotedString/Font",
+//                        defaultFont
+//                        ).value<QFont>()
+//                    );
+//        return ret;
     case Comma:
     case StringSeparator:
     case ListSeparator:
