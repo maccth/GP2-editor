@@ -551,7 +551,7 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     pen.setWidth(lineWidth);
     if (_mark == "dashed")
     {
-        pen.setStyle(Qt::DotLine);
+        pen.setStyle(Qt::DashLine);
     }
     painter->setPen(pen);
     painter->setBrush(Qt::NoBrush);
