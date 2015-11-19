@@ -79,6 +79,11 @@ bool NodeItem::isRoot() const
     return _isRoot;
 }
 
+bool NodeItem::isInterface() const
+{
+    return _isInterface;
+}
+
 QString NodeItem::mark() const
 {
     return _mark;
@@ -113,6 +118,16 @@ void NodeItem::setIsRoot(bool root)
 
     if(_node != 0)
         _node->setIsRoot(root);
+}
+
+void NodeItem::setIsInterface(bool isInterface)
+{
+    //qDebug () << "  nodeitem.cpp: Node " << _id << " has changed interface to:" << isInterface;
+    if (_isInterface == isInterface)
+        return;
+    _isInterface = isInterface;
+    recalculate();
+    //update();   //schedule a redraw
 }
 
 void NodeItem::setMark(const QString &mark)
@@ -328,9 +343,10 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     // Draw the node ID
     QColor idColour = textColour;
 
-    if(_node->isInterface())
+    if(_isInterface)
     {
         font.setWeight(QFont::DemiBold);
+        qDebug() << "  nodeitem.cpp: Node " << _id << "is drawn with bolded id";
     }
     else
     {

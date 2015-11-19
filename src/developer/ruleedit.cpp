@@ -7,9 +7,11 @@
 #include "rule.hpp"
 #include "helpdialog.hpp"
 #include "graph.hpp"
+#include "graphview/graphscene.hpp"
 
 #include <QDebug>
 #include <QComboBox>
+#include <QGraphicsScene>
 
 namespace Developer {
 
@@ -383,9 +385,22 @@ void RuleEdit::updateInterface()
 
     _rule->setInterface(result);
 
+    qDebug () << "  ruleedit.cpp: Updating Interface :" << debug;
+
 
     // Redraw the graphs because interface nodes should have bolded identifiers
+    //GraphScene* lhsScene = _ui->lhsGraph->graphScene();
+    //lhsScene->update(lhsScene->sceneRect());
 
+
+    // Tell each graph scene to update the interface nodes - i.e. redraw them with bolded ids
+    GraphScene* canvas;
+
+    canvas = _ui->lhsGraph->graphScene();
+    canvas->setInterface(debug);
+
+    canvas = _ui->rhsGraph->graphScene();
+    canvas->setInterface(debug);
 }
 
 

@@ -52,6 +52,8 @@ public:
 
     void resizeToContents();
 
+    void setInterface(QStringList nodeIds);
+
 public slots:
     void addNode(const QPointF &position, bool automatic = false);
     void addNode(qreal x, qreal y);

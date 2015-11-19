@@ -33,12 +33,14 @@ public:
     void recalculate();
 
     bool isRoot() const;
+    bool isInterface() const;
     QString mark() const;
     Node *node() const;
 
     void setId(const QString &itemId);
     void setLabel(const QString &itemLabel);
     void setIsRoot(bool root);
+    void setIsInterface(bool isInterface);
     void setMark(const QString &mark);
 
     void preserveNode();

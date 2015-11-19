@@ -319,8 +319,8 @@ void GraphScene::setInterface(QStringList nodeIds)
         QString id = i.key();
         NodeItem *nodeItem = i.value();
         nodeItem->setIsInterface(nodeIds.contains(id));
-        if (nodeIds.contains(id))
-            qDebug() << "  graphscene.cpp: The node " << nodeItem->id() << " is an interface node" << endl;
+//        if (nodeIds.contains(id))
+//            qDebug() << "  graphscene.cpp: The node " << nodeItem->id() << " is an interface node" << endl;
     }
 }
 

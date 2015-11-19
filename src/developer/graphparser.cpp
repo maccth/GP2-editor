@@ -35,8 +35,9 @@ extern "C" {
 
 #define GP_GRAPH 2		
 #define GP_RULE 3	
-extern int parse_target; 
-extern "C" { int yyparse (); } 	// yyparse is an external C (not C++) function
+extern int parse_target;
+// yyparse is an external C (not C++) function
+extern "C" { int yyparse (); void yyrestart( FILE *new_file );}
 
 namespace Developer {
 
@@ -48,20 +49,21 @@ namespace Developer {
 // assumes the QFile is already open
 static bool validateHostGraph(const QString &graphPath)
 {
-	 QFileInfo f(graphPath);
-	 if (!f.exists())
-	 {
-			qDebug() << "    Graph file does not exist: " << graphPath;
-			return false;
-	 }
+    QFileInfo f(graphPath);
+    if (!f.exists())
+    {
+        qDebug() << "    Graph file does not exist: " << graphPath;
+        return false;
+    }
 
-   yyin = fopen( graphPath.toStdString().c_str() , "r");
+    yyin = fopen( graphPath.toStdString().c_str() , "r");
+    yyrestart(yyin);
 
-   parse_target = GP_GRAPH;
-   #ifdef PARSER_TRACE 
-      yydebug = 1; /* Bison outputs a trace of its parse to stderr. */
-   #endif
-   return (yyparse() == 0);
+    parse_target = GP_GRAPH;
+    #ifdef PARSER_TRACE
+        yydebug = 1; /* Bison outputs a trace of its parse to stderr. */
+    #endif
+    return (yyparse() == 0);
 }
 
 graph_t parseAlternativeGraph(const QString &graphPath)
@@ -69,21 +71,12 @@ graph_t parseAlternativeGraph(const QString &graphPath)
     graph_t ret;
 
     bool r = validateHostGraph(graphPath);
-    //bool r = false;
 
     if(!r)
     {
         qDebug() << "    Graph parsing failed." ;
 				return ret;
     }
-    /*else if(iter != end)
-    {
-        std::cout << "    Parsing ended before the end of the provided string."
-                  << std::endl;
-        std::cout << "    Remaining string contents: " << std::string(iter, end)
-                  << std::endl;
-    } */
-
 
     reverseGraphAST(ast_host_graph);
 
