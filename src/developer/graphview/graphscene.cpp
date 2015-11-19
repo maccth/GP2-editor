@@ -311,6 +311,19 @@ void GraphScene::setReadOnly(bool readOnlyFlag)
     _readOnly = readOnlyFlag;
 }
 
+void GraphScene::setInterface(QStringList nodeIds)
+{
+    QMap<QString, NodeItem*>::const_iterator i;
+    for (i = _nodes.begin(); i != _nodes.end(); ++i)
+    {
+        QString id = i.key();
+        NodeItem *nodeItem = i.value();
+        nodeItem->setIsInterface(nodeIds.contains(id));
+        if (nodeIds.contains(id))
+            qDebug() << "  graphscene.cpp: The node " << nodeItem->id() << " is an interface node" << endl;
+    }
+}
+
 void GraphScene::addNodeItem(NodeItem *nodeItem, const QPointF &position)
 {
     addItem(nodeItem);
@@ -1062,24 +1075,24 @@ void GraphScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             path.translate(node->scenePos());
             if(path.contains(event->scenePos()))
             {
-                QString fromLabel = _fromNode->label();
-                QString toLabel = node->label();
+//                QString fromLabel = _fromNode->label();
+//                QString toLabel = node->label();
 
-                bool leftnonempty = false;
-                if (QString::compare(fromLabel, QString("")) != 0)
-                {
-                    leftnonempty = true;
-                }
+//                bool leftnonempty = false;
+//                if (QString::compare(fromLabel, QString("")) != 0)
+//                {
+//                    leftnonempty = true;
+//                }
 
-                bool rightnonempty = false;
-                if (QString::compare(toLabel, QString("")) != 0)
-                {
-                    rightnonempty = true;
-                }
+//                bool rightnonempty = false;
+//                if (QString::compare(toLabel, QString("")) != 0)
+//                {
+//                    rightnonempty = true;
+//                }
 
-                QString newLabel = leftnonempty ?
-                            rightnonempty ? ( fromLabel + ":" + toLabel ) : fromLabel
-                                          : rightnonempty ? toLabel : QString("");
+//                QString newLabel = leftnonempty ?
+//                            rightnonempty ? ( fromLabel + ":" + toLabel ) : fromLabel
+//                                          : rightnonempty ? toLabel : QString("");
 
                 Node *from = _graph->node(_fromNode->id());
                 Node *to = _graph->node(node->id());
@@ -1091,7 +1104,7 @@ void GraphScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
                 QString id = _graph->newEdgeId();
 
-                Edge *e = _graph->addEdge( id ,from, to, newLabel);
+                Edge *e = _graph->addEdge( id ,from, to, QString(""));
                 EdgeItem *edgeItem = new EdgeItem(e, _fromNode, node);
 
                 if(_linkedGraph != 0)
