@@ -146,12 +146,26 @@ ENDIF()
 # executable which can actually run
 TARGET_LINK_LIBRARIES(gpdeveloper ${GPDeveloper_LINK_LIBS})
 
+SET(CMAKE_INSTALL_PREFIX .)
+
 # Per-platform CPack Configuration
 IF(UNIX AND NOT APPLE)
-    INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/gpdeveloper DESTINATION bin)
+    SET(CPACK_GENERATOR TGZ)
+
+    # Obtain the Qt shared libraries - HACK
+    set (_resolvedQtObjects "")
+    foreach (_file ${QT_LIBRARIES})
+        get_filename_component(_resolvedQtObjects "${_file}" REALPATH)
+        list (APPEND _resolvedQtObjects "${_resolvedFile}")
+    endforeach()
+
+    INSTALL(FILES  ${_resolvedQtObjects} ${OGDF_INCLUDE_DIR}/libOGDF.so
+            DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
+
+    INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/gpdeveloper DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 ELSEIF(APPLE)
     SET(CPACK_GENERATOR Bundle)
-    INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/gpdeveloper DESTINATION bin)
+    INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/gpdeveloper DESTINATION bin)
 ELSEIF(WIN32)
     SET(CPACK_GENERATOR NSIS)
     SET(CPACK_NSIS_MUI_ICON ${GP2_SOURCE_DIR}/src/developer/images/graph.ico)
@@ -163,7 +177,7 @@ ELSEIF(WIN32)
     #                 ${QT_BINARY_DIR}/libgcc_s_dw2-1.dll
     #        DESTINATION bin)
 
-    INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/gpdeveloper.exe DESTINATION bin)
+    INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/gpdeveloper.exe DESTINATION bin)
 ENDIF()
 
 # Bring in the CMakeLists.txt for the developer test cases
