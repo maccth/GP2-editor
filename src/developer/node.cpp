@@ -103,7 +103,7 @@ bool Node::hasEdgeOut() const
     if(_parent == 0)
         return false;
 
-    return (_parent->edgeFrom(id()) != 0);
+    return (_parent->hasEdgeFrom(id()));
 }
 
 bool Node::hasEdgeIn() const
@@ -111,7 +111,7 @@ bool Node::hasEdgeIn() const
     if(_parent == 0)
         return false;
 
-    return (_parent->edgeTo(id()) != 0);
+    return (_parent->hasEdgeTo(id()));
 }
 
 Graph *Node::parent() const

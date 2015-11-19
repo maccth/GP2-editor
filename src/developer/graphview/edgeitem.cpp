@@ -335,46 +335,64 @@ QPainterPath EdgeItem::path() const
     {
         QLineF edgeLine = line();
         // Is there an edge in the other direction?
+        bool oppositeEdge = _from->node()->parent()->hasEdgeFromTo(_to->id(), _from->id());
+
+        // There is a loop in the other direction, curve this one to avoid
+        // it - the other one should also curve producing a gap
+        QPointF midPoint((edgeLine.p1().x() + edgeLine.p2().x())/2,
+                         (edgeLine.p1().y() + edgeLine.p2().y())/2);
+        QLineF opposingLine(midPoint, edgeLine.p2());
+
+
+        // The length of this line defines how much is the line curved
+        opposingLine.setLength(32);
+
+        // Calculate which to side to rotate the perpendicular line
+        qreal angle = opposingLine.angle();
+        angle += 90; if(angle > 360) angle -= 360;
+        opposingLine.setAngle(angle);
+
+        // Is there an edge in the same direction?
         std::vector<Edge *> edges;
+
         if(_to->node() == 0)
             edges = std::vector<Edge *>();
         else
-            edges = _to->node()->edgesFrom();
-        bool loopback = false;
-        for(std::vector<Edge *>::iterator iter = edges.begin();
-            iter != edges.end(); ++iter)
+            edges = _edge->parent()->edgesFromTo(_from->id(), _to->id());   // obtain the parallel edges
+
+        qreal positionIncrement = 0;
+        if (edges.size() >= 2)
         {
-            Edge *e = *iter;
-            if(e->to()->id() == _from->id())
-                loopback = true;
+            // There are multiple edges in the same direction
+            for (std::vector<Edge *>::const_iterator it = edges.begin(); it != edges.end(); ++it)
+            {
+                Edge* otherEdge = *it;
+                if (otherEdge != _edge)
+                    // keep incrementing until we find this edge in the collection of parallel edges
+                    positionIncrement+=32;
+                else
+                    break;
+            }
+            qDebug() << "  edgeitem.cpp: ("<< _edge->id() << ") Edge in the same direction detected, increment: " << positionIncrement;
         }
 
-        if(loopback)
-        {
-            // There is a loop in the other direction, curve this one to avoid
-            // it - the other one should also curve producing a gap
-            QPointF midPoint((edgeLine.p1().x() + edgeLine.p2().x())/2,
-                             (edgeLine.p1().y() + edgeLine.p2().y())/2);
-            QLineF opposingLine(midPoint, edgeLine.p2());
-            opposingLine.setLength(32);
-            qreal angle = opposingLine.angle();
-            angle += 90; if(angle > 360) angle -= 360;
-            opposingLine.setAngle(angle);
+        opposingLine.setLength(opposingLine.length() + positionIncrement);
 
-            QPainterPath painterPath(edgeLine.p1());
-            painterPath.quadTo(opposingLine.p2(), edgeLine.p2());
-            return painterPath;
-        }
-        else
-        {
-            QLineF drawLine = edgeLine;
-            // Compensate for pen width
-            drawLine.setLength(drawLine.length()-(lineWidth+0.5));
-            QPainterPath painterPath(drawLine.p1());
-            painterPath.lineTo(drawLine.p2());
 
-            return painterPath;
+        if (!oppositeEdge)
+        {
+            // no curve
+            opposingLine.setLength(opposingLine.length() - 32);
+
+            // modify the line length to compensate for pen width
+            edgeLine.setLength(edgeLine.length()-(lineWidth+0.5));
         }
+
+
+        QPainterPath painterPath(edgeLine.p1());
+        painterPath.quadTo(opposingLine.p2(), edgeLine.p2());
+
+        return painterPath;
     }
     else
     {

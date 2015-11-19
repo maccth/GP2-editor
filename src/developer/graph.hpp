@@ -34,12 +34,15 @@ public:
     QRect canvas() const;
     Node *node(const QString &id) const;
     Edge *edge(const QString &id) const;
-    Edge *edgeFrom(const QString &id) const;
-    Edge *edgeTo(const QString &id) const;
+    bool hasEdgeFrom(const QString &id) const;
+    bool hasEdgeTo(const QString &id) const;
+    bool hasEdgeFromTo(const QString &sourceId, const QString &targetId) const;
     std::vector<Node *> nodes() const;
     std::vector<Edge *> edges(const QString &id = QString()) const;
     std::vector<Edge *> edgesFrom(const QString &id) const;
     std::vector<Edge *> edgesTo(const QString &id) const;
+    std::vector<Edge *> edgesFromTo(const QString &sourceId, const QString &targetId) const;
+
     QStringList nodeIdentifiers() const;
     QStringList edgeIdentifiers() const;
     QStringList variables() const;

@@ -307,28 +307,41 @@ Edge *Graph::edge(const QString &id) const
     return 0;
 }
 
-Edge *Graph::edgeFrom(const QString &id) const
+bool Graph::hasEdgeFrom(const QString &id) const
 {
     for(edgeConstIter iter = _edges.begin(); iter != _edges.end(); ++iter)
     {
         Edge *e = *iter;
         if(e->from()->id() == id)
-            return e;
+            return true;
     }
 
-    return 0;
+    return false;
 }
 
-Edge *Graph::edgeTo(const QString &id) const
+bool Graph::hasEdgeTo(const QString &id) const
 {
     for(edgeConstIter iter = _edges.begin(); iter != _edges.end(); ++iter)
     {
         Edge *e = *iter;
         if(e->to()->id() == id)
-            return e;
+            return true;
     }
 
-    return 0;
+    return false;
+}
+
+
+bool Graph::hasEdgeFromTo(const QString &sourceId, const QString &targetId) const
+{
+    for(edgeConstIter iter = _edges.begin(); iter != _edges.end(); ++iter)
+    {
+        Edge *e = *iter;
+        if((e->to()->id() == targetId) && (e->from()->id() == sourceId))
+            return true;
+    }
+
+    return false;
 }
 
 std::vector<Node *> Graph::nodes() const
@@ -412,6 +425,24 @@ std::vector<Edge *> Graph::edgesTo(const QString &id) const
 
     return result;
 }
+
+std::vector<Edge *> Graph::edgesFromTo(const QString &sourceId, const QString &targetId) const
+{
+    std::vector<Edge *> result;
+
+    if((node(sourceId) != 0) && (node(targetId) != 0))
+    {
+        for(edgeConstIter iter = _edges.begin(); iter != _edges.end(); ++iter)
+        {
+            Edge *e = *iter;
+            if((e->from()->id() == sourceId) && (e->to()->id() == targetId))
+                result.push_back(e);
+        }
+    }
+
+    return result;
+}
+
 
 QStringList Graph::nodeIdentifiers() const
 {
