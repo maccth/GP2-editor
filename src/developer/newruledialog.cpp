@@ -25,9 +25,7 @@ NewRuleDialog::NewRuleDialog(Project *proj, QWidget *parent)
     QString style = fp.readAll();
     setStyleSheet(style);
 
-    // Initialise form
-    // Set a default rule name as "Rule"
-    _ui->ruleNameEdit->setText("Rule");
+    _ui->ruleNameEdit->setValidator(new QRegExpValidator(QRegExp("[a-z][a-zA-Z0-9]*"), this));
 
     // Set the default directory as "${projectDir}/rules"
     QDir dir = proj->dir();

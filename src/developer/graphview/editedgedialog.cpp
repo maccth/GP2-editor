@@ -35,7 +35,7 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
 
     _ui->labelEdit->setText(_edge->label());
 
-    qDebug() << _edge->isBidirectional();
+    // qDebug() << _edge->isBidirectional();
     _ui->bidirectionalBox->setChecked(_edge->isBidirectional());
 
     //_ui->fromComboBox->addItems(nodes);

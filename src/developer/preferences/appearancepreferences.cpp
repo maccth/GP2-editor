@@ -31,7 +31,6 @@ AppearancePreferences::AppearancePreferences(QWidget *parent)
     _ui->lhsGraph->setGraph(lhsGraph);
     Graph *rhsGraph = new Graph(":/templates/example_graph_rhs.gpg");
     _ui->rhsGraph->setGraph(rhsGraph);
-    _ui->rhsGraph->setLinkedGraph(lhsGraph);
 
     reset();
 }

@@ -10,6 +10,8 @@
 #include <QDebug>
 #include <QRegExp>
 
+#include <algorithm>
+
 namespace Developer {
 
 Rule::Rule(const QString &rulePath, QObject *parent)
@@ -132,6 +134,52 @@ void Rule::setInterface(interface_t &interface)
     _interface = interface;
 		// Graph is an Qobject, but interface_t is not; TODO: rethink how to fix this
     //connect(_interface, SIGNAL(statusChanged(FileStatus)), this, SLOT(interfaceChanged()));
+
+    std::vector<std::string> elements = _interface.elements;
+
+    std::vector<Node*> lhsNodes = _lhs->nodes();
+    for (std::vector<Node*>::const_iterator it = lhsNodes.begin(); it!= lhsNodes.end() ; ++it )
+    {
+        Node* lhsNode = *it;
+        if (lhsNode)
+            if (std::find(elements.begin(), elements.end(), lhsNode->id().toStdString()) != elements.end() )
+                lhsNode->setIsInterface(true);
+            else
+                lhsNode->setIsInterface(false);
+    }
+
+
+    std::vector<Node*> rhsNodes = _rhs->nodes();
+    for (std::vector<Node*>::const_iterator it = rhsNodes.begin(); it!= rhsNodes.end() ; ++it )
+    {
+        Node* rhsNode = *it;
+        if (rhsNode)
+            if (std::find(elements.begin(), elements.end(), rhsNode->id().toStdString()) != elements.end() )
+                rhsNode->setIsInterface(true);
+            else
+                rhsNode->setIsInterface(false);
+    }
+
+//    for(std::vector<std::string>::iterator it = elements.begin(); it != elements.end() ; ++it)
+//    {
+//        QString var = QString::fromStdString(*it);
+//        if(_lhs->containsNode(var))
+//        {
+//            Node* node = _lhs->node(var);
+//            node->setIsInterface(true);
+//        }
+//        else
+//            qDebug() << "Warning: Node" << var << "is not contained in LHS of rule"  << _name <<", but it is in the interface";
+
+//        if(_rhs->containsNode(var))
+//        {
+//            Node* node = _rhs->node(var);
+//            node->setIsInterface(true);
+//        }
+//        else
+//            qDebug() << "Warning: Node" << var << "is not contained in RHS of rule"  << _name <<", but it is in the interface";
+//    }
+
 
     if (_initialOpen)
         return;

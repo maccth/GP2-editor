@@ -77,31 +77,27 @@
          <string>New Graph Details</string>
         </property>
         <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="graphTypeLabel">
-           <property name="text">
-            <string>Graph Type:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
+         <item row="1" column="0">
           <widget class="QLabel" name="graphNameLabel">
            <property name="text">
-            <string>Graph Name:</string>
+            <string>Name:</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="1">
           <widget class="QLineEdit" name="graphNameEdit"/>
          </item>
-         <item row="4" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="graphDirLabel">
            <property name="text">
-            <string>Graph Directory:</string>
+            <string>Directory:</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="3" column="1">
           <layout class="QHBoxLayout" name="graphDirLayout">
            <item>
             <widget class="QLineEdit" name="graphDirEdit"/>
@@ -115,14 +111,14 @@
            </item>
           </layout>
          </item>
-         <item row="6" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="graphPathLabel">
            <property name="text">
-            <string>Graph Path:</string>
+            <string>Path:</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
+         <item row="5" column="1">
           <widget class="QLabel" name="graphPath">
            <property name="font">
             <font>
@@ -132,25 +128,6 @@
            <property name="text">
             <string/>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="graphTypeComboBox">
-           <item>
-            <property name="text">
-             <string>GP Graph</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Dot / Graphviz</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>GXL</string>
-            </property>
-           </item>
           </widget>
          </item>
         </layout>
@@ -220,22 +197,6 @@
     <hint type="destinationlabel">
      <x>389</x>
      <y>449</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>graphTypeComboBox</sender>
-   <signal>currentIndexChanged(QString)</signal>
-   <receiver>NewGraphDialog</receiver>
-   <slot>typeChanged(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>269</x>
-     <y>95</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>536</x>
-     <y>119</y>
     </hint>
    </hints>
   </connection>

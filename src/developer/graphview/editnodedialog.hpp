@@ -5,6 +5,7 @@
 #define EDITNODEDIALOG_HPP
 
 #include <QDialog>
+#include <QRegExpValidator>
 
 namespace Ui {
 class EditNodeDialog;
@@ -28,7 +29,7 @@ public:
 private:
     Ui::EditNodeDialog *_ui;
     NodeItem *_node;
-    ListValidator *_labelValidator;
+    QRegExpValidator *_idValidator;
 };
 
 }

@@ -19,11 +19,11 @@ NewProjectWizard::NewProjectWizard(QWidget *parent)
 {
     _ui->setupUi(this);
 
-#ifndef Q_OS_WIN32
-    // The Linux and OSX styles do not fit in with the rest of the application,
-    // however the Aero style looks pretty good with the existing stylesheet.
-    setWizardStyle(QWizard::ModernStyle);
-#endif // Q_OS_WIN32
+    #ifndef Q_OS_WIN32
+        // The Linux and OSX styles do not fit in with the rest of the application,
+        // however the Aero style looks pretty good with the existing stylesheet.
+        setWizardStyle(QWizard::ModernStyle);
+    #endif // Q_OS_WIN32
 
     QSettings settings;
     QString path = settings.value("Projects/DefaultProjectLocation", QVariant(QDir::toNativeSeparators(QDir::homePath()))).toString();
@@ -32,9 +32,6 @@ NewProjectWizard::NewProjectWizard(QWidget *parent)
     _ui->createdPathLabel->setText(path);
 
     _ui->projectNameEdit->setValidator(new QRegExpValidator(_fileNameValidation, this));
-    _ui->initialRuleEdit->setValidator(new QRegExpValidator(_fileNameValidation, this));
-    _ui->initialProgramEdit->setValidator(new QRegExpValidator(_fileNameValidation, this));
-    _ui->initialGraphEdit->setValidator(new QRegExpValidator(_fileNameValidation, this));
 }
 
 NewProjectWizard::~NewProjectWizard()
@@ -52,52 +49,44 @@ bool NewProjectWizard::validateCurrentPage()
     switch(currentId())
     {
         case 0:
-            // Validate the target directory
-        {
-            QDir dir;
-            if(!dir.exists(_ui->projectLocationEdit->text()))
             {
-                QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(0, tr("Create Directory?"),
-                                              tr("The directory specified (%1) does not"
-                                                 " exist, create it?").arg(_ui->projectLocationEdit->text()),
-                                              QMessageBox::Yes | QMessageBox::Cancel
-                                              );
-
-                if(reply != QMessageBox::Yes)
-                    return false;
-                else
+                // Validate the target directory
+                QDir dir;
+                if(!dir.exists(_ui->projectLocationEdit->text()))
                 {
-                    // If this fails we can't make it
-                    if(!dir.mkpath(_ui->projectLocationEdit->text()))
-                    {
-                        QMessageBox::warning(
-                                    this,
-                                    tr("Directory Creation Failed"),
-                                    tr("Could not create the specified path")
-                                    );
+                    QMessageBox::StandardButton reply;
+                    reply = QMessageBox::question(0, tr("Create Directory?"),
+                                                    tr("The directory specified (%1) does not"
+                                                    " exist, create it?").arg(_ui->projectLocationEdit->text()),
+                                                    QMessageBox::Yes | QMessageBox::Cancel
+                    );
+
+                    if(reply != QMessageBox::Yes)
                         return false;
+                    else
+                    {
+                        // If this fails we can't make it
+                        if(!dir.mkpath(_ui->projectLocationEdit->text()))
+                        {
+                            QMessageBox::warning(
+                            this,
+                            tr("Directory Creation Failed"),
+                            tr("Could not create the specified path")
+                            );
+                            return false;
+                        }
+
+                        return dir.exists(_ui->projectLocationEdit->text());
                     }
-                    return dir.exists(_ui->projectLocationEdit->text());
                 }
             }
-        }
+
             // Validate the project name
-            if(_ui->projectNameEdit->text() == QString()
-                    || !_fileNameValidation.exactMatch(_ui->projectNameEdit->text())
-                    )
+            if  (_ui->projectNameEdit->text() == QString()
+                || !_fileNameValidation.exactMatch(_ui->projectNameEdit->text())
+                )
                 return false;
-            break;
-        case 1:
-            // Combo box with fixed values, there is no reason this should fail
-            break;
-        case 2:
-            // Validate initial rule/program/graph names
-            if(!_fileNameValidation.exactMatch(_ui->initialRuleEdit->text())
-                    || !_fileNameValidation.exactMatch(_ui->initialProgramEdit->text())
-                    || !_fileNameValidation.exactMatch(_ui->initialGraphEdit->text())
-                    )
-                return false;
+
             break;
         default:
             // If given no other information, return true by default
@@ -139,11 +128,7 @@ void NewProjectWizard::accept()
                     );
     }
 
-    GPVersions version = DEFAULT_GP_VERSION;
-    // Quick'n'dirty bit of direct string comparison to get nicer looking labels
-    // in the wizard
-    if(_ui->gpVersionCombo->currentText() == QString("GP2"))
-        version = GP2;
+    GPVersions version = GP2;
 
     // Set up the new project
     _project = new Project();
@@ -154,20 +139,9 @@ void NewProjectWizard::accept()
                 );
 
     // Add a set of initial files
-    if(_ui->initialGraphEdit->text().isEmpty())
-        _project->newGraph(_ui->initialGraphEdit->placeholderText());
-    else
-        _project->newGraph(_ui->initialGraphEdit->text());
-
-    if(_ui->initialProgramEdit->text().isEmpty())
-        _project->newProgram(_ui->initialProgramEdit->placeholderText());
-    else
-        _project->newProgram(_ui->initialProgramEdit->text());
-
-    if(_ui->initialRuleEdit->text().isEmpty())
-        _project->newRule(_ui->initialRuleEdit->placeholderText());
-    else
-        _project->newRule(_ui->initialRuleEdit->text());
+//    _project->newGraph(QString("Graph1.gpg"));
+//    _project->newProgram(QString("Program1"));
+//    _project->newRule(QString("Rule1"));
 
     QDialog::accept();
 }

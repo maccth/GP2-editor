@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QSettings>
+#include <QRegExp>
 
 namespace Developer {
 
@@ -26,7 +27,10 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
     QString style = fp.readAll();
     setStyleSheet(style);
 
+    _idValidator = new QRegExpValidator(QRegExp("n[0-9]+"), this);
+    _ui->idEdit->setValidator(_idValidator);
     _ui->idEdit->setText(node->id());
+
     _ui->labelEdit->setText(node->label());
     _ui->rootCheckBox->setChecked(node->isRoot());
 
@@ -75,15 +79,12 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
     int currentMarkIndex = _ui->markComboBox->findText(_node->mark());
     if (currentMarkIndex != -1)
         _ui->markComboBox->setCurrentIndex(currentMarkIndex);
-
-    //_labelValidator = new ListValidator(this);
-    //_ui->labelEdit->setValidator(_labelValidator);
 }
 
 EditNodeDialog::~EditNodeDialog()
 {
     delete _ui;
-    delete _labelValidator;
+    delete _idValidator;
 }
 
 void EditNodeDialog::accept()

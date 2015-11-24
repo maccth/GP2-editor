@@ -343,10 +343,9 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     // Draw the node ID
     QColor idColour = textColour;
 
-    if(_isInterface)
+    if(_node->isInterface())
     {
         font.setWeight(QFont::DemiBold);
-        qDebug() << "  nodeitem.cpp: Node " << _id << "is drawn with bolded id";
     }
     else
     {

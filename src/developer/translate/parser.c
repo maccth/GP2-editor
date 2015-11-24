@@ -66,7 +66,7 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 268 of yacc.c  */
-#line 35 "gpparser.y"
+#line 37 "gpparser.y"
 
 #define YYDEBUG 1
 #include "globals.h"
@@ -82,6 +82,7 @@
 void yyerror(const char *error_message);
 void report_warning(const char *error_message);
 
+
 /* Flags used in the AST construction. */
 bool is_root = false;
 bool is_bidir = false;
@@ -93,9 +94,11 @@ struct List *gp_program = NULL;
 
 bool syntax_error = false;
 
+extern YY_BUFFER_STATE;
+
 
 /* Line 268 of yacc.c  */
-#line 99 "parser.c"
+#line 102 "parser.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -125,7 +128,7 @@ bool syntax_error = false;
 
 
 /* Line 288 of yacc.c  */
-#line 129 "parser.c"
+#line 132 "parser.c"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -184,7 +187,7 @@ typedef union YYSTYPE
 {
 
 /* Line 293 of yacc.c  */
-#line 64 "gpparser.y"
+#line 69 "gpparser.y"
   
   int num;   /* value of NUM token. */
   char *str; /* value of STRING and CHAR tokens. */
@@ -194,7 +197,7 @@ typedef union YYSTYPE
 
 
 /* Line 293 of yacc.c  */
-#line 97 "gpparser.y"
+#line 102 "gpparser.y"
   
   struct List *list; 
   struct GPDeclaration *decl;
@@ -215,7 +218,7 @@ typedef union YYSTYPE
 
 
 /* Line 293 of yacc.c  */
-#line 219 "parser.c"
+#line 222 "parser.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -248,16 +251,18 @@ extern string yytext;
 extern FILE *yyin;
 extern bool syntax_error;
 
+/*bool parse_gpGraphString(const char* graph_string);*/
+
 
 
 /* Line 340 of yacc.c  */
-#line 255 "parser.c"
+#line 260 "parser.c"
 
 /* Copy the second part of user declarations.  */
 
 
 /* Line 343 of yacc.c  */
-#line 261 "parser.c"
+#line 266 "parser.c"
 
 #ifdef short
 # undef short
@@ -626,22 +631,22 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   207,   207,   208,   209,   212,   214,   217,   218,   219,
-     221,   223,   227,   232,   239,   240,   242,   245,   246,   248,
-     253,   254,   255,   257,   260,   264,   266,   268,   270,   274,
-     275,   279,   280,   281,   282,   283,   284,   286,   287,   288,
-     290,   293,   295,   297,   300,   305,   313,   316,   320,   329,
-     336,   341,   347,   349,   352,   353,   356,   359,   361,   364,
-     365,   366,   367,   368,   373,   374,   375,   376,   377,   378,
-     381,   382,   384,   387,   391,   392,   394,   400,   401,   402,
-     403,   404,   405,   406,   407,   408,   411,   412,   414,   415,
-     420,   421,   423,   425,   428,   429,   430,   431,   432,   433,
-     434,   435,   436,   437,   439,   440,   441,   442,   444,   445,
-     449,   450,   451,   452,   454,   455,   458,   459,   461,   466,
-     467,   468,   469,   471,   473,   474,   475,   476,   477,   478,
-     479,   480,   484,   485,   486,   487,   488,   497,   498,   499,
-     500,   502,   504,   507,   508,   510,   514,   519,   520,   522,
-     528,   529,   530,   531,   533,   534,   536,   540,   541,   542
+       0,   212,   212,   213,   214,   217,   219,   222,   223,   224,
+     226,   228,   232,   237,   244,   245,   247,   250,   251,   253,
+     258,   259,   260,   262,   265,   269,   271,   273,   275,   279,
+     280,   284,   285,   286,   287,   288,   289,   291,   292,   293,
+     295,   298,   300,   302,   305,   310,   318,   321,   325,   334,
+     341,   346,   352,   354,   357,   358,   361,   364,   366,   369,
+     370,   371,   372,   373,   378,   379,   380,   381,   382,   383,
+     386,   387,   389,   392,   396,   397,   399,   405,   406,   407,
+     408,   409,   410,   411,   412,   413,   416,   417,   419,   420,
+     425,   426,   428,   430,   433,   434,   435,   436,   437,   438,
+     439,   440,   441,   442,   444,   445,   446,   447,   449,   450,
+     454,   455,   456,   457,   459,   460,   463,   464,   466,   471,
+     472,   473,   474,   476,   478,   479,   480,   481,   482,   483,
+     484,   485,   489,   490,   491,   492,   493,   502,   503,   504,
+     505,   507,   509,   512,   513,   515,   519,   524,   525,   527,
+     533,   534,   535,   536,   538,   539,   541,   545,   546,   547
 };
 #endif
 
@@ -1533,380 +1538,380 @@ yydestruct (yymsg, yytype, yyvaluep, yylocationp)
       case 32: /* "STR" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->str)); };
 
 /* Line 1391 of yacc.c  */
-#line 1541 "parser.c"
+#line 1546 "parser.c"
 	break;
       case 33: /* "PROCID" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->id)); };
 
 /* Line 1391 of yacc.c  */
-#line 1550 "parser.c"
+#line 1555 "parser.c"
 	break;
       case 34: /* "ID" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->id)); };
 
 /* Line 1391 of yacc.c  */
-#line 1559 "parser.c"
+#line 1564 "parser.c"
 	break;
       case 66: /* "Program" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1568 "parser.c"
+#line 1573 "parser.c"
 	break;
       case 67: /* "Declaration" */
 
 /* Line 1391 of yacc.c  */
-#line 138 "gpparser.y"
+#line 143 "gpparser.y"
 	{ freeASTDeclaration((yyvaluep->decl)); };
 
 /* Line 1391 of yacc.c  */
-#line 1577 "parser.c"
+#line 1582 "parser.c"
 	break;
       case 68: /* "MainDecl" */
 
 /* Line 1391 of yacc.c  */
-#line 139 "gpparser.y"
+#line 144 "gpparser.y"
 	{ freeASTCommand((yyvaluep->command)); };
 
 /* Line 1391 of yacc.c  */
-#line 1586 "parser.c"
+#line 1591 "parser.c"
 	break;
       case 70: /* "LocalDecls" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1595 "parser.c"
+#line 1600 "parser.c"
 	break;
       case 71: /* "ComSeq" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1604 "parser.c"
+#line 1609 "parser.c"
 	break;
       case 72: /* "Command" */
 
 /* Line 1391 of yacc.c  */
-#line 139 "gpparser.y"
+#line 144 "gpparser.y"
 	{ freeASTCommand((yyvaluep->command)); };
 
 /* Line 1391 of yacc.c  */
-#line 1613 "parser.c"
+#line 1618 "parser.c"
 	break;
       case 73: /* "Block" */
 
 /* Line 1391 of yacc.c  */
-#line 139 "gpparser.y"
+#line 144 "gpparser.y"
 	{ freeASTCommand((yyvaluep->command)); };
 
 /* Line 1391 of yacc.c  */
-#line 1622 "parser.c"
+#line 1627 "parser.c"
 	break;
       case 74: /* "SimpleCommand" */
 
 /* Line 1391 of yacc.c  */
-#line 139 "gpparser.y"
+#line 144 "gpparser.y"
 	{ freeASTCommand((yyvaluep->command)); };
 
 /* Line 1391 of yacc.c  */
-#line 1631 "parser.c"
+#line 1636 "parser.c"
 	break;
       case 75: /* "RuleSetCall" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1640 "parser.c"
+#line 1645 "parser.c"
 	break;
       case 76: /* "IDList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1649 "parser.c"
+#line 1654 "parser.c"
 	break;
       case 77: /* "RuleDecl" */
 
 /* Line 1391 of yacc.c  */
-#line 140 "gpparser.y"
+#line 145 "gpparser.y"
 	{ freeASTRule((yyvaluep->rule)); };
 
 /* Line 1391 of yacc.c  */
-#line 1658 "parser.c"
+#line 1663 "parser.c"
 	break;
       case 78: /* "VarDecls" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1667 "parser.c"
+#line 1672 "parser.c"
 	break;
       case 79: /* "VarList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1676 "parser.c"
+#line 1681 "parser.c"
 	break;
       case 80: /* "Inter" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1685 "parser.c"
+#line 1690 "parser.c"
 	break;
       case 81: /* "NodeIDList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1694 "parser.c"
+#line 1699 "parser.c"
 	break;
       case 83: /* "Graph" */
 
 /* Line 1391 of yacc.c  */
-#line 141 "gpparser.y"
+#line 146 "gpparser.y"
 	{ freeASTGraph((yyvaluep->graph)); };
 
 /* Line 1391 of yacc.c  */
-#line 1703 "parser.c"
+#line 1708 "parser.c"
 	break;
       case 84: /* "NodeList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1712 "parser.c"
+#line 1717 "parser.c"
 	break;
       case 85: /* "Node" */
 
 /* Line 1391 of yacc.c  */
-#line 142 "gpparser.y"
+#line 147 "gpparser.y"
 	{ freeASTNode((yyvaluep->node)); };
 
 /* Line 1391 of yacc.c  */
-#line 1721 "parser.c"
+#line 1726 "parser.c"
 	break;
       case 86: /* "EdgeList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1730 "parser.c"
+#line 1735 "parser.c"
 	break;
       case 87: /* "Edge" */
 
 /* Line 1391 of yacc.c  */
-#line 143 "gpparser.y"
+#line 148 "gpparser.y"
 	{ freeASTEdge((yyvaluep->edge)); };
 
 /* Line 1391 of yacc.c  */
-#line 1739 "parser.c"
+#line 1744 "parser.c"
 	break;
       case 91: /* "CondDecl" */
 
 /* Line 1391 of yacc.c  */
-#line 144 "gpparser.y"
+#line 149 "gpparser.y"
 	{ freeASTCondition((yyvaluep->cond_exp)); };
 
 /* Line 1391 of yacc.c  */
-#line 1748 "parser.c"
+#line 1753 "parser.c"
 	break;
       case 92: /* "Condition" */
 
 /* Line 1391 of yacc.c  */
-#line 144 "gpparser.y"
+#line 149 "gpparser.y"
 	{ freeASTCondition((yyvaluep->cond_exp)); };
 
 /* Line 1391 of yacc.c  */
-#line 1757 "parser.c"
+#line 1762 "parser.c"
 	break;
       case 94: /* "LabelArg" */
 
 /* Line 1391 of yacc.c  */
-#line 145 "gpparser.y"
+#line 150 "gpparser.y"
 	{ freeASTLabel((yyvaluep->label)); };
 
 /* Line 1391 of yacc.c  */
-#line 1766 "parser.c"
+#line 1771 "parser.c"
 	break;
       case 95: /* "Label" */
 
 /* Line 1391 of yacc.c  */
-#line 145 "gpparser.y"
+#line 150 "gpparser.y"
 	{ freeASTLabel((yyvaluep->label)); };
 
 /* Line 1391 of yacc.c  */
-#line 1775 "parser.c"
+#line 1780 "parser.c"
 	break;
       case 96: /* "List" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1784 "parser.c"
+#line 1789 "parser.c"
 	break;
       case 97: /* "AtomExp" */
 
 /* Line 1391 of yacc.c  */
-#line 146 "gpparser.y"
+#line 151 "gpparser.y"
 	{ freeASTAtom((yyvaluep->atom_exp)); };
 
 /* Line 1391 of yacc.c  */
-#line 1793 "parser.c"
+#line 1798 "parser.c"
 	break;
       case 98: /* "ProcID" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->id)); };
 
 /* Line 1391 of yacc.c  */
-#line 1802 "parser.c"
+#line 1807 "parser.c"
 	break;
       case 99: /* "RuleID" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->id)); };
 
 /* Line 1391 of yacc.c  */
-#line 1811 "parser.c"
+#line 1816 "parser.c"
 	break;
       case 100: /* "NodeID" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->id)); };
 
 /* Line 1391 of yacc.c  */
-#line 1820 "parser.c"
+#line 1825 "parser.c"
 	break;
       case 101: /* "EdgeID" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->id)); };
 
 /* Line 1391 of yacc.c  */
-#line 1829 "parser.c"
+#line 1834 "parser.c"
 	break;
       case 102: /* "Variable" */
 
 /* Line 1391 of yacc.c  */
-#line 136 "gpparser.y"
+#line 141 "gpparser.y"
 	{ free((yyvaluep->id)); };
 
 /* Line 1391 of yacc.c  */
-#line 1838 "parser.c"
+#line 1843 "parser.c"
 	break;
       case 103: /* "HostGraph" */
 
 /* Line 1391 of yacc.c  */
-#line 141 "gpparser.y"
+#line 146 "gpparser.y"
 	{ freeASTGraph((yyvaluep->graph)); };
 
 /* Line 1391 of yacc.c  */
-#line 1847 "parser.c"
+#line 1852 "parser.c"
 	break;
       case 104: /* "HostNodeList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1856 "parser.c"
+#line 1861 "parser.c"
 	break;
       case 105: /* "HostNode" */
 
 /* Line 1391 of yacc.c  */
-#line 142 "gpparser.y"
+#line 147 "gpparser.y"
 	{ freeASTNode((yyvaluep->node)); };
 
 /* Line 1391 of yacc.c  */
-#line 1865 "parser.c"
+#line 1870 "parser.c"
 	break;
       case 106: /* "HostEdgeList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1874 "parser.c"
+#line 1879 "parser.c"
 	break;
       case 107: /* "HostEdge" */
 
 /* Line 1391 of yacc.c  */
-#line 143 "gpparser.y"
+#line 148 "gpparser.y"
 	{ freeASTEdge((yyvaluep->edge)); };
 
 /* Line 1391 of yacc.c  */
-#line 1883 "parser.c"
+#line 1888 "parser.c"
 	break;
       case 108: /* "HostLabel" */
 
 /* Line 1391 of yacc.c  */
-#line 145 "gpparser.y"
+#line 150 "gpparser.y"
 	{ freeASTLabel((yyvaluep->label)); };
 
 /* Line 1391 of yacc.c  */
-#line 1892 "parser.c"
+#line 1897 "parser.c"
 	break;
       case 109: /* "HostList" */
 
 /* Line 1391 of yacc.c  */
-#line 137 "gpparser.y"
+#line 142 "gpparser.y"
 	{ freeAST((yyvaluep->list)); };
 
 /* Line 1391 of yacc.c  */
-#line 1901 "parser.c"
+#line 1906 "parser.c"
 	break;
       case 110: /* "HostExp" */
 
 /* Line 1391 of yacc.c  */
-#line 146 "gpparser.y"
+#line 151 "gpparser.y"
 	{ freeASTAtom((yyvaluep->atom_exp)); };
 
 /* Line 1391 of yacc.c  */
-#line 1910 "parser.c"
+#line 1915 "parser.c"
 	break;
 
       default:
@@ -2236,28 +2241,28 @@ yyreduce:
         case 2:
 
 /* Line 1806 of yacc.c  */
-#line 207 "gpparser.y"
+#line 212 "gpparser.y"
     { gp_rule = (yyvsp[(2) - (2)].rule); }
     break;
 
   case 3:
 
 /* Line 1806 of yacc.c  */
-#line 208 "gpparser.y"
+#line 213 "gpparser.y"
     { gp_program = (yyvsp[(2) - (2)].list); }
     break;
 
   case 4:
 
 /* Line 1806 of yacc.c  */
-#line 209 "gpparser.y"
+#line 214 "gpparser.y"
     { ast_host_graph = (yyvsp[(2) - (2)].graph); }
     break;
 
   case 5:
 
 /* Line 1806 of yacc.c  */
-#line 212 "gpparser.y"
+#line 217 "gpparser.y"
     { (yyval.list) = addASTDecl(GLOBAL_DECLARATIONS, 
                                                (yylsp[(1) - (1)]), (yyvsp[(1) - (1)].decl), NULL); }
     break;
@@ -2265,7 +2270,7 @@ yyreduce:
   case 6:
 
 /* Line 1806 of yacc.c  */
-#line 214 "gpparser.y"
+#line 219 "gpparser.y"
     { (yyval.list) = addASTDecl(GLOBAL_DECLARATIONS, 
                                                (yylsp[(2) - (2)]), (yyvsp[(2) - (2)].decl), (yyvsp[(1) - (2)].list)); }
     break;
@@ -2273,35 +2278,35 @@ yyreduce:
   case 7:
 
 /* Line 1806 of yacc.c  */
-#line 217 "gpparser.y"
+#line 222 "gpparser.y"
     { (yyval.decl) = newASTMainDecl((yyloc), (yyvsp[(1) - (1)].command)); }
     break;
 
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 218 "gpparser.y"
+#line 223 "gpparser.y"
     { (yyval.decl) = newASTProcedureDecl((yyloc), (yyvsp[(1) - (1)].proc)); }
     break;
 
   case 9:
 
 /* Line 1806 of yacc.c  */
-#line 219 "gpparser.y"
+#line 224 "gpparser.y"
     { (yyval.decl) = newASTRuleDecl((yyloc), (yyvsp[(1) - (1)].rule)); }
     break;
 
   case 10:
 
 /* Line 1806 of yacc.c  */
-#line 221 "gpparser.y"
+#line 226 "gpparser.y"
     { (yyval.command) = newASTCommandSequence((yylsp[(1) - (3)]), (yyvsp[(3) - (3)].list)); }
     break;
 
   case 11:
 
 /* Line 1806 of yacc.c  */
-#line 223 "gpparser.y"
+#line 228 "gpparser.y"
     { (yyval.proc) = newASTProcedure((yylsp[(1) - (3)]), (yyvsp[(1) - (3)].id), NULL, 
                                                newASTCommandSequence((yylsp[(3) - (3)]) ,(yyvsp[(3) - (3)].list)));
 					  if((yyvsp[(1) - (3)].id)) free((yyvsp[(1) - (3)].id)); }
@@ -2310,7 +2315,7 @@ yyreduce:
   case 12:
 
 /* Line 1806 of yacc.c  */
-#line 228 "gpparser.y"
+#line 233 "gpparser.y"
     { (yyval.proc) = newASTProcedure((yylsp[(1) - (6)]), (yyvsp[(1) - (6)].id), (yyvsp[(4) - (6)].list), 
                                                newASTCommandSequence((yylsp[(6) - (6)]), (yyvsp[(6) - (6)].list)));
 				          if((yyvsp[(1) - (6)].id)) free((yyvsp[(1) - (6)].id)); }
@@ -2319,7 +2324,7 @@ yyreduce:
   case 13:
 
 /* Line 1806 of yacc.c  */
-#line 233 "gpparser.y"
+#line 238 "gpparser.y"
     { (yyval.proc) = newASTProcedure((yylsp[(1) - (6)]), (yyvsp[(1) - (6)].id), (yyvsp[(4) - (6)].list), 
                                                newASTCommandSequence((yylsp[(6) - (6)]), (yyvsp[(6) - (6)].list)));
                                           report_warning("Procedure names must "
@@ -2330,14 +2335,14 @@ yyreduce:
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 239 "gpparser.y"
+#line 244 "gpparser.y"
     { (yyval.list) = NULL; }
     break;
 
   case 15:
 
 /* Line 1806 of yacc.c  */
-#line 240 "gpparser.y"
+#line 245 "gpparser.y"
     { (yyval.list) = addASTDecl(LOCAL_DECLARATIONS, (yylsp[(2) - (2)]), 
                                                newASTRuleDecl((yylsp[(2) - (2)]), (yyvsp[(2) - (2)].rule)), (yyvsp[(1) - (2)].list)); }
     break;
@@ -2345,7 +2350,7 @@ yyreduce:
   case 16:
 
 /* Line 1806 of yacc.c  */
-#line 242 "gpparser.y"
+#line 247 "gpparser.y"
     { (yyval.list) = addASTDecl(LOCAL_DECLARATIONS, (yylsp[(2) - (2)]),
                                                newASTProcedureDecl((yylsp[(2) - (2)]), (yyvsp[(2) - (2)].proc)), (yyvsp[(1) - (2)].list)); }
     break;
@@ -2353,21 +2358,21 @@ yyreduce:
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 245 "gpparser.y"
+#line 250 "gpparser.y"
     { (yyval.list) = addASTCommand((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].command), NULL); }
     break;
 
   case 18:
 
 /* Line 1806 of yacc.c  */
-#line 246 "gpparser.y"
+#line 251 "gpparser.y"
     { (yyval.list) = addASTCommand((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].command), (yyvsp[(1) - (3)].list)); }
     break;
 
   case 19:
 
 /* Line 1806 of yacc.c  */
-#line 248 "gpparser.y"
+#line 253 "gpparser.y"
     { (yyval.list) = addASTCommand((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].command), (yyvsp[(1) - (3)].list));
                                           report_warning("Incorrect use of comma "
 					    "to separate commands. Perhaps you "
@@ -2377,14 +2382,14 @@ yyreduce:
   case 21:
 
 /* Line 1806 of yacc.c  */
-#line 254 "gpparser.y"
+#line 259 "gpparser.y"
     { (yyval.command) = newASTOrStmt((yyloc), (yyvsp[(1) - (3)].command), (yyvsp[(3) - (3)].command)); }
     break;
 
   case 22:
 
 /* Line 1806 of yacc.c  */
-#line 255 "gpparser.y"
+#line 260 "gpparser.y"
     { (yyval.command) = newASTCondBranch(IF_STATEMENT, (yyloc),
                                                (yyvsp[(2) - (4)].command), (yyvsp[(4) - (4)].command), newASTSkip((yyloc))); }
     break;
@@ -2392,7 +2397,7 @@ yyreduce:
   case 23:
 
 /* Line 1806 of yacc.c  */
-#line 257 "gpparser.y"
+#line 262 "gpparser.y"
     { (yyval.command) = newASTCondBranch(IF_STATEMENT, (yyloc),
                                                (yyvsp[(2) - (6)].command), (yyvsp[(4) - (6)].command), (yyvsp[(6) - (6)].command)); }
     break;
@@ -2400,7 +2405,7 @@ yyreduce:
   case 24:
 
 /* Line 1806 of yacc.c  */
-#line 260 "gpparser.y"
+#line 265 "gpparser.y"
     { (yyval.command) = newASTCondBranch(IF_STATEMENT, (yyloc),
                                                (yyvsp[(2) - (4)].command), newASTSkip((yyloc)), (yyvsp[(4) - (4)].command));
                                           report_warning("No 'then' clause in if "
@@ -2410,7 +2415,7 @@ yyreduce:
   case 25:
 
 /* Line 1806 of yacc.c  */
-#line 264 "gpparser.y"
+#line 269 "gpparser.y"
     { (yyval.command) = newASTCondBranch(TRY_STATEMENT, (yyloc),
                                                (yyvsp[(2) - (2)].command), newASTSkip((yyloc)), newASTSkip((yyloc))); }
     break;
@@ -2418,7 +2423,7 @@ yyreduce:
   case 26:
 
 /* Line 1806 of yacc.c  */
-#line 266 "gpparser.y"
+#line 271 "gpparser.y"
     { (yyval.command) = newASTCondBranch(TRY_STATEMENT, (yyloc),
                                                (yyvsp[(2) - (4)].command), (yyvsp[(4) - (4)].command), newASTSkip((yyloc))); }
     break;
@@ -2426,7 +2431,7 @@ yyreduce:
   case 27:
 
 /* Line 1806 of yacc.c  */
-#line 268 "gpparser.y"
+#line 273 "gpparser.y"
     { (yyval.command) = newASTCondBranch(TRY_STATEMENT, (yyloc),
                                                (yyvsp[(2) - (4)].command), newASTSkip((yyloc)), (yyvsp[(4) - (4)].command)); }
     break;
@@ -2434,7 +2439,7 @@ yyreduce:
   case 28:
 
 /* Line 1806 of yacc.c  */
-#line 270 "gpparser.y"
+#line 275 "gpparser.y"
     { (yyval.command) = newASTCondBranch(TRY_STATEMENT, (yyloc),
                                                 (yyvsp[(2) - (6)].command), (yyvsp[(4) - (6)].command), (yyvsp[(6) - (6)].command)); }
     break;
@@ -2442,14 +2447,14 @@ yyreduce:
   case 29:
 
 /* Line 1806 of yacc.c  */
-#line 274 "gpparser.y"
+#line 279 "gpparser.y"
     { (yyval.command) = newASTCommandSequence((yyloc), (yyvsp[(2) - (3)].list)); }
     break;
 
   case 30:
 
 /* Line 1806 of yacc.c  */
-#line 275 "gpparser.y"
+#line 280 "gpparser.y"
     { (yyval.command) = newASTAlap((yyloc), 
                                                newASTCommandSequence((yylsp[(2) - (4)]), (yyvsp[(2) - (4)].list))); }
     break;
@@ -2457,77 +2462,77 @@ yyreduce:
   case 31:
 
 /* Line 1806 of yacc.c  */
-#line 279 "gpparser.y"
+#line 284 "gpparser.y"
     { (yyval.command) = NULL; }
     break;
 
   case 33:
 
 /* Line 1806 of yacc.c  */
-#line 281 "gpparser.y"
+#line 286 "gpparser.y"
     { (yyval.command) = newASTAlap((yyloc), (yyvsp[(1) - (2)].command)); }
     break;
 
   case 34:
 
 /* Line 1806 of yacc.c  */
-#line 282 "gpparser.y"
+#line 287 "gpparser.y"
     { (yyval.command) = newASTSkip((yyloc)); }
     break;
 
   case 35:
 
 /* Line 1806 of yacc.c  */
-#line 283 "gpparser.y"
+#line 288 "gpparser.y"
     { (yyval.command) = newASTEmptyStatement((yyloc), FAIL_STATEMENT); }
     break;
 
   case 36:
 
 /* Line 1806 of yacc.c  */
-#line 284 "gpparser.y"
+#line 289 "gpparser.y"
     { (yyval.command) = newASTEmptyStatement((yyloc), BREAK_STATEMENT); }
     break;
 
   case 37:
 
 /* Line 1806 of yacc.c  */
-#line 286 "gpparser.y"
+#line 291 "gpparser.y"
     { (yyval.command) = newASTRuleSetCall((yyloc), (yyvsp[(1) - (1)].list)); }
     break;
 
   case 38:
 
 /* Line 1806 of yacc.c  */
-#line 287 "gpparser.y"
+#line 292 "gpparser.y"
     { (yyval.command) = newASTRuleCall((yyloc), (yyvsp[(1) - (1)].id)); if((yyvsp[(1) - (1)].id)) free((yyvsp[(1) - (1)].id)); }
     break;
 
   case 39:
 
 /* Line 1806 of yacc.c  */
-#line 288 "gpparser.y"
+#line 293 "gpparser.y"
     { (yyval.command) = newASTProcCall((yyloc), (yyvsp[(1) - (1)].id)); if((yyvsp[(1) - (1)].id)) free((yyvsp[(1) - (1)].id)); }
     break;
 
   case 40:
 
 /* Line 1806 of yacc.c  */
-#line 290 "gpparser.y"
+#line 295 "gpparser.y"
     { (yyval.list) = (yyvsp[(2) - (3)].list); }
     break;
 
   case 41:
 
 /* Line 1806 of yacc.c  */
-#line 293 "gpparser.y"
+#line 298 "gpparser.y"
     { (yyval.list) = NULL; }
     break;
 
   case 42:
 
 /* Line 1806 of yacc.c  */
-#line 295 "gpparser.y"
+#line 300 "gpparser.y"
     { (yyval.list) = addASTRule((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].id), NULL);
 					  if((yyvsp[(1) - (1)].id)) free((yyvsp[(1) - (1)].id)); }
     break;
@@ -2535,7 +2540,7 @@ yyreduce:
   case 43:
 
 /* Line 1806 of yacc.c  */
-#line 297 "gpparser.y"
+#line 302 "gpparser.y"
     { (yyval.list) = addASTRule((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].id), (yyvsp[(1) - (3)].list)); 
 					  if((yyvsp[(3) - (3)].id)) free((yyvsp[(3) - (3)].id));}
     break;
@@ -2543,7 +2548,7 @@ yyreduce:
   case 44:
 
 /* Line 1806 of yacc.c  */
-#line 300 "gpparser.y"
+#line 305 "gpparser.y"
     { (yyval.list) = addASTRule((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].id), NULL);
                                           report_warning("Procedure name used in "
 					   "a rule set. Rule names must start "
@@ -2554,7 +2559,7 @@ yyreduce:
   case 45:
 
 /* Line 1806 of yacc.c  */
-#line 305 "gpparser.y"
+#line 310 "gpparser.y"
     { (yyval.list) = addASTRule((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].id), (yyvsp[(1) - (3)].list));
                                           report_warning("Incorrect use of semicolon "
 					   "in a rule set. Perhaps you meant to "
@@ -2565,7 +2570,7 @@ yyreduce:
   case 46:
 
 /* Line 1806 of yacc.c  */
-#line 314 "gpparser.y"
+#line 319 "gpparser.y"
     { (yyval.rule) = newASTRule((yylsp[(1) - (9)]), (yyvsp[(1) - (9)].id), (yyvsp[(3) - (9)].list), (yyvsp[(5) - (9)].graph), (yyvsp[(7) - (9)].graph), (yyvsp[(8) - (9)].list), (yyvsp[(9) - (9)].cond_exp)); 
 					  if((yyvsp[(1) - (9)].id)) free((yyvsp[(1) - (9)].id)); }
     break;
@@ -2573,7 +2578,7 @@ yyreduce:
   case 47:
 
 /* Line 1806 of yacc.c  */
-#line 317 "gpparser.y"
+#line 322 "gpparser.y"
     { (yyval.rule) = newASTRule((yylsp[(1) - (8)]), (yyvsp[(1) - (8)].id), NULL, (yyvsp[(4) - (8)].graph), (yyvsp[(6) - (8)].graph), (yyvsp[(7) - (8)].list), (yyvsp[(8) - (8)].cond_exp));
 					  if((yyvsp[(1) - (8)].id)) free((yyvsp[(1) - (8)].id)); }
     break;
@@ -2581,7 +2586,7 @@ yyreduce:
   case 48:
 
 /* Line 1806 of yacc.c  */
-#line 321 "gpparser.y"
+#line 326 "gpparser.y"
     { (yyval.rule) = newASTRule((yylsp[(1) - (9)]), (yyvsp[(1) - (9)].id), (yyvsp[(3) - (9)].list), (yyvsp[(5) - (9)].graph), (yyvsp[(7) - (9)].graph), (yyvsp[(8) - (9)].list), (yyvsp[(9) - (9)].cond_exp)); 
                                           report_warning("Rule names must "
  					   "start with a lower-case letter."
@@ -2592,7 +2597,7 @@ yyreduce:
   case 49:
 
 /* Line 1806 of yacc.c  */
-#line 330 "gpparser.y"
+#line 335 "gpparser.y"
     { (yyval.rule) = newASTRule((yylsp[(1) - (10)]), (yyvsp[(1) - (10)].id), (yyvsp[(3) - (10)].list), (yyvsp[(6) - (10)].graph), (yyvsp[(8) - (10)].graph), (yyvsp[(9) - (10)].list), (yyvsp[(10) - (10)].cond_exp));  
                                           report_warning("Semicolon at the end "
 					    "of a rule's variable list");
@@ -2602,14 +2607,14 @@ yyreduce:
   case 50:
 
 /* Line 1806 of yacc.c  */
-#line 336 "gpparser.y"
+#line 341 "gpparser.y"
     { (yyval.list) = addASTVariableDecl((yyvsp[(3) - (3)].list_type), (yyloc), (yyvsp[(1) - (3)].list), NULL); }
     break;
 
   case 51:
 
 /* Line 1806 of yacc.c  */
-#line 341 "gpparser.y"
+#line 346 "gpparser.y"
     { (yyloc).first_column = (yylsp[(3) - (5)]).first_column;
 				          (yyloc).first_line = (yylsp[(3) - (5)]).first_line;
 					  (yyloc).last_column = (yylsp[(5) - (5)]).last_column;
@@ -2620,7 +2625,7 @@ yyreduce:
   case 52:
 
 /* Line 1806 of yacc.c  */
-#line 347 "gpparser.y"
+#line 352 "gpparser.y"
     { (yyval.list) = addASTVariable((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].id), NULL); 
 					  if((yyvsp[(1) - (1)].id)) free((yyvsp[(1) - (1)].id)); }
     break;
@@ -2628,7 +2633,7 @@ yyreduce:
   case 53:
 
 /* Line 1806 of yacc.c  */
-#line 349 "gpparser.y"
+#line 354 "gpparser.y"
     { (yyval.list) = addASTVariable((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].id), (yyvsp[(1) - (3)].list)); 
 		 	                  if((yyvsp[(3) - (3)].id)) free((yyvsp[(3) - (3)].id)); }
     break;
@@ -2636,21 +2641,21 @@ yyreduce:
   case 54:
 
 /* Line 1806 of yacc.c  */
-#line 352 "gpparser.y"
+#line 357 "gpparser.y"
     { (yyval.list) = NULL; }
     break;
 
   case 55:
 
 /* Line 1806 of yacc.c  */
-#line 353 "gpparser.y"
+#line 358 "gpparser.y"
     { (yyval.list) = (yyvsp[(4) - (5)].list); }
     break;
 
   case 56:
 
 /* Line 1806 of yacc.c  */
-#line 356 "gpparser.y"
+#line 361 "gpparser.y"
     { report_warning("Error in an interface list.");  
                                           (yyval.list) = NULL; }
     break;
@@ -2658,7 +2663,7 @@ yyreduce:
   case 57:
 
 /* Line 1806 of yacc.c  */
-#line 359 "gpparser.y"
+#line 364 "gpparser.y"
     { (yyval.list) = addASTNodeID((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].id), NULL); 
 					  if((yyvsp[(1) - (1)].id)) free((yyvsp[(1) - (1)].id)); }
     break;
@@ -2666,7 +2671,7 @@ yyreduce:
   case 58:
 
 /* Line 1806 of yacc.c  */
-#line 361 "gpparser.y"
+#line 366 "gpparser.y"
     { (yyval.list) = addASTNodeID((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].id), (yyvsp[(1) - (3)].list));
 					  if((yyvsp[(3) - (3)].id)) free((yyvsp[(3) - (3)].id)); }
     break;
@@ -2674,98 +2679,98 @@ yyreduce:
   case 59:
 
 /* Line 1806 of yacc.c  */
-#line 364 "gpparser.y"
+#line 369 "gpparser.y"
     { (yyval.list_type) = INT_DECLARATIONS; }
     break;
 
   case 60:
 
 /* Line 1806 of yacc.c  */
-#line 365 "gpparser.y"
+#line 370 "gpparser.y"
     { (yyval.list_type) = CHAR_DECLARATIONS; }
     break;
 
   case 61:
 
 /* Line 1806 of yacc.c  */
-#line 366 "gpparser.y"
+#line 371 "gpparser.y"
     { (yyval.list_type) = STRING_DECLARATIONS; }
     break;
 
   case 62:
 
 /* Line 1806 of yacc.c  */
-#line 367 "gpparser.y"
+#line 372 "gpparser.y"
     { (yyval.list_type) = ATOM_DECLARATIONS; }
     break;
 
   case 63:
 
 /* Line 1806 of yacc.c  */
-#line 368 "gpparser.y"
+#line 373 "gpparser.y"
     { (yyval.list_type) = LIST_DECLARATIONS; }
     break;
 
   case 64:
 
 /* Line 1806 of yacc.c  */
-#line 373 "gpparser.y"
+#line 378 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), NULL, NULL); }
     break;
 
   case 65:
 
 /* Line 1806 of yacc.c  */
-#line 374 "gpparser.y"
+#line 379 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), NULL, NULL); }
     break;
 
   case 66:
 
 /* Line 1806 of yacc.c  */
-#line 375 "gpparser.y"
+#line 380 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(2) - (4)].list), NULL); }
     break;
 
   case 67:
 
 /* Line 1806 of yacc.c  */
-#line 376 "gpparser.y"
+#line 381 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(4) - (6)].list), NULL); }
     break;
 
   case 68:
 
 /* Line 1806 of yacc.c  */
-#line 377 "gpparser.y"
+#line 382 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(2) - (5)].list), (yyvsp[(4) - (5)].list)); }
     break;
 
   case 69:
 
 /* Line 1806 of yacc.c  */
-#line 379 "gpparser.y"
+#line 384 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(4) - (7)].list), (yyvsp[(6) - (7)].list)); }
     break;
 
   case 70:
 
 /* Line 1806 of yacc.c  */
-#line 381 "gpparser.y"
+#line 386 "gpparser.y"
     { (yyval.list) = addASTNode((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].node), NULL); }
     break;
 
   case 71:
 
 /* Line 1806 of yacc.c  */
-#line 382 "gpparser.y"
+#line 387 "gpparser.y"
     { (yyval.list) = addASTNode((yylsp[(2) - (2)]), (yyvsp[(2) - (2)].node), (yyvsp[(1) - (2)].list)); }
     break;
 
   case 72:
 
 /* Line 1806 of yacc.c  */
-#line 384 "gpparser.y"
+#line 389 "gpparser.y"
     { (yyval.node) = newASTNode((yylsp[(2) - (6)]), is_root, (yyvsp[(2) - (6)].id), (yyvsp[(5) - (6)].label)); 
  					  is_root = false; 	
 					  if((yyvsp[(2) - (6)].id)) free((yyvsp[(2) - (6)].id)); }
@@ -2774,7 +2779,7 @@ yyreduce:
   case 73:
 
 /* Line 1806 of yacc.c  */
-#line 388 "gpparser.y"
+#line 393 "gpparser.y"
     { (yyval.node) = newASTNode((yylsp[(2) - (7)]), is_root, (yyvsp[(2) - (7)].id), (yyvsp[(5) - (7)].label)); 
  					  is_root = false; 	
 					  if((yyvsp[(2) - (7)].id)) free((yyvsp[(2) - (7)].id)); }
@@ -2783,21 +2788,21 @@ yyreduce:
   case 74:
 
 /* Line 1806 of yacc.c  */
-#line 391 "gpparser.y"
+#line 396 "gpparser.y"
     { (yyval.list) = addASTEdge((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].edge), NULL); }
     break;
 
   case 75:
 
 /* Line 1806 of yacc.c  */
-#line 392 "gpparser.y"
+#line 397 "gpparser.y"
     { (yyval.list) = addASTEdge((yylsp[(2) - (2)]), (yyvsp[(2) - (2)].edge), (yyvsp[(1) - (2)].list)); }
     break;
 
   case 76:
 
 /* Line 1806 of yacc.c  */
-#line 395 "gpparser.y"
+#line 400 "gpparser.y"
     { (yyval.edge) = newASTEdge((yylsp[(2) - (10)]), is_bidir, (yyvsp[(2) - (10)].id), (yyvsp[(5) - (10)].id), (yyvsp[(7) - (10)].id), (yyvsp[(9) - (10)].label));
                                           is_bidir = false; if((yyvsp[(2) - (10)].id)) free((yyvsp[(2) - (10)].id)); 
 					  if((yyvsp[(5) - (10)].id)) free((yyvsp[(5) - (10)].id)); if((yyvsp[(7) - (10)].id)) free((yyvsp[(7) - (10)].id)); }
@@ -2806,98 +2811,98 @@ yyreduce:
   case 77:
 
 /* Line 1806 of yacc.c  */
-#line 400 "gpparser.y"
+#line 405 "gpparser.y"
     { }
     break;
 
   case 78:
 
 /* Line 1806 of yacc.c  */
-#line 401 "gpparser.y"
+#line 406 "gpparser.y"
     { }
     break;
 
   case 79:
 
 /* Line 1806 of yacc.c  */
-#line 402 "gpparser.y"
+#line 407 "gpparser.y"
     { }
     break;
 
   case 80:
 
 /* Line 1806 of yacc.c  */
-#line 403 "gpparser.y"
+#line 408 "gpparser.y"
     { }
     break;
 
   case 81:
 
 /* Line 1806 of yacc.c  */
-#line 404 "gpparser.y"
+#line 409 "gpparser.y"
     { }
     break;
 
   case 82:
 
 /* Line 1806 of yacc.c  */
-#line 405 "gpparser.y"
+#line 410 "gpparser.y"
     { }
     break;
 
   case 83:
 
 /* Line 1806 of yacc.c  */
-#line 406 "gpparser.y"
+#line 411 "gpparser.y"
     { }
     break;
 
   case 84:
 
 /* Line 1806 of yacc.c  */
-#line 407 "gpparser.y"
+#line 412 "gpparser.y"
     { }
     break;
 
   case 85:
 
 /* Line 1806 of yacc.c  */
-#line 408 "gpparser.y"
+#line 413 "gpparser.y"
     { }
     break;
 
   case 87:
 
 /* Line 1806 of yacc.c  */
-#line 412 "gpparser.y"
+#line 417 "gpparser.y"
     { is_root = true; }
     break;
 
   case 89:
 
 /* Line 1806 of yacc.c  */
-#line 415 "gpparser.y"
+#line 420 "gpparser.y"
     { is_bidir = true; }
     break;
 
   case 90:
 
 /* Line 1806 of yacc.c  */
-#line 420 "gpparser.y"
+#line 425 "gpparser.y"
     { (yyval.cond_exp) = NULL; }
     break;
 
   case 91:
 
 /* Line 1806 of yacc.c  */
-#line 421 "gpparser.y"
+#line 426 "gpparser.y"
     { (yyval.cond_exp) = (yyvsp[(2) - (2)].cond_exp); }
     break;
 
   case 92:
 
 /* Line 1806 of yacc.c  */
-#line 423 "gpparser.y"
+#line 428 "gpparser.y"
     { (yyval.cond_exp) = newASTSubtypePred((yyvsp[(1) - (4)].check_type), (yyloc), (yyvsp[(3) - (4)].id)); 
 					  if((yyvsp[(3) - (4)].id)) free((yyvsp[(3) - (4)].id)); }
     break;
@@ -2905,7 +2910,7 @@ yyreduce:
   case 93:
 
 /* Line 1806 of yacc.c  */
-#line 426 "gpparser.y"
+#line 431 "gpparser.y"
     { (yyval.cond_exp) = newASTEdgePred((yyloc), (yyvsp[(3) - (7)].id), (yyvsp[(5) - (7)].id), (yyvsp[(6) - (7)].label)); 
 					  if((yyvsp[(3) - (7)].id)) free((yyvsp[(3) - (7)].id)); if((yyvsp[(5) - (7)].id)) free((yyvsp[(5) - (7)].id)); }
     break;
@@ -2913,175 +2918,175 @@ yyreduce:
   case 94:
 
 /* Line 1806 of yacc.c  */
-#line 428 "gpparser.y"
+#line 433 "gpparser.y"
     { (yyval.cond_exp) = newASTListComparison(EQUAL, (yyloc), (yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].list)); }
     break;
 
   case 95:
 
 /* Line 1806 of yacc.c  */
-#line 429 "gpparser.y"
+#line 434 "gpparser.y"
     { (yyval.cond_exp) = newASTListComparison(NOT_EQUAL, (yyloc), (yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].list)); }
     break;
 
   case 96:
 
 /* Line 1806 of yacc.c  */
-#line 430 "gpparser.y"
+#line 435 "gpparser.y"
     { (yyval.cond_exp) = newASTAtomComparison(GREATER, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 97:
 
 /* Line 1806 of yacc.c  */
-#line 431 "gpparser.y"
+#line 436 "gpparser.y"
     { (yyval.cond_exp) = newASTAtomComparison(GREATER_EQUAL, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 98:
 
 /* Line 1806 of yacc.c  */
-#line 432 "gpparser.y"
+#line 437 "gpparser.y"
     { (yyval.cond_exp) = newASTAtomComparison(LESS, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 99:
 
 /* Line 1806 of yacc.c  */
-#line 433 "gpparser.y"
+#line 438 "gpparser.y"
     { (yyval.cond_exp) = newASTAtomComparison(LESS_EQUAL, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 100:
 
 /* Line 1806 of yacc.c  */
-#line 434 "gpparser.y"
+#line 439 "gpparser.y"
     { (yyval.cond_exp) = newASTNotExp((yyloc), (yyvsp[(2) - (2)].cond_exp)); }
     break;
 
   case 101:
 
 /* Line 1806 of yacc.c  */
-#line 435 "gpparser.y"
+#line 440 "gpparser.y"
     { (yyval.cond_exp) = newASTBinaryExp(BOOL_OR, (yyloc), (yyvsp[(1) - (3)].cond_exp), (yyvsp[(3) - (3)].cond_exp)); }
     break;
 
   case 102:
 
 /* Line 1806 of yacc.c  */
-#line 436 "gpparser.y"
+#line 441 "gpparser.y"
     { (yyval.cond_exp) = newASTBinaryExp(BOOL_AND, (yyloc), (yyvsp[(1) - (3)].cond_exp), (yyvsp[(3) - (3)].cond_exp)); }
     break;
 
   case 103:
 
 /* Line 1806 of yacc.c  */
-#line 437 "gpparser.y"
+#line 442 "gpparser.y"
     { (yyval.cond_exp) = (yyvsp[(2) - (3)].cond_exp); }
     break;
 
   case 104:
 
 /* Line 1806 of yacc.c  */
-#line 439 "gpparser.y"
+#line 444 "gpparser.y"
     { (yyval.check_type) = INT_CHECK; }
     break;
 
   case 105:
 
 /* Line 1806 of yacc.c  */
-#line 440 "gpparser.y"
+#line 445 "gpparser.y"
     { (yyval.check_type) = CHAR_CHECK; }
     break;
 
   case 106:
 
 /* Line 1806 of yacc.c  */
-#line 441 "gpparser.y"
+#line 446 "gpparser.y"
     { (yyval.check_type) = STRING_CHECK; }
     break;
 
   case 107:
 
 /* Line 1806 of yacc.c  */
-#line 442 "gpparser.y"
+#line 447 "gpparser.y"
     { (yyval.check_type) = ATOM_CHECK; }
     break;
 
   case 108:
 
 /* Line 1806 of yacc.c  */
-#line 444 "gpparser.y"
+#line 449 "gpparser.y"
     { (yyval.label) = NULL; }
     break;
 
   case 109:
 
 /* Line 1806 of yacc.c  */
-#line 445 "gpparser.y"
+#line 450 "gpparser.y"
     { (yyval.label) = (yyvsp[(2) - (2)].label); }
     break;
 
   case 110:
 
 /* Line 1806 of yacc.c  */
-#line 449 "gpparser.y"
+#line 454 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), NONE, (yyvsp[(1) - (1)].list)); }
     break;
 
   case 111:
 
 /* Line 1806 of yacc.c  */
-#line 450 "gpparser.y"
+#line 455 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), NONE, NULL); }
     break;
 
   case 112:
 
 /* Line 1806 of yacc.c  */
-#line 451 "gpparser.y"
+#line 456 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), (yyvsp[(3) - (3)].mark), (yyvsp[(1) - (3)].list)); }
     break;
 
   case 113:
 
 /* Line 1806 of yacc.c  */
-#line 452 "gpparser.y"
+#line 457 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), (yyvsp[(3) - (3)].mark), NULL); }
     break;
 
   case 114:
 
 /* Line 1806 of yacc.c  */
-#line 454 "gpparser.y"
+#line 459 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), (yyvsp[(3) - (3)].mark), (yyvsp[(1) - (3)].list)); }
     break;
 
   case 115:
 
 /* Line 1806 of yacc.c  */
-#line 455 "gpparser.y"
+#line 460 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), (yyvsp[(3) - (3)].mark), NULL); }
     break;
 
   case 116:
 
 /* Line 1806 of yacc.c  */
-#line 458 "gpparser.y"
+#line 463 "gpparser.y"
     { (yyval.list) = addASTAtom((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].atom_exp), NULL); }
     break;
 
   case 117:
 
 /* Line 1806 of yacc.c  */
-#line 459 "gpparser.y"
+#line 464 "gpparser.y"
     { (yyval.list) = addASTAtom((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].atom_exp), (yyvsp[(1) - (3)].list)); }
     break;
 
   case 118:
 
 /* Line 1806 of yacc.c  */
-#line 461 "gpparser.y"
+#line 466 "gpparser.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list);
     					  report_warning("Empty symbol in the "
      					                 "middle of a list.\n"); }
@@ -3090,28 +3095,28 @@ yyreduce:
   case 119:
 
 /* Line 1806 of yacc.c  */
-#line 466 "gpparser.y"
+#line 471 "gpparser.y"
     { (yyval.atom_exp) = newASTVariable((yyloc), (yyvsp[(1) - (1)].id)); if((yyvsp[(1) - (1)].id)) free((yyvsp[(1) - (1)].id)); }
     break;
 
   case 120:
 
 /* Line 1806 of yacc.c  */
-#line 467 "gpparser.y"
+#line 472 "gpparser.y"
     { (yyval.atom_exp) = newASTNumber((yyloc), (yyvsp[(1) - (1)].num)); }
     break;
 
   case 121:
 
 /* Line 1806 of yacc.c  */
-#line 468 "gpparser.y"
+#line 473 "gpparser.y"
     { (yyval.atom_exp) = newASTString((yyloc), (yyvsp[(1) - (1)].str)); if((yyvsp[(1) - (1)].str)) free((yyvsp[(1) - (1)].str)); }
     break;
 
   case 122:
 
 /* Line 1806 of yacc.c  */
-#line 469 "gpparser.y"
+#line 474 "gpparser.y"
     { (yyval.atom_exp) = newASTDegreeOp(INDEGREE, (yyloc), (yyvsp[(3) - (4)].id)); 
 					  if((yyvsp[(3) - (4)].id)) free((yyvsp[(3) - (4)].id)); }
     break;
@@ -3119,7 +3124,7 @@ yyreduce:
   case 123:
 
 /* Line 1806 of yacc.c  */
-#line 471 "gpparser.y"
+#line 476 "gpparser.y"
     { (yyval.atom_exp) = newASTDegreeOp(OUTDEGREE, (yyloc), (yyvsp[(3) - (4)].id)); 
 				 	  if((yyvsp[(3) - (4)].id)) free((yyvsp[(3) - (4)].id)); }
     break;
@@ -3127,119 +3132,119 @@ yyreduce:
   case 124:
 
 /* Line 1806 of yacc.c  */
-#line 473 "gpparser.y"
+#line 478 "gpparser.y"
     { (yyval.atom_exp) = newASTLength((yyloc), (yyvsp[(3) - (4)].id)); if((yyvsp[(3) - (4)].id)) free((yyvsp[(3) - (4)].id)); }
     break;
 
   case 125:
 
 /* Line 1806 of yacc.c  */
-#line 474 "gpparser.y"
+#line 479 "gpparser.y"
     { (yyval.atom_exp) = newASTNegExp((yyloc), (yyvsp[(2) - (2)].atom_exp)); }
     break;
 
   case 126:
 
 /* Line 1806 of yacc.c  */
-#line 475 "gpparser.y"
+#line 480 "gpparser.y"
     { (yyval.atom_exp) = (yyvsp[(2) - (3)].atom_exp); }
     break;
 
   case 127:
 
 /* Line 1806 of yacc.c  */
-#line 476 "gpparser.y"
+#line 481 "gpparser.y"
     { (yyval.atom_exp) = newASTBinaryOp(ADD, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp));  }
     break;
 
   case 128:
 
 /* Line 1806 of yacc.c  */
-#line 477 "gpparser.y"
+#line 482 "gpparser.y"
     { (yyval.atom_exp) = newASTBinaryOp(SUBTRACT, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 129:
 
 /* Line 1806 of yacc.c  */
-#line 478 "gpparser.y"
+#line 483 "gpparser.y"
     { (yyval.atom_exp) = newASTBinaryOp(MULTIPLY, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 130:
 
 /* Line 1806 of yacc.c  */
-#line 479 "gpparser.y"
+#line 484 "gpparser.y"
     { (yyval.atom_exp) = newASTBinaryOp(DIVIDE, (yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 131:
 
 /* Line 1806 of yacc.c  */
-#line 480 "gpparser.y"
+#line 485 "gpparser.y"
     { (yyval.atom_exp) = newASTConcat((yyloc), (yyvsp[(1) - (3)].atom_exp), (yyvsp[(3) - (3)].atom_exp)); }
     break;
 
   case 137:
 
 /* Line 1806 of yacc.c  */
-#line 497 "gpparser.y"
+#line 502 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), NULL, NULL); }
     break;
 
   case 138:
 
 /* Line 1806 of yacc.c  */
-#line 498 "gpparser.y"
+#line 503 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), NULL, NULL); }
     break;
 
   case 139:
 
 /* Line 1806 of yacc.c  */
-#line 499 "gpparser.y"
+#line 504 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(2) - (4)].list), NULL); }
     break;
 
   case 140:
 
 /* Line 1806 of yacc.c  */
-#line 501 "gpparser.y"
+#line 506 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(4) - (6)].list), NULL); }
     break;
 
   case 141:
 
 /* Line 1806 of yacc.c  */
-#line 503 "gpparser.y"
+#line 508 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(2) - (5)].list), (yyvsp[(4) - (5)].list)); }
     break;
 
   case 142:
 
 /* Line 1806 of yacc.c  */
-#line 505 "gpparser.y"
+#line 510 "gpparser.y"
     { (yyval.graph) = newASTGraph((yyloc), (yyvsp[(4) - (7)].list), (yyvsp[(6) - (7)].list)); }
     break;
 
   case 143:
 
 /* Line 1806 of yacc.c  */
-#line 507 "gpparser.y"
+#line 512 "gpparser.y"
     { (yyval.list) = addASTNode((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].node), NULL); }
     break;
 
   case 144:
 
 /* Line 1806 of yacc.c  */
-#line 508 "gpparser.y"
+#line 513 "gpparser.y"
     { (yyval.list) = addASTNode((yylsp[(2) - (2)]), (yyvsp[(2) - (2)].node), (yyvsp[(1) - (2)].list)); }
     break;
 
   case 145:
 
 /* Line 1806 of yacc.c  */
-#line 511 "gpparser.y"
+#line 516 "gpparser.y"
     { (yyval.node) = newASTNode((yylsp[(2) - (6)]), is_root, (yyvsp[(2) - (6)].id), (yyvsp[(5) - (6)].label)); 
  					  is_root = false; 	
 					  if((yyvsp[(2) - (6)].id)) free((yyvsp[(2) - (6)].id)); }
@@ -3248,7 +3253,7 @@ yyreduce:
   case 146:
 
 /* Line 1806 of yacc.c  */
-#line 515 "gpparser.y"
+#line 520 "gpparser.y"
     { (yyval.node) = newASTNode((yylsp[(2) - (7)]), is_root, (yyvsp[(2) - (7)].id), (yyvsp[(5) - (7)].label)); 
  					  is_root = false; 	
 					  if((yyvsp[(2) - (7)].id)) free((yyvsp[(2) - (7)].id)); }
@@ -3257,21 +3262,21 @@ yyreduce:
   case 147:
 
 /* Line 1806 of yacc.c  */
-#line 519 "gpparser.y"
+#line 524 "gpparser.y"
     { (yyval.list) = addASTEdge((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].edge), NULL); }
     break;
 
   case 148:
 
 /* Line 1806 of yacc.c  */
-#line 520 "gpparser.y"
+#line 525 "gpparser.y"
     { (yyval.list) = addASTEdge((yylsp[(2) - (2)]), (yyvsp[(2) - (2)].edge), (yyvsp[(1) - (2)].list)); }
     break;
 
   case 149:
 
 /* Line 1806 of yacc.c  */
-#line 523 "gpparser.y"
+#line 528 "gpparser.y"
     { (yyval.edge) = newASTEdge((yylsp[(2) - (9)]), false, (yyvsp[(2) - (9)].id), (yyvsp[(4) - (9)].id), (yyvsp[(6) - (9)].id), (yyvsp[(8) - (9)].label));
 					  if((yyvsp[(2) - (9)].id)) free((yyvsp[(2) - (9)].id)); 
 					  if((yyvsp[(4) - (9)].id)) free((yyvsp[(4) - (9)].id)); 
@@ -3281,49 +3286,49 @@ yyreduce:
   case 150:
 
 /* Line 1806 of yacc.c  */
-#line 528 "gpparser.y"
+#line 533 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), NONE, (yyvsp[(1) - (1)].list)); }
     break;
 
   case 151:
 
 /* Line 1806 of yacc.c  */
-#line 529 "gpparser.y"
+#line 534 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), NONE, NULL); }
     break;
 
   case 152:
 
 /* Line 1806 of yacc.c  */
-#line 530 "gpparser.y"
+#line 535 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), (yyvsp[(3) - (3)].mark), (yyvsp[(1) - (3)].list)); }
     break;
 
   case 153:
 
 /* Line 1806 of yacc.c  */
-#line 531 "gpparser.y"
+#line 536 "gpparser.y"
     { (yyval.label) = newASTLabel((yyloc), (yyvsp[(3) - (3)].mark), NULL); }
     break;
 
   case 154:
 
 /* Line 1806 of yacc.c  */
-#line 533 "gpparser.y"
+#line 538 "gpparser.y"
     { (yyval.list) = addASTAtom((yylsp[(1) - (1)]), (yyvsp[(1) - (1)].atom_exp), NULL); }
     break;
 
   case 155:
 
 /* Line 1806 of yacc.c  */
-#line 534 "gpparser.y"
+#line 539 "gpparser.y"
     { (yyval.list) = addASTAtom((yylsp[(3) - (3)]), (yyvsp[(3) - (3)].atom_exp), (yyvsp[(1) - (3)].list)); }
     break;
 
   case 156:
 
 /* Line 1806 of yacc.c  */
-#line 536 "gpparser.y"
+#line 541 "gpparser.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list);
 					  report_warning("Error: empty symbol in the "
      					                 "middle of a list.\n"); }
@@ -3332,28 +3337,28 @@ yyreduce:
   case 157:
 
 /* Line 1806 of yacc.c  */
-#line 540 "gpparser.y"
+#line 545 "gpparser.y"
     { (yyval.atom_exp) = newASTNumber((yyloc), (yyvsp[(1) - (1)].num)); }
     break;
 
   case 158:
 
 /* Line 1806 of yacc.c  */
-#line 541 "gpparser.y"
+#line 546 "gpparser.y"
     { (yyval.atom_exp) = newASTNumber((yyloc), -((yyvsp[(2) - (2)].num))); }
     break;
 
   case 159:
 
 /* Line 1806 of yacc.c  */
-#line 542 "gpparser.y"
+#line 547 "gpparser.y"
     { (yyval.atom_exp) = newASTString((yyloc), (yyvsp[(1) - (1)].str)); if((yyvsp[(1) - (1)].str)) free((yyvsp[(1) - (1)].str)); }
     break;
 
 
 
 /* Line 1806 of yacc.c  */
-#line 3357 "parser.c"
+#line 3362 "parser.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3591,7 +3596,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 544 "gpparser.y"
+#line 549 "gpparser.y"
 
 
 /* Bison calls yyerror whenever it encounters an error. It prints error
@@ -3616,5 +3621,17 @@ void report_warning(const char *error_message)
    syntax_error = true;
 }
         
+/*bool parse_gpGraphString(const char* graph_string)
+{
+    // yy_scan_string calls yy_switch_to_buffer on the new buffer
+    // the next time yylex() is called, it scans the given string instead of yyin.
+    // creates a copy of the string
+    YY_BUFFER_STATE str_buffer = yy_scan_string(graph_string);  // scans a NUL-terminated string.
 
+    bool parseResult = (yyparse() == 0);
+
+    yy_delete_buffer(str_buffer); // free up memory
+
+    return parseResult;
+}*/
 

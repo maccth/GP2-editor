@@ -153,7 +153,7 @@ void Node::setIsRoot(bool root)
 void Node::setIsInterface(bool isInterface)
 {
     _isInterface = isInterface;
-    emit nodeChanged();
+    //emit nodeChanged();   // Graph tracks if a node changes, but shouldnt in this case
     emit isInterfaceChanged(isInterface);
 }
 

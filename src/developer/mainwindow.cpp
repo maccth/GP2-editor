@@ -100,6 +100,7 @@ MainWindow::MainWindow(QWidget *parent)
     updateRecentProjects();
 
     QSettings settings;
+    qDebug() << settings.fileName();
     if(settings.value("FirstRun", true).toBool())
     {
         FirstRunDialog dialog(this);

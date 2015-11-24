@@ -99,7 +99,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 64 "gpparser.y"
+#line 69 "gpparser.y"
   
   int num;   /* value of NUM token. */
   char *str; /* value of STRING and CHAR tokens. */
@@ -109,7 +109,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 97 "gpparser.y"
+#line 102 "gpparser.y"
   
   struct List *list; 
   struct GPDeclaration *decl;
@@ -167,7 +167,9 @@ extern string yytext;
 extern FILE *yyin;
 extern bool syntax_error;
 
+/*bool parse_gpGraphString(const char* graph_string);*/
+
 
 
 /* Line 2068 of yacc.c  */
-#line 174 "parser.h"
+#line 176 "parser.h"

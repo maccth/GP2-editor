@@ -81,25 +81,29 @@ void NewGraphDialog::updatePath()
 {
     QString fileName = _ui->graphNameEdit->text();
     GraphTypes type = DefaultGraph;
-    if(_ui->graphTypeComboBox->currentText().startsWith("GP"))
-        type = AlternativeGraph;
-    else if(_ui->graphTypeComboBox->currentText().startsWith("Dot"))
-        type = DotGraph;
-    else if(_ui->graphTypeComboBox->currentText().startsWith("GXL"))
-        type = GxlGraph;
-    switch(type)
-    {
-    case AlternativeGraph:
-        fileName += GP_GRAPH_ALTERNATIVE_EXTENSION;
-        break;
-    case GxlGraph:
-        fileName += GP_GRAPH_GXL_EXTENSION;
-        break;
-    case DotGraph:
-    default:
-        fileName += GP_GRAPH_DOT_EXTENSION;
-        break;
-    }
+
+    type = AlternativeGraph;
+    fileName += GP_GRAPH_ALTERNATIVE_EXTENSION;
+
+//    if(_ui->graphTypeComboBox->currentText().startsWith("GP"))
+//        type = AlternativeGraph;
+//    else if(_ui->graphTypeComboBox->currentText().startsWith("Dot"))
+//        type = DotGraph;
+//    else if(_ui->graphTypeComboBox->currentText().startsWith("GXL"))
+//        type = GxlGraph;
+//    switch(type)
+//    {
+//    case AlternativeGraph:
+//        fileName += GP_GRAPH_ALTERNATIVE_EXTENSION;
+//        break;
+//    case GxlGraph:
+//        fileName += GP_GRAPH_GXL_EXTENSION;
+//        break;
+//    case DotGraph:
+//    default:
+//        fileName += GP_GRAPH_DOT_EXTENSION;
+//        break;
+//    }
 
     QDir dir(_ui->graphDirEdit->text());
     _ui->graphPath->setText(dir.filePath(fileName));
@@ -130,25 +134,28 @@ void NewGraphDialog::accept()
 
     QString fileName = _ui->graphNameEdit->text();
     GraphTypes type = DefaultGraph;
-    if(_ui->graphTypeComboBox->currentText().startsWith("GP"))
-        type = AlternativeGraph;
-    else if(_ui->graphTypeComboBox->currentText().startsWith("Dot"))
-        type = DotGraph;
-    else if(_ui->graphTypeComboBox->currentText().startsWith("GXL"))
-        type = GxlGraph;
-    switch(type)
-    {
-    case AlternativeGraph:
-        fileName += GP_GRAPH_ALTERNATIVE_EXTENSION;
-        break;
-    case GxlGraph:
-        fileName += GP_GRAPH_GXL_EXTENSION;
-        break;
-    case DotGraph:
-    default:
-        fileName += GP_GRAPH_DOT_EXTENSION;
-        break;
-    }
+
+    type = AlternativeGraph;
+    fileName += GP_GRAPH_ALTERNATIVE_EXTENSION;
+//    if(_ui->graphTypeComboBox->currentText().startsWith("GP"))
+//        type = AlternativeGraph;
+//    else if(_ui->graphTypeComboBox->currentText().startsWith("Dot"))
+//        type = DotGraph;
+//    else if(_ui->graphTypeComboBox->currentText().startsWith("GXL"))
+//        type = GxlGraph;
+//    switch(type)
+//    {
+//    case AlternativeGraph:
+//        fileName += GP_GRAPH_ALTERNATIVE_EXTENSION;
+//        break;
+//    case GxlGraph:
+//        fileName += GP_GRAPH_GXL_EXTENSION;
+//        break;
+//    case DotGraph:
+//    default:
+//        fileName += GP_GRAPH_DOT_EXTENSION;
+//        break;
+//    }
 
     QString graph = dir.filePath(fileName);
     _project->newGraph(graph);

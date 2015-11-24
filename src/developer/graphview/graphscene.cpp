@@ -311,19 +311,6 @@ void GraphScene::setReadOnly(bool readOnlyFlag)
     _readOnly = readOnlyFlag;
 }
 
-void GraphScene::setInterface(QStringList nodeIds)
-{
-    QMap<QString, NodeItem*>::const_iterator i;
-    for (i = _nodes.begin(); i != _nodes.end(); ++i)
-    {
-        QString id = i.key();
-        NodeItem *nodeItem = i.value();
-        nodeItem->setIsInterface(nodeIds.contains(id));
-//        if (nodeIds.contains(id))
-//            qDebug() << "  graphscene.cpp: The node " << nodeItem->id() << " is an interface node" << endl;
-    }
-}
-
 void GraphScene::addNodeItem(NodeItem *nodeItem, const QPointF &position)
 {
     addItem(nodeItem);

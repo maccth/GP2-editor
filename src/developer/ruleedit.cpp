@@ -374,7 +374,10 @@ void RuleEdit::updateInterface()
             Node* rhsNode = *itt;
             if (rhsNode->isPhantomNode()) continue;
             if (rhsNode->id() == id)
-                { elements.push_back(id.toStdString()); debug << id; }         
+                {
+                    elements.push_back(id.toStdString());
+                    debug << id;
+                }
         }    
     }
 
@@ -383,24 +386,11 @@ void RuleEdit::updateInterface()
     interface_t result;
     result.elements = elements;
 
+    // Update the rule interface
+    // This will also redraw the graphs because interface nodes should have bolded identifiers
     _rule->setInterface(result);
 
     qDebug () << "  ruleedit.cpp: Updating Interface :" << debug;
-
-
-    // Redraw the graphs because interface nodes should have bolded identifiers
-    //GraphScene* lhsScene = _ui->lhsGraph->graphScene();
-    //lhsScene->update(lhsScene->sceneRect());
-
-
-    // Tell each graph scene to update the interface nodes - i.e. redraw them with bolded ids
-    GraphScene* canvas;
-
-    canvas = _ui->lhsGraph->graphScene();
-    canvas->setInterface(debug);
-
-    canvas = _ui->rhsGraph->graphScene();
-    canvas->setInterface(debug);
 }
 
 

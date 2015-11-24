@@ -807,8 +807,8 @@ void Project::newRule(const QString &ruleName)
     fp.open(QIODevice::ReadOnly | QIODevice::Text);
     QString newRuleString = fp.readAll();
     newRuleString = newRuleString.arg(
-                name,
-                QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss")
+                name
+                //,QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss")
                 );
 
     file.open(QFile::ReadWrite);
@@ -867,10 +867,10 @@ void Project::newProgram(const QString &programName)
     QFile fp(":/templates/newprogram.gpx");
     fp.open(QIODevice::ReadOnly | QIODevice::Text);
     QString newProgramString = fp.readAll();
-    newProgramString = newProgramString.arg(
-                name,
-                QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss")
-                );
+//    newProgramString = newProgramString.arg(
+//                name,
+//                QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss")
+//                );
 
     file.open(QFile::ReadWrite);
     file.write(QVariant(newProgramString).toByteArray());
@@ -1080,35 +1080,35 @@ void Project::addGraph(const QString &filePath)
 
 void Project::removeConfig(RunConfig* runConfig)
 {
-	  if (!containsRunConfig(runConfig->name()))
-	  {
-		    qDebug() << "Removing an unknown Run Config; ignoring ";
-		    return;
-	  }
+    if (!containsRunConfig(runConfig->name()))
+    {
+        qDebug() << "Removing an unknown Run Config; ignoring ";
+        return;
+    }
 
-	  for (runConfigIter it = _runConfigurations.begin(); it != _runConfigurations.end(); )
-	  {
-		    RunConfig* config = *it;
-		    if (runConfig->name() == config->name())
-		    { 
-			      it = _runConfigurations.erase(it);
-        		emit runConfigurationListChanged();
-		    }
-		    else
-			      ++it;	  		
-	  }	
+    for (runConfigIter it = _runConfigurations.begin(); it != _runConfigurations.end(); )
+    {
+        RunConfig* config = *it;
+        if (runConfig->name() == config->name())
+        {
+            it = _runConfigurations.erase(it);
+            emit runConfigurationListChanged();
+        }
+        else
+            ++it;
+    }
 }
 
 void Project::addRunConfig(RunConfig *runConfig)
 {
-	  if(containsRunConfig(runConfig->name()))
-	  {
-		    qDebug() << "Added an already known Run Configuration; ignoring ";
-		    return;
-	  }
+    if(containsRunConfig(runConfig->name()))
+    {
+        qDebug() << "Added an already known Run Configuration; ignoring ";
+        return;
+    }
 
-	  _runConfigurations.push_back(runConfig);
-	  save();
+    _runConfigurations.push_back(runConfig);
+    save();
     emit runConfigurationListChanged();
 }
 
@@ -1165,7 +1165,7 @@ bool Project::containsProgram(const QString &filePath)
 
 bool Project::containsRunConfig(QString configName)
 {
-		return (runConfig(configName) != 0);
+    return (runConfig(configName) != 0);
 }
 
 bool Project::save()
@@ -1229,23 +1229,23 @@ bool Project::save()
         configTag.setAttribute("program", config->program());
         configTag.setAttribute("graph", config->graph());
 
-				QDomElement configOptions = doc.createElement("options");
-				if (config->hasTracing())
-				{
-						QDomElement tracing = doc.createElement("tracing");
-						QDomText traceText = doc.createTextNode(QString(config->getTracing()));
-						tracing.appendChild(traceText);
-						
-						configOptions.appendChild(tracing);				
-				}
-				if (config->hasBacktracking())
-				{
-						QDomElement backTracking = doc.createElement("backtracking");
-						QDomText backTrackingText = doc.createTextNode(QString(config->getBacktracking()));
-						backTracking.appendChild(backTrackingText);
-						
-						configOptions.appendChild(backTracking);				
-				}
+        QDomElement configOptions = doc.createElement("options");
+        if (config->hasTracing())
+        {
+            QDomElement tracing = doc.createElement("tracing");
+            QDomText traceText = doc.createTextNode(QString(config->getTracing()));
+            tracing.appendChild(traceText);
+
+            configOptions.appendChild(tracing);
+        }
+        if (config->hasBacktracking())
+        {
+            QDomElement backTracking = doc.createElement("backtracking");
+            QDomText backTrackingText = doc.createTextNode(QString(config->getBacktracking()));
+            backTracking.appendChild(backTrackingText);
+
+            configOptions.appendChild(backTracking);
+        }
 
         runConfigurations.appendChild(configTag);
     }*/
