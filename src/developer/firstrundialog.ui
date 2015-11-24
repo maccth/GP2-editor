@@ -94,7 +94,13 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Introduction&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Since this is the first time that GP Developer has been run by this user it is recommended that you follow this quick introductory guide to how graphs are created and manipulated within GP Developer.&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;If you have used GP Developer before then feel free to skip this using the button in the bottom left, and if you ever need to remind yourself on the mechanics of this application then this dialog can be brought up at any time from the &amp;quot;Help&amp;quot; menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Introduction&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Please take your time to follow this quick introductory guide to how graphs are created and manipulated within the GP Developer.&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If you have used GP Developer before then feel free to skip this using the button in the bottom left, and if you ever need to remind yourself on the mechanics of this application then this dialog can be brought up at any time from the &amp;quot;Help&amp;quot; menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignJustify|Qt::AlignVCenter</set>
@@ -380,7 +386,16 @@
           <item>
            <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Navigating Large Graphs&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;When working with host graphs and result graphs the results may not fit easily into the available graph widget. In those cases the widget allows the user to pan around and zoom the view as necessary.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Moving Around&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;To move around the graph you can use the scrollbars shown at the bottom and at the right (as necessary). In addition when the &amp;quot;Shift&amp;quot; key is held the widget allows the user to pan around by clicking the left mouse button (&lt;img src=&quot;:/icons/small_mouse_select_left.png&quot;/&gt;) and moving the mouse.&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Zooming&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;Zooming of the view can be achieved by rolling the mouse wheel (&lt;img src=&quot;:/icons/small_mouse_select_scroll.png&quot;/&gt;) or by pressing Ctrl and &amp;quot;+&amp;quot; to zoom in and Ctrl and &amp;quot;-&amp;quot; to zoom out. The user can reset the view to a scale of 1:1 at any time by pressing Ctrl+0 (zero).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Navigating Large Graphs&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Large graphs may not fit easily into the available graph widget. In those cases the widget allows the user to pan around and zoom as necessary.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Moving Around&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;To move around the graph you can use the scrollbars shown at the bottom and at the right (as necessary). In addition when the &amp;quot;Shift&amp;quot; key is held the widget allows the user to pan around by clicking the left mouse button (&lt;/span&gt;&lt;img src=&quot;:/icons/small_mouse_select_left.png&quot; /&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;) and moving the mouse.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Zooming&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Zooming of the view can be achieved by rolling the mouse wheel (&lt;/span&gt;&lt;img src=&quot;:/icons/small_mouse_select_scroll.png&quot; /&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;) or by pressing Ctrl and &amp;quot;+&amp;quot; to zoom in and Ctrl and &amp;quot;-&amp;quot; to zoom out. You can reset the view to a 1:1 scale at any time by pressing Ctrl+0 (zero).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -396,69 +411,6 @@
              <size>
               <width>20</width>
               <height>21</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="page">
-         <layout class="QVBoxLayout" name="verticalLayout_9">
-          <item>
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Right-Hand Side (RHS) Graphs&lt;/span&gt;&lt;/p&gt;&lt;p&gt;In GP rules the left-hand side graph is freely manipulated, but has automatic implications on the right-hand side graph. Therefore the editing of these graphs is handled differently.&lt;/p&gt;&lt;p&gt;All nodes from the LHS graph are visible in the RHS graph, if these are shown normally then those are &lt;span style=&quot; font-weight:600;&quot;&gt;preserved&lt;/span&gt; nodes. If they are shown in red then they are being &lt;span style=&quot; font-weight:600;&quot;&gt;deleted&lt;/span&gt; from the graph by this rule application. Finally any nodes which are &lt;span style=&quot; font-weight:600;&quot;&gt;new&lt;/span&gt; to the RHS are shown in green. Edges are handled in exactly the same way.&lt;/p&gt;&lt;p&gt;Adding new nodes and edges should be intuitive as this is handled like the previous graph editing. What has changed is that elements which are currently in a &lt;span style=&quot; font-style:italic;&quot;&gt;deleted&lt;/span&gt; state can be transformed into &lt;span style=&quot; font-style:italic;&quot;&gt;preserved&lt;/span&gt; nodes by double clicking on them, at which point they become normal elements.&lt;/p&gt;&lt;p&gt;Try editing the example RHS graph to the left.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <item>
-             <widget class="QLabel" name="label_14">
-              <property name="text">
-               <string>New Nodes Created:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="newNodesCount">
-              <property name="text">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
-            <item>
-             <widget class="QLabel" name="label_15">
-              <property name="text">
-               <string>Nodes Preserved:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="preservedNodesCount">
-              <property name="text">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>5</height>
              </size>
             </property>
            </spacer>
@@ -506,7 +458,7 @@
          <string>Back</string>
         </property>
         <property name="icon">
-         <iconset resource="icons.qrc">
+        <iconset resource="icons.qrc">
           <normaloff>:/icons/small_arrow_left.png</normaloff>:/icons/small_arrow_left.png</iconset>
         </property>
        </widget>
@@ -517,7 +469,7 @@
          <string>Next</string>
         </property>
         <property name="icon">
-         <iconset resource="icons.qrc">
+        <iconset resource="icons.qrc">
           <normaloff>:/icons/small_arrow_right.png</normaloff>:/icons/small_arrow_right.png</iconset>
         </property>
        </widget>
@@ -528,7 +480,7 @@
          <string>End</string>
         </property>
         <property name="icon">
-         <iconset resource="icons.qrc">
+        <iconset resource="icons.qrc">
           <normaloff>:/icons/small_tick.png</normaloff>:/icons/small_tick.png</iconset>
         </property>
        </widget>
@@ -545,9 +497,7 @@
    <header>graphview/graphwidget.hpp</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>skipButton</sender>

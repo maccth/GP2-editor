@@ -37,7 +37,6 @@ private:
     Graph *_initialGraph;
     Graph *_editingGraph;
     Graph *_largeGraph;
-    Graph *_rhsGraph;
     int _page;
     int _previousPage;
     int _nodeCount;
@@ -45,7 +44,6 @@ private:
     bool _addingNodesLock;
     bool _addingEdgesLock;
     bool _deletingElementsLock;
-    bool _editingRhsLock;
 };
 
 }

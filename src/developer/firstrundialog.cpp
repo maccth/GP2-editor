@@ -19,7 +19,6 @@ FirstRunDialog::FirstRunDialog(QWidget *parent)
     , _initialGraph(0)
     , _editingGraph(0)
     , _largeGraph(0)
-    , _rhsGraph(0)
     , _page(0)
     , _previousPage(0)
     , _nodeCount(0)
@@ -27,7 +26,6 @@ FirstRunDialog::FirstRunDialog(QWidget *parent)
     , _addingNodesLock(false)
     , _addingEdgesLock(false)
     , _deletingElementsLock(false)
-    , _editingRhsLock(false)
 {
     _ui->setupUi(this);
 
@@ -64,32 +62,14 @@ void FirstRunDialog::setPage(int page)
 
     switch(page)
     {
-    case 7: // RHS graphs
-        if(_previousPage == 6)
-        {
-            _rhsGraph = new Graph(":/templates/example_graph_rhs.gpg");
-            _ui->graphWidget->setGraph(_rhsGraph);
-            _ui->graphWidget->setLinkedGraph(_initialGraph);
-            // Cheat a bit and set it as read-writable to enable editing, really
-            // we still can't save it but that's ok because we don't offer them
-            // that option anyway
-            _ui->graphWidget->graphScene()->setReadOnly(false);
-        }
-        _ui->backButton->setEnabled(true);
-        _ui->nextButton->setVisible(false);
-        _ui->beginButton->setEnabled(_editingRhsLock);
-        _ui->beginButton->setVisible(true);
-        break;
     case 6: // large graphs
         if(_previousPage == 5)
             _largeGraph = new Graph(":/templates/example_large_graph.gv");
-        if(_previousPage == 7)
-            _ui->graphWidget->setLinkedGraph(0);
          _ui->graphWidget->setGraph(_largeGraph);
          _ui->backButton->setEnabled(true);
-         _ui->nextButton->setVisible(true);
-         _ui->nextButton->setEnabled(true);
-         _ui->beginButton->setVisible(false);
+         _ui->nextButton->setVisible(false);
+         _ui->nextButton->setEnabled(false);
+         _ui->beginButton->setVisible(true);
          break;
     case 5: // deleting elements
         if(_previousPage == 6)
@@ -136,7 +116,10 @@ void FirstRunDialog::setPage(int page)
     case 0: // introduction
     default:
         if(_initialGraph == 0)
-            _initialGraph = new Graph(":/templates/example_graph.gpg");
+        {
+            graph_t initialGraph; // empty graph
+            _initialGraph = new Graph(initialGraph);
+        }
         _ui->graphWidget->setGraph(_initialGraph);
         _ui->backButton->setEnabled(false);
         _ui->nextButton->setEnabled(true);
