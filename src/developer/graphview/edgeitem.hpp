@@ -41,11 +41,11 @@ public:
 
     QLineF line() const;
 
-    QPolygonF polygon(double polygonWidth = -1.0) const;
-    QPolygonF edgePolygon(double padding = 4.0) const;
+    QPolygonF polygon(double polygonWidth = -1.0);
+    QPolygonF edgePolygon(double padding = 2.0);
     QRectF boundingRect() const;
     QPainterPath shape() const;
-    QPainterPath path() const;
+    QPainterPath path();
     QPainterPath arrowHead(qreal adjustment = 0.0) const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);
@@ -79,6 +79,7 @@ private:
     bool _isBidirectional;
     QString _mark;
     bool _hover;
+    QPoint _controlPoint;   // used when drawing non-loop edges
 };
 
 }

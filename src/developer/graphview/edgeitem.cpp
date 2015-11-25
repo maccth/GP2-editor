@@ -167,7 +167,7 @@ QLineF EdgeItem::line() const
     return QLineF(fromIntersection.at(0), toIntersection.at(0));
 }
 
-QPolygonF EdgeItem::polygon(double polygonWidth) const
+QPolygonF EdgeItem::polygon(double polygonWidth)
 {
     if(_polygons.contains(polygonWidth))
         return _polygons[polygonWidth];
@@ -178,90 +178,48 @@ QPolygonF EdgeItem::polygon(double polygonWidth) const
     qreal arrowSize = settings.value("GraphView/Edges/ArrowSize", 9).toDouble();
     QFontMetrics metrics(font);
 
+    // Determine if path() is drawing a straight edge, a curved edge or an ellipse (loop edge)
+    bool straightLine = false;
+    bool curvedLine = false;
+    bool loop = false;
+
     if(_from != _to)
     {
+        // We have drawn a line/curve edge
+
+        QPoint edgeUpperControlPoint = _controlPoint;
+        QPoint edgeLowerControlPoint = _controlPoint;
+
+        // Obtain the point between the two nodes. All other lines should curve with respect to this point
         QLineF edgeLine = line();
-        // Is there an edge in the other direction?
-        std::vector<Edge *> edges;
-        if(_to->node() == 0)
-            edges = std::vector<Edge *>();
-        else
-            edges = _to->node()->edgesFrom();
-        bool loopback = false;
-        for(std::vector<Edge *>::iterator iter = edges.begin();
-            iter != edges.end(); ++iter)
-        {
-            Edge *e = *iter;
-            if(e->to()->id() == _from->id())
-                loopback = true;
-        }
+        QPointF midPoint((edgeLine.p1().x() + edgeLine.p2().x())/2,
+                         (edgeLine.p1().y() + edgeLine.p2().y())/2);
+        // The length of this line defines how much is the edge curved
+        QLineF opposingLine(midPoint, edgeLine.p2());
+        opposingLine.setLength(32 / 2);
 
-        if(loopback)
-        {
-            // This one is pushed outwards
-            QLineF width = edgeLine;
-            width.setP1(QPointF(0,0));
-            qreal angle = edgeLine.angle();
-            angle += 90; if(angle > 360) angle -= 360;
-            width.setAngle(angle);
-            if(polygonWidth <= 0)
-                width.setLength(metrics.height() + 2.0);
-            else
-                width.setLength(polygonWidth / 2);
+        // Calculate which side to rotate the perpendicular line
+        qreal angle = opposingLine.angle();
+        angle += 90; if(angle > 360) angle -= 360;
+        opposingLine.setAngle(angle);
 
-            QPainterPath edgeUpperPath = path();
-            edgeUpperPath.translate(width.p2());
-            QPainterPath edgeLowerPath = path();
-            edgeLowerPath.translate(-width.p2());
+        edgeUpperControlPoint.setX(edgeUpperControlPoint.x() + opposingLine.dx());
+        edgeUpperControlPoint.setY(edgeUpperControlPoint.y() + opposingLine.dy());
 
-            QPainterPath painterPath(edgeLine.p1()-width.p2());
-            painterPath.lineTo(edgeLine.p1()+width.p2());
-            painterPath.addPath(edgeUpperPath);
-            painterPath.moveTo(edgeLine.p2()+width.p2());
-            painterPath.lineTo(edgeLine.p2()-width.p2());
-            painterPath.moveTo(edgeLine.p1()-width.p2());
-            painterPath.addPath(edgeLowerPath);
+        edgeLowerControlPoint.setX(edgeLowerControlPoint.x() - opposingLine.dx());
+        edgeLowerControlPoint.setY(edgeLowerControlPoint.y() - opposingLine.dy());
 
-            return painterPath.toFillPolygon();
-        }
-        else
-        {
-            QLineF width = edgeLine;
-            qreal angle = width.angle();
-            angle += 90; if(angle > 360) angle -= 360;
-            width.setAngle(angle);
-            if(polygonWidth <= 0)
-                width.setLength(metrics.height() + 2.0);
-            else
-                width.setLength(polygonWidth / 2);
 
-            // Compute the points required, p1 is the edgeLine.p1() value /plus/ the
-            // height of a line of text, this is currently width.p2()
-            QVector<QPointF> points;
-            points << width.p2();
-            // And turn it around to get the point below the line
-            angle -= 180; if(angle < 0) angle += 360;
-            width.setAngle(angle);
-            points << width.p2();
-
-            // Now move width to edgeLine.p2()
-            width.translate(edgeLine.p2() - edgeLine.p1());
-
-            // Now width.p2() is edgeLine.p2() /minus/ the height of a line of text
-            points << width.p2();
-            // And turn it back around to get the final point above the line
-            angle += 180; if(angle > 360) angle -= 360;
-            width.setAngle(angle);
-            points << width.p2();
-
-            points << points.at(0);
-
-            return QPolygonF(points);
-        }
+        QPainterPath painterPath(edgeLine.p1());
+        painterPath.quadTo(edgeLowerControlPoint, edgeLine.p2());
+        painterPath.quadTo(edgeUpperControlPoint, edgeLine.p1());
+        return painterPath.toFillPolygon();
     }
     else
     {
         // This is a loop edge
+        // We should draw an ellipse
+
         QPainterPath nodeShape = _from->shape();
         nodeShape.translate(_from->scenePos());
         QPointF center = _from->centerPos();
@@ -302,7 +260,7 @@ QPolygonF EdgeItem::polygon(double polygonWidth) const
     }
 }
 
-QPolygonF EdgeItem::edgePolygon(double padding) const
+QPolygonF EdgeItem::edgePolygon(double padding)
 {
     // This method works exactly like the above one, except that the width of
     // the produced polygon is just sufficient to contain the arrow itself
@@ -324,7 +282,7 @@ QPainterPath EdgeItem::shape() const
         return QPainterPath();
 }
 
-QPainterPath EdgeItem::path() const
+QPainterPath EdgeItem::path()
 {
     if(!_path.isEmpty())
         return _path;
@@ -388,7 +346,7 @@ QPainterPath EdgeItem::path() const
             edgeLine.setLength(edgeLine.length()-(lineWidth+0.5));
         }
 
-
+        _controlPoint = QPoint(opposingLine.p2().x(),opposingLine.p2().y());
         QPainterPath painterPath(edgeLine.p1());
         painterPath.quadTo(opposingLine.p2(), edgeLine.p2());
 
@@ -435,13 +393,11 @@ QPainterPath EdgeItem::path() const
                 else
                     break;
             }
-            qDebug() << "  edgeitem.cpp: ("<< _edge->id() << ") Loop in the same direction detected, increment: " << positionIncrement;
+            // qDebug() << "  edgeitem.cpp: ("<< _edge->id() << ") Loop in the same direction detected, increment: " << positionIncrement;
         }
 
         center.setY(center.y() - positionIncrement /2);
         painterPath.addEllipse(center, 15 + positionIncrement/3, 20 + positionIncrement);
-
-
 
         QRectF loopBoundingRect = painterPath.boundingRect();
         QPolygonF pathPolygon = painterPath.toFillPolygon();
@@ -676,11 +632,13 @@ void EdgeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     {
         event->accept();
         _hover = true;
+        qDebug() << "  edgeitem.cpp: Edge "<<_id << " has hover focus (1)";
     }
     else
     {
         event->ignore();
         _hover = false;
+        qDebug() << "  edgeitem.cpp: Edge "<<_id << " has LOST hover focus (2)";
     }
 
     update();
@@ -692,6 +650,7 @@ void EdgeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     {
         event->accept();
         _hover = true;
+        //qDebug() << "  edgeitem.cpp: Edge "<<_id << " has hover focus (2)";
     }
     else
     {
