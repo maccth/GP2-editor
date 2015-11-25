@@ -14,6 +14,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 #include <QGraphicsScene>
+#include <QSettings>
 
 namespace Developer {
 
@@ -341,13 +342,12 @@ QPainterPath EdgeItem::path() const
         // it - the other one should also curve producing a gap
         QPointF midPoint((edgeLine.p1().x() + edgeLine.p2().x())/2,
                          (edgeLine.p1().y() + edgeLine.p2().y())/2);
+
+        // The length of this line defines how much is the edge curved
         QLineF opposingLine(midPoint, edgeLine.p2());
-
-
-        // The length of this line defines how much is the line curved
         opposingLine.setLength(32);
 
-        // Calculate which to side to rotate the perpendicular line
+        // Calculate which side to rotate the perpendicular line
         qreal angle = opposingLine.angle();
         angle += 90; if(angle > 360) angle -= 360;
         opposingLine.setAngle(angle);
@@ -373,7 +373,7 @@ QPainterPath EdgeItem::path() const
                 else
                     break;
             }
-            qDebug() << "  edgeitem.cpp: ("<< _edge->id() << ") Edge in the same direction detected, increment: " << positionIncrement;
+            //qDebug() << "  edgeitem.cpp: ("<< _edge->id() << ") Edge in the same direction detected, increment: " << positionIncrement;
         }
 
         opposingLine.setLength(opposingLine.length() + positionIncrement);
@@ -405,7 +405,44 @@ QPainterPath EdgeItem::path() const
         center.setY(center.y() - ((nodeShape.boundingRect().height()/2)
                                   + 10));
         QPainterPath painterPath(center);
-        painterPath.addEllipse(center, 15, 20);
+
+        // Is there an edge in the same direction?
+        std::vector<Edge *> edges;
+
+        if(_to->node() == 0)
+            edges = std::vector<Edge *>();
+        else
+            edges = _edge->parent()->edgesFromTo(_from->id(), _to->id());   // obtain the parallel edges
+
+        qreal positionIncrement = 0;
+        if (edges.size() >= 2)
+        {
+            if (edges.size() > 10)
+                qDebug() << "  Warning: Attempting to draw more than 10 parallel loops: will overlap";
+            // There are multiple edges in the same direction
+            for (std::vector<Edge *>::const_iterator it = edges.begin(); it != edges.end(); ++it)
+            {
+                Edge* otherEdge = *it;
+                if (otherEdge != _edge)
+                    // keep incrementing until we find this edge in the collection of parallel edges
+                    if (edges.size() >= 5)
+                        (edges.size() <= 10) ?
+                                positionIncrement+=5:
+                                // if over 10 parallel edges, start overlapping
+                                positionIncrement+=0;
+                    else
+                        positionIncrement+=10;
+                else
+                    break;
+            }
+            qDebug() << "  edgeitem.cpp: ("<< _edge->id() << ") Loop in the same direction detected, increment: " << positionIncrement;
+        }
+
+        center.setY(center.y() - positionIncrement /2);
+        painterPath.addEllipse(center, 15 + positionIncrement/3, 20 + positionIncrement);
+
+
+
         QRectF loopBoundingRect = painterPath.boundingRect();
         QPolygonF pathPolygon = painterPath.toFillPolygon();
         QPolygonF fromPolygon = nodeShape.toFillPolygon();
