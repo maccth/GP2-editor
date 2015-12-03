@@ -35,13 +35,13 @@ public slots:
     void runConfiguration();
 
 signals:
-    void obtainedResultGraph(Graph* resultGraph, RunConfig* runConfig);
+    void obtainedResultGraph(QString resultLocation, RunConfig* runConfig);
     
 private:
     Ui::RunConfiguration *_ui;
     Project *_project;
 		RunConfig *_config;
-    void run(QString program, QString graph, QString output);
+    bool run(QString program, QString graph, QString output);
 		int call(QString cmd);
     QString rulesToQString(QVector<Rule *> rules);
 

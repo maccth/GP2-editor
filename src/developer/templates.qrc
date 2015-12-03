@@ -2,11 +2,11 @@
     <qresource prefix="/templates">
         <file alias="newproject.gpp">templates/newproject.gpp</file>
         <file alias="newrule_alternative.gpr">templates/newrule_alternative.gpr</file>
-        <file alias="newgraph_alternative.gpg">templates/newgraph_alternative.gpg</file>
-        <file alias="example_program.gpx">templates/example_program.gpx</file>
-        <file alias="newprogram.gpx">templates/newprogram.gpx</file>
-        <file alias="example_graph.gpg">templates/example_graph.gpg</file>
-        <file alias="example_graph_rhs.gpg">templates/example_graph_rhs.gpg</file>
+        <file alias="newgraph_alternative.host">templates/newgraph_alternative.host</file>
+        <file alias="example_program.gp2">templates/example_program.gp2</file>
+        <file alias="newprogram.gp2">templates/newprogram.gp2</file>
+        <file alias="example_graph.host">templates/example_graph.host</file>
+        <file alias="example_graph_rhs.host">templates/example_graph_rhs.host</file>
         <file alias="example_large_graph.gv">templates/example_large_graph.gv</file>
     </qresource>
 </RCC>

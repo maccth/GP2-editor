@@ -27,9 +27,9 @@ AppearancePreferences::AppearancePreferences(QWidget *parent)
     _ui->plainTextEdit->parse();
 
     // Set up a simple graph
-    Graph *lhsGraph = new Graph(":/templates/example_graph.gpg");
+    Graph *lhsGraph = new Graph(":/templates/example_graph.host");
     _ui->lhsGraph->setGraph(lhsGraph);
-    Graph *rhsGraph = new Graph(":/templates/example_graph_rhs.gpg");
+    Graph *rhsGraph = new Graph(":/templates/example_graph_rhs.host");
     _ui->rhsGraph->setGraph(rhsGraph);
 
     reset();

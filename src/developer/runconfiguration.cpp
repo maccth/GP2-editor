@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QMessageBox>
+#include <QProcess>
 
 #include <stdlib.h>  /* system, NULL, EXIT_FAILURE */
 
@@ -104,20 +105,14 @@ void RunConfiguration::updateGraphs()
 
 void RunConfiguration::runConfiguration()
 {
-    qDebug() << "Running configuration";
 
-	  /* Location of selected GP program */ 
-	  QString program;
-	  //program = "~/github/GP2Test/programs/1.gpp";
+    QString configName =  _ui->configurationNameEdit->text();
+    qDebug() << "Running configuration" << configName;
 
-	  QString configName =  _ui->configurationNameEdit->text();
-	  qDebug() << qPrintable(configName);
-
-	  QString progName = _ui->programCombo->currentText();
-	  Program* prog = _project->program(progName);
+    QString progName = _ui->programCombo->currentText();
+    Program* prog = _project->program(progName);    // exploiting that project->program(path) first iterates through _programs and compares program.name() with path
     QString programString = prog->program();
-	  //program = qPrintable(prog->absolutePath());
-
+    //program = qPrintable(prog->absolutePath());
 
     // Collect all rule specifications, we have to append them to the program text
     QVector<Rule *> rules =  _project->rules();
@@ -125,7 +120,7 @@ void RunConfiguration::runConfiguration()
 
     // Create temporary file to hold program text and rules
     QString programTmp = prog->absolutePath();
-    programTmp += ".tmp";     
+    programTmp += ".gp2";
     QFile file(programTmp);  
   
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) 
@@ -140,27 +135,28 @@ void RunConfiguration::runConfiguration()
     file.close();
 
     /* Location of selected GP host graph */
-    QString hostgraph;
+    QString hostgraphFile;
 
     QString graphName = _ui->targetGraphCombo->currentText();
     Graph* graph = _project->graph(graphName);
-    hostgraph = graph->absolutePath();
+    hostgraphFile = graph->absolutePath();
 
 
-    /* Location of output */
+    /* Desired location of output */
+    // The actual output is put by default in /tmp/gp2/gp2.output
     QDir resultsDir = _project->resultsDir(); 
     QString results = resultsDir.absolutePath();
 
     //qDebug() << "Results dir is: " << results << ", exists: " <<  resultsDir.exists() << ", isReadable: " << resultsDir.isReadable();
 
-    QString output = results + "/" + configName + + "_run" + QVariant(_runs).toString() + ".gpg"; //eg. project/results/RunConfig1_run1.gpg  or project/results/RunConfig1_run2.gpg etc.
+    QString output = results + "/Graph"+ QVariant(_runs).toString() + "_" + configName + ".host"; //eg. project/results/RunConfig1_run1.gpg  or project/results/RunConfig1_run2.gpg etc.
     QFileInfo checkFile(output);
     if (checkFile.exists())
     {
         qDebug() << "Truncating the file: " << output;
-        QFile outputGraph(output);
-        outputGraph.open(QFile::WriteOnly|QFile::Truncate);
-        outputGraph.close();
+        QFile outputFile(output);
+        outputFile.open(QFile::WriteOnly|QFile::Truncate);
+        outputFile.close();
     }
 
     //hostgraph = "~/github/GP2Test/hostgraphs/1.graph";
@@ -169,11 +165,16 @@ void RunConfiguration::runConfiguration()
     _config->setName(configName);
     _config->setProgram(prog->name());
     _config->setGraph(graph->fileName());
+    //_config->save();
 
     /* Call the compiler and run the executable */
-    run (programTmp, hostgraph, output);
-
-    qDebug() << "Attempting to open output graph.";
+    bool success = run(programTmp, hostgraphFile, output);
+    if (!success)
+    {
+        // The Compiler failed to validate/compile/execute (instead of giving a proper Fail)
+        return;
+    }
+    _runs ++;
 
     /*
       Check for failure - represented as a string in the output
@@ -188,6 +189,7 @@ void RunConfiguration::runConfiguration()
     if (!result.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "  " << "Could not open result file for reading: " << output;
+        return;
     }
     else
     {
@@ -217,8 +219,11 @@ void RunConfiguration::runConfiguration()
                     tr("Running the program produced Failure"));
         return;
     }
-    Graph* resultGraph = new Graph(output, this);
-    emit obtainedResultGraph(resultGraph, _config);
+
+    qDebug() << "Attempting to open output graph.";
+
+    //Graph* resultGraph = new Graph(output, this);
+    emit obtainedResultGraph(output, _config);
 }
 
 QString RunConfiguration::rulesToQString(QVector<Rule *> rules)
@@ -235,43 +240,154 @@ QString RunConfiguration::rulesToQString(QVector<Rule *> rules)
 }
 
 
-void RunConfiguration::run(QString program, QString graph, QString output)
+bool RunConfiguration::run(QString programFile, QString graphFile, QString outputFile)
 {
     /* Location of GP Compiler */
     //QString GPCompilerDir = "~/github/GP2/Compiler";
     QString GPCompilerDir = QString(COMPILER_LOCATION);
+    QString Compiler = GPCompilerDir + "/GP2-compile";
+    QStringList args = QStringList();
 
-    //qDebug() << "Location of GP2 Compiler: " << GPCompilerDir;// << " " << QString(COMPILER_LOCATION);
+    //qDebug() << "Location of GP2 Compiler: " << Compiler;
 
-	  /* Create command for compiling program and host graph */
-	  QString CompileCmd = QString();
+    /* ******************************* */
+    /* Validate program and host graph */
+    /* ******************************* */
+    args << "-p" << programFile;   // start with validating the program
 
+    QProcess validate;
+    // http://stackoverflow.com/questions/3852587/how-to-get-stdout-from-a-qprocess
+    validate.setProcessChannelMode(QProcess::MergedChannels);
 
-    CompileCmd += "cd " + GPCompilerDir + "/src";
-    CompileCmd += " && " ;
-    CompileCmd += GPCompilerDir + "/src/GP2-compile ";
-    CompileCmd += "-o " + output + " ";
-    CompileCmd += program + " " + graph;
+    validate.start(Compiler, args);
+    qDebug () << "  Attempting to Validate program:" << Compiler << args;
 
-    /*asprintf(&CompileCmd, "cd %s && %s/GP2-compile %s %s " , 
-				  GPCompilerDir, 
-				  GPCompilerDir, 
-				  program, 
-				  graph );*/
-    if (call(CompileCmd) !=0) return;
-    _runs ++;
+    if (!validate.waitForStarted())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Validation Failed"),
+                    tr("Could not start validating the given program/rules."));
+        validate.close();
+        return false;
+    }
+
+    if (!validate.waitForFinished()) // sets current thread to sleep
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Validation Failed"),
+                    tr("Could not finish validating the given program/rules."));
+        validate.close();
+        return false;
+    }
+
+    QByteArray validateOutput = validate.readAllStandardOutput();
+    qDebug() << "    " << QString(validateOutput).simplified();
+    if (!validateOutput.contains("is valid"))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Validation Failed"),
+                    tr("Could not validate the given configartion. See the log for details."));
+        validate.close();
+        return false;
+    }
+    validate.close();
+
+    // do the same for the host graph
+    args.clear(); args << "-h" << graphFile;
+    validate.start(Compiler, args);
+    qDebug () << "  Attempting to Validate host graph:" << Compiler << args;
+
+    if (!validate.waitForStarted())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Validation Failed"),
+                    tr("Could not start validating the given host graph."));
+        validate.close();
+        return false;
+    }
+
+    if (!validate.waitForFinished())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Validation Failed"),
+                    tr("Could not finish validating the given host graph."));
+        validate.close();
+        return false;
+    }
+
+    validateOutput = validate.readAllStandardOutput();
+    qDebug() << "    " << QString(validateOutput).simplified();
+    if (!validateOutput.contains("is valid"))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Validation Failed"),
+                    tr("Could not validate the given host graph. See the log for details."));
+        validate.close();
+        return false;
+    }
+    validate.close();
+
+    /* *************************************************** */
+    /* Create command for compiling program and host graph */
+    /* *************************************************** */
+    args.clear();
+    args << programFile << graphFile;
+
+    // The actual output is put by default in /tmp/gp2/gp2.output
+    QProcess compile;
+    // http://stackoverflow.com/questions/3852587/how-to-get-stdout-from-a-qprocess
+    compile.setProcessChannelMode(QProcess::MergedChannels);
+
+    qDebug () << "  Attempting to Compile configuration:" << Compiler << args;
+    compile.start(Compiler, args);
+    if (!compile.waitForStarted())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Compilation Failed"),
+                    tr("Could not start compiling the given configartion."));
+        compile.close();
+        return false;
+    }
+
+    if (!compile.waitForFinished())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Compilation Failed"),
+                    tr("Could not finish compiling the given configartion."));
+        compile.close();
+        return false;
+    }
+
+    QByteArray compileOutput = compile.readAllStandardOutput();
+    qDebug() << "    " << QString(compileOutput).simplified();
+    if (!compileOutput.contains("Generating program code..."))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Compilation Failed"),
+                    tr("Could not compile the given configartion. See the log for details."));
+        compile.close();
+        return false;
+    }
+    compile.close();
 
     /* Create command for running the GP program on the host graph */
     QString RunCmd = QString();
-    RunCmd += "cd " + GPCompilerDir + "/runtime";
+    RunCmd += "cd /tmp/gp2";
     RunCmd += " && make && ";
-    RunCmd += GPCompilerDir + "/runtime/GP2-run";
+    RunCmd += "./GP2-run && cp gp2.output " + outputFile;
 
-	  /*asprintf(&RunCmd, "cd %s && %s/../runtime/GP2-run", 
-				  GPCompilerDir, 
-				  GPCompilerDir);*/
+    qDebug () << "  Attempting to Execute program.";
 
-    call(RunCmd);
+    return (call(RunCmd) == 0 );
 }
 
 // Return 1 -- error during execution
@@ -280,8 +396,7 @@ int RunConfiguration::call(QString cmd)
 {
     // The mechanism for calling the GP compiler must be available
     //qDebug() << "Checking if command processor is available...";
-    if (system(NULL))  ;//qDebug() << "Ok";
-    else
+    if (!system(NULL)) //qDebug() << "Ok";
     {
         qDebug() << "Command processor is not available;"
                       "stopping." ;
@@ -310,11 +425,13 @@ int RunConfiguration::call(QString cmd)
     }
 
     /* Read the output a line at a time and output it */
-    qDebug() << "GP2 Pipeline output:";
+    qDebug() << "  " << "=== GP2 Pipeline output ===";
     while (fgets(path, sizeof(path)-1, fp) != NULL)
         qDebug() << "  " << path;
 
     /* close stream */
+    qDebug() << "  " << "===========================";
+    qDebug() << "";
     pclose(fp);
     return 0;
 }

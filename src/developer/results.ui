@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -35,16 +26,7 @@
       <property name="spacing">
        <number>0</number>
       </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
@@ -57,13 +39,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>170</width>
+          <width>210</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>170</width>
+          <width>210</width>
           <height>16777215</height>
          </size>
         </property>
@@ -89,86 +71,11 @@
       <property name="spacing">
        <number>0</number>
       </property>
-      <property name="leftMargin">
+      <property name="margin">
        <number>0</number>
       </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <!--item>
-       <widget class="QWidget" name="tracingControls" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="positionLabel">
-           <property name="text">
-            <string>Position X of Y</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="tracingSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>179</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="startButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="icons.qrc">:/icons/control_start.png</pixmap>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="previousButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="icons.qrc">:/icons/control_previous.png</pixmap>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="nextButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="icons.qrc">:/icons/control_next.png</pixmap>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="lastButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="icons.qrc">:/icons/control_end.png</pixmap>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item-->
       <item>
-       <widget class="Developer::GraphEdit" name="graphEdit"/>
+       <widget class="Developer::GraphEdit" name="graphEdit" native="true"/>
       </item>
      </layout>
     </widget>
@@ -183,25 +90,23 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>resultsTreeWidget</sender>
    <signal>itemClicked(QTreeWidgetItem*,int)</signal>
    <receiver>Results</receiver>
    <slot>graphClicked(QTreeWidgetItem*)</slot>
-   <!--hints>
+   <hints>
     <hint type="sourcelabel">
-     <x>88</x>
-     <y>453</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
-     <x>93</x>
-     <y>801</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
-   </hints-->
+   </hints>
   </connection>
  </connections>
  <slots>

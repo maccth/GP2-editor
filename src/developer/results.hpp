@@ -60,7 +60,7 @@ public slots:
      * of files under each type are appended to those nodes. The status of each
      * file affects how it should be displayed.
      */
-    void addResultGraph(Graph* resultGraph, RunConfig* runConfig);
+    void addResultGraph(QString resultLocation, RunConfig* runConfig);
 
 signals:
     void graphHasFocus(GraphWidget *graphWidget);

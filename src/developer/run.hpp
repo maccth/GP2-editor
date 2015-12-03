@@ -31,11 +31,11 @@ public:
     void setProject(Project *proj);
 
 signals:
-    void obtainedResultGraph(Graph* resultGraph, RunConfig* runConfig);
+    void obtainedResultGraph(QString resultLocation, RunConfig* runConfig);
 
 public slots:
     RunConfiguration *addRunConfiguration(bool addToProject = true);
-    void handleResultGraph(Graph* resultGraph, RunConfig* runConfig);
+    void handleResultGraph(QString resultLocation, RunConfig* runConfig);
     
 private:
     Ui::Run *_ui;

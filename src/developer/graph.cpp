@@ -68,8 +68,10 @@ bool Graph::save()
             saveText = toGxl();
             break;
         case DotGraph:
-        default:
             saveText = toDot();
+            break;
+        default:
+            saveText = toAlternative();
             break;
     }
 
@@ -110,7 +112,7 @@ bool Graph::saveAs(const QString &filePath)
                     0,
                     tr("Save Graph As..."),
                     dirPath,
-                    tr("Graph Formats (*.gpg *.gv *.gxl)"));
+                    tr("Graph Formats (*.host *.gv *.gxl)"));
         if(thePath.isEmpty())
             return false;
     }
@@ -173,14 +175,16 @@ bool Graph::exportTo(const QString &filePath, GraphTypes outputType)
             filter = tr("LaTeX File (*.tex)");
             break;
         case AlternativeGraph:
-            filter = tr("GP Graph Format (*.gpg)");
+            filter = tr("GP Graph Format (*.host)");
             break;
         case GxlGraph:
             filter = tr("GXL Format (*.gxl)");
             break;
         case DotGraph:
+            filter = tr("DOT Format (*.gv)");
+            break;
         default:
-            filter = tr("Dot Format (*.gv *.dot)");
+            filter = tr("GP Graph Format (*.host)");
             break;
         }
 
@@ -263,9 +267,10 @@ bool Graph::open()
             graph = parseGxlGraph(contents);
             break;
         case DotGraph:
-        default:
             graph = parseDotGraph(contents);
             break;
+        default:
+            graph = parseAlternativeGraph(absolutePath());
         }
     }
 
@@ -990,15 +995,17 @@ bool Graph::removeNode(const QString &id, bool strict)
 
 bool Graph::openGraphT(const graph_t &inputGraph)
 {
+
     for(size_t i = 0; i < inputGraph.nodes.size(); ++i)
     {
         node_t node = inputGraph.nodes.at(i);
+
         if(contains(node.id.c_str()))
         {
-                        qDebug() << "    Duplicate ID found: " << node.id.c_str();
-                        qDebug() << "    Graph parsing failed.";
-                        emit openComplete();
-                        return false;
+            qDebug() << "    Duplicate ID found: " << node.id.c_str();
+            qDebug() << "    Graph parsing failed.";
+            emit openComplete();
+            return false;
         }
 
         QString label = List(node.label).toString();

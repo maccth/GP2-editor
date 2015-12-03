@@ -88,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent)
                            tr("Results")
                            );
 
-    connect( _run , SIGNAL(obtainedResultGraph(Graph*, RunConfig*)), _results , SLOT(addResultGraph(Graph*, RunConfig*))  );
+    connect( _run , SIGNAL(obtainedResultGraph(QString, RunConfig*)), _results , SLOT(addResultGraph(QString, RunConfig*))  );
 
 
     // No open project by default, so set that state

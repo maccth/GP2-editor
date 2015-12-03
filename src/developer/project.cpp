@@ -222,8 +222,15 @@ Program *Project::program(const QString &filePath) const
 
         // The file doesn't exist, maybe we were just passed in a name - if so
         // then we need to fix it. First does it end with the right extension?
-        if(!filePath.endsWith(GP_PROGRAM_EXTENSION))
-            programPath += GP_PROGRAM_EXTENSION;
+
+        ProgramTypes type = DefaultProgram;
+        if(filePath.endsWith(GP_OLD_EXTENSION))
+            type = ProgramOldFormat;
+        if(filePath.endsWith(GP_PROGRAM_EXTENSION))
+            type = ProgramGP2Format;
+
+        if (type == DefaultProgram)
+            programPath += GP_PROGRAM_DEFAULT_EXTENSION;
 
         i.setFile(programPath);
         // If it still doesn't exist then we'll try putting it in the programs/
@@ -271,12 +278,12 @@ Graph *Project::graph(const QString &filePath) const
 
 RunConfig *Project::runConfig(QString runConfigName) const 
 {
-		for(runConfigConstIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
-		{
-				RunConfig *config = *iter;
-				if (config->name() == runConfigName)
-					return config;		
-		}
+    for(runConfigConstIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
+    {
+        RunConfig *config = *iter;
+        if (config->name() == runConfigName)
+            return config;
+    }
 	
     // We haven't found it, return 0
     return 0;
@@ -936,8 +943,10 @@ void Project::newGraph(const QString &graphName, GraphTypes type)
                 filePath = d.filePath(graphName + GP_GRAPH_ALTERNATIVE_EXTENSION);
                 break;
             case DotGraph:
-            default:
                 filePath = d.filePath(graphName + GP_GRAPH_DOT_EXTENSION);
+                break;
+            default:
+                filePath = d.filePath(graphName + GP_GRAPH_DEFAULT_EXTENSION);
                 break;
             }
         }
@@ -969,15 +978,17 @@ void Project::newGraph(const QString &graphName, GraphTypes type)
         break;
     case AlternativeGraph:
     {
-        QFile fp(":/templates/newgraph_alternative.gpg");
+        QFile fp(":/templates/newgraph_alternative.host");
         fp.open(QIODevice::ReadOnly | QIODevice::Text);
         QString newGraphString = fp.readAll();
         file.write(QVariant(newGraphString).toByteArray());
     }
         break;
     case DotGraph:
-    default:
         file.write(QVariant(QString("")).toByteArray());
+        break;
+    default:
+        file.write(QVariant(QString("[ | | ]")).toByteArray());
         break;
     }
 
@@ -1218,10 +1229,10 @@ bool Project::save()
     }
 
     //! \todo Save run configurations
-    QDomElement runConfigurations = doc.createElement("runconfigurations");
+    /*QDomElement runConfigurations = doc.createElement("runconfigurations");
     root.appendChild(runConfigurations);
 
-    /*for(runConfigIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
+    for(runConfigIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
     {
         RunConfig *config = *iter;
         QDomElement configTag = doc.createElement("runconfiguration");

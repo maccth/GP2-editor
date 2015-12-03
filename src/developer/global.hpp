@@ -78,10 +78,14 @@ enum RuleTypes
  */
 enum ProgramTypes
 {
+    //! Default format: use the default defined in the program settings
+    DefaultProgram,
+    //! The standard program format documented in the GP2 design documents
+    ProgramGP2Format,
     //! GP2 XML program format
     ProgramXmlFormat,
-    //! GP2 "alternative" program format
-    ProgramAlternativeFormat
+    //! GP2 old .gpx program format
+    ProgramOldFormat
 };
 
 /*!
@@ -102,7 +106,7 @@ enum LayoutDirections
 #define DEFAULT_LAYOUT_DIRECTION Layout_TopToBottom
 
 //! The default graph type to use (before set in QSettings)
-#define DEFAULT_GRAPH_FORMAT DotGraph
+#define DEFAULT_GRAPH_FORMAT AlternativeGraph
 
 /*!
  * The current version of this software - it is important that this remains a
@@ -119,16 +123,19 @@ enum LayoutDirections
 #define GP_RULE_EXTENSION ".gpr"
 
 //! The default extension for GP programs
-#define GP_PROGRAM_EXTENSION ".gpx"
+#define GP_PROGRAM_DEFAULT_EXTENSION ".gp2"
+#define GP_PROGRAM_EXTENSION ".gp2"
+#define GP_OLD_EXTENSION ".gpx"
 
 //! The default extension for GP projects
 #define GP_PROJECT_EXTENSION ".gpp"
 
 //! The default extensions for GP graphs
-#define GP_GRAPH_ALTERNATIVE_EXTENSION ".gpg"
-#define GP_GRAPH_DOT_EXTENSION ".gv"
-#define GP_GRAPH_GXL_EXTENSION ".gxl"
-#define GP_GRAPH_LATEX_EXTENSION ".tex"
+#define GP_GRAPH_DEFAULT_EXTENSION ".host"
+#define GP_GRAPH_ALTERNATIVE_EXTENSION ".host"
+#define GP_GRAPH_DOT_EXTENSION ".gv"    // Graphviz DOT language file
+#define GP_GRAPH_GXL_EXTENSION ".gxl"   // Graph Exchange Language file
+#define GP_GRAPH_LATEX_EXTENSION ".tex" // TeX source file
 
 //! The number of recent projects to track
 #define MAX_RECENT_PROJECTS 5

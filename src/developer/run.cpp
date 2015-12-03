@@ -65,9 +65,9 @@ void Run::setProject(Project *proj)
     _ui->addRunConfigurationButton->setEnabled(true);
 }
 
-void Run::handleResultGraph(Graph* resultGraph, RunConfig* runConfig)
+void Run::handleResultGraph(QString resultLocation, RunConfig* runConfig)
 {
-    emit obtainedResultGraph(resultGraph, runConfig);
+    emit obtainedResultGraph(resultLocation, runConfig);
 }
 
 
@@ -91,11 +91,11 @@ RunConfiguration *Run::addRunConfiguration(bool addToProject)
     if(addToProject)
     {
         // Add the run configuration to the project
-				RunConfig *runConfig = runConfiguration->getRunConfig();
-				_project->addRunConfig(runConfig);
+        RunConfig *runConfig = runConfiguration->getRunConfig();
+        _project->addRunConfig(runConfig);
     }
 
-    connect (runConfiguration, SIGNAL(obtainedResultGraph(Graph*, RunConfig*)), this, SLOT(handleResultGraph(Graph*, RunConfig*))  );
+    connect (runConfiguration, SIGNAL(obtainedResultGraph(QString, RunConfig*)), this, SLOT(handleResultGraph(QString, RunConfig*))  );
 
     return runConfiguration;
 }

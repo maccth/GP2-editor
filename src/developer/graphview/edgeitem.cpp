@@ -217,6 +217,7 @@ QPolygonF EdgeItem::polygon(double polygonWidth)
     }
     else
     {
+        return path().toFillPolygon();
         // This is a loop edge
         // We should draw an ellipse
 
@@ -360,9 +361,7 @@ QPainterPath EdgeItem::path()
         QPainterPath nodeShape = _from->shape();
         nodeShape.translate(_from->scenePos());
         QPointF center = _from->centerPos();
-        center.setY(center.y() - ((nodeShape.boundingRect().height()/2)
-                                  + 10));
-        QPainterPath painterPath(center);
+
 
         // Is there an edge in the same direction?
         std::vector<Edge *> edges;
@@ -376,18 +375,15 @@ QPainterPath EdgeItem::path()
         if (edges.size() >= 2)
         {
             if (edges.size() > 10)
-                qDebug() << "  Warning: Attempting to draw more than 10 parallel loops: will overlap";
+                qDebug() << "  Warning: Attempting to draw more than 10 parallel loops";
             // There are multiple edges in the same direction
             for (std::vector<Edge *>::const_iterator it = edges.begin(); it != edges.end(); ++it)
             {
                 Edge* otherEdge = *it;
                 if (otherEdge != _edge)
                     // keep incrementing until we find this edge in the collection of parallel edges
-                    if (edges.size() >= 5)
-                        (edges.size() <= 10) ?
-                                positionIncrement+=5:
-                                // if over 10 parallel edges, start overlapping
-                                positionIncrement+=0;
+                    if (edges.size() >= 4)
+                        positionIncrement+=8;
                     else
                         positionIncrement+=10;
                 else
@@ -396,7 +392,10 @@ QPainterPath EdgeItem::path()
             // qDebug() << "  edgeitem.cpp: ("<< _edge->id() << ") Loop in the same direction detected, increment: " << positionIncrement;
         }
 
-        center.setY(center.y() - positionIncrement /2);
+        // Move the ellipse center up by it's 2nd radius units
+        center.setY(center.y() - (20 + positionIncrement));
+
+        QPainterPath painterPath(center);
         painterPath.addEllipse(center, 15 + positionIncrement/3, 20 + positionIncrement);
 
         QRectF loopBoundingRect = painterPath.boundingRect();
@@ -418,10 +417,11 @@ QPainterPath EdgeItem::path()
             }
         }
 
+        bool unattachedLoop = false;
         if(intersections.count() < 2)
         {
-            qDebug() << "Not enough intersections found in EdgeItem::path()";
-            return QPainterPath();
+            qDebug() << "Warning: The loop (" << _id << ") became too big to be drawn sensibly";
+            unattachedLoop = true;
         }
 
         QPointF arcStartPoint;
@@ -632,13 +632,13 @@ void EdgeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     {
         event->accept();
         _hover = true;
-        qDebug() << "  edgeitem.cpp: Edge "<<_id << " has hover focus (1)";
+        //qDebug() << "  edgeitem.cpp: Edge "<<_id << " has hover focus (1)";
     }
     else
     {
         event->ignore();
         _hover = false;
-        qDebug() << "  edgeitem.cpp: Edge "<<_id << " has LOST hover focus (2)";
+        //qDebug() << "  edgeitem.cpp: Edge "<<_id << " has LOST hover focus (2)";
     }
 
     update();

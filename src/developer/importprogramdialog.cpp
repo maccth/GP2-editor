@@ -45,7 +45,7 @@ void ImportProgramDialog::selectFile()
                 this,
                 tr("Import Program File"),
                 dir,
-                tr("GP Program Files (*.gpx)"));
+                tr("GP Program Files (*.gp2)"));
 
     if(!file.isEmpty())
         _ui->programFileEdit->setText(file);

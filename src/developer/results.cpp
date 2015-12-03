@@ -80,17 +80,16 @@ void Results::graphClicked(QTreeWidgetItem *item)
         qDebug() << "Could not find a corresponding Graph: " << item->text(0);
         return;
     }
-    
 
-    qDebug() << "Attempting to view Result: " << graph->fileName();
+    // qDebug() << "Attempting to view Result: " << graph->fileName();
 
-    graph->open();
+    //graph->open();
 
     _ui->graphEdit->setEnabled(true);
     _ui->graphEdit->setGraph(graph);
 }
 
-void Results::addResultGraph(Graph* resultGraph, RunConfig* runConfig)
+void Results::addResultGraph(QString resultLocation, RunConfig* runConfig)
 {
     // Check if config exists already in the tree structure
     // If no, create it
@@ -122,21 +121,16 @@ void Results::addResultGraph(Graph* resultGraph, RunConfig* runConfig)
 
     // Check if result graph exists in tree structure
     // If no, create it
-    if (!_graphMap.contains(resultGraph))
-    {
-        items.clear(); items << resultGraph->fileName();
-        graph = new QTreeWidgetItem(items);
-        graph->setToolTip(0, resultGraph->absolutePath()); 
+    Graph* resultGraph = new Graph(resultLocation, this);
 
-        config->addChild(graph); 
-        _graphMap.insert(resultGraph, graph);
+    items.clear(); items << resultGraph->fileName();
+    graph = new QTreeWidgetItem(items);
+    graph->setToolTip(0, resultGraph->absolutePath());
 
-        _ui->resultsTreeWidget->expandItem(config);  
-    }
-    else
-    {
-        qDebug() << "Result graph already exists:" << runConfig->name() << " " << resultGraph->fileName();        
-    }
+    config->addChild(graph);
+    _graphMap.insert(resultGraph, graph);
+
+    _ui->resultsTreeWidget->expandItem(config);
 }
 
 void Results::handleGraphHasFocus(GraphWidget *graphWidget)

@@ -45,7 +45,7 @@ void ImportGraphDialog::selectFile()
                 this,
                 tr("Import Graph File"),
                 dir,
-                tr("Graph Files (*.gv *.gxl *.gpg)"));
+                tr("Graph Files (*.gv *.gxl *.host)"));
 
     if(!file.isEmpty())
         _ui->graphFileEdit->setText(file);
