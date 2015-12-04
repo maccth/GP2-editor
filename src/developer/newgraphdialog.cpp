@@ -27,6 +27,7 @@ NewGraphDialog::NewGraphDialog(Project *proj, QWidget *parent)
     // Initialise form
     // Set a default rule name as "Graph"
     // _ui->graphNameEdit->setText("Graph");
+    _ui->graphNameEdit->setValidator(new QRegExpValidator(QRegExp("^(\\w|\\d|\\-|_|\\.)+$"), this));
 
     // Set the default directory as "${projectDir}/graphs"
     QDir dir = proj->dir();

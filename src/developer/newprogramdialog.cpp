@@ -26,7 +26,8 @@ NewProgramDialog::NewProgramDialog(Project *proj, QWidget *parent)
 
     // Initialise form
     // Set a default rule name as "Program"
-    _ui->programNameEdit->setText("Program");
+    //_ui->programNameEdit->setText("Program");
+    _ui->programNameEdit->setValidator(new QRegExpValidator(QRegExp("^(\\w|\\d|\\-|_|\\.)+$"), this));
 
     // Set the default directory as "${projectDir}/programs"
     QDir dir = proj->dir();
