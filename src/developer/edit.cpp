@@ -57,7 +57,7 @@ void Edit::setProject(Project *project)
         }
     }
     else
-        _ui->ruleEdit->setEnabled(false);
+        _ui->ruleEdit->setVisible(false);
 
     // Set up program edit
     if(_project->programs().count() > 0)
@@ -71,7 +71,7 @@ void Edit::setProject(Project *project)
         }
     }
     else
-        _ui->graphEdit->setEnabled(false);
+        _ui->graphEdit->setVisible(false);
 
     if(_project->graphs().count() > 0)
     {
@@ -84,7 +84,7 @@ void Edit::setProject(Project *project)
         }
     }
     else
-        _ui->graphEdit->setEnabled(false);
+        _ui->graphEdit->setVisible(false);
 
     connect(_project, SIGNAL(fileListChanged()), this, SLOT(fileListChanged()));
     connect(_project, SIGNAL(fileStatusChanged(QString,int)),
@@ -109,7 +109,7 @@ void Edit::fileClicked(QTreeWidgetItem *item)
                      << item->text(0);
             return;
         }
-        _ui->ruleEdit->setEnabled(true);
+        _ui->ruleEdit->setVisible(true);
         _ui->stackedWidget->setCurrentIndex(0);
         _ui->ruleEdit->setRule(rule);
         _currentFile = rule;
@@ -126,7 +126,7 @@ void Edit::fileClicked(QTreeWidgetItem *item)
                      << item->text(0);
             return;
         }
-        _ui->programEdit->setEnabled(true);
+        _ui->programEdit->setVisible(true);
         _ui->stackedWidget->setCurrentIndex(1);
         _ui->programEdit->setProgram(prog);
         _currentFile = prog;
@@ -143,7 +143,7 @@ void Edit::fileClicked(QTreeWidgetItem *item)
                      << item->text(0);
             return;
         }
-        _ui->graphEdit->setEnabled(true);
+        _ui->graphEdit->setVisible(true);
         _ui->stackedWidget->setCurrentIndex(2);
         _ui->graphEdit->setGraph(graph);
         _currentFile = graph;
