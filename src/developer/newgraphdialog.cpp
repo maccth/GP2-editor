@@ -26,7 +26,7 @@ NewGraphDialog::NewGraphDialog(Project *proj, QWidget *parent)
 
     // Initialise form
     // Set a default rule name as "Graph"
-    _ui->graphNameEdit->setText("Graph");
+    // _ui->graphNameEdit->setText("Graph");
 
     // Set the default directory as "${projectDir}/graphs"
     QDir dir = proj->dir();
