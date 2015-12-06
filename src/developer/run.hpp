@@ -34,8 +34,9 @@ signals:
     void obtainedResultGraph(QString resultLocation, RunConfig* runConfig);
 
 public slots:
-    RunConfiguration *addRunConfiguration(bool addToProject = true);
+    RunConfiguration *addRunConfiguration(RunConfig* runConfig = 0);
     void handleResultGraph(QString resultLocation, RunConfig* runConfig);
+    void handleRunConfigListChanged();
     
 private:
     Ui::Run *_ui;

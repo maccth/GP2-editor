@@ -187,8 +187,8 @@ void GPFile::fileChanged(const QString &filePath)
     if(filePath != _path)
     {
         qDebug() << "File path mismatch:";
-        qDebug() << "_path = " << _path;
-        qDebug() << "filePath = " << filePath;
+        qDebug() << "  _path = " << _path;
+        qDebug() << "  filePath = " << filePath;
     }
 
     //NOTE:

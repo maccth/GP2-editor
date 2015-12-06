@@ -255,14 +255,6 @@ public:
     Graph *graph(const QString &filePath) const;
 
     /*!
-     * \brief Get a RunConfig object for the provided run configuration name if the project
-     *  tracks it
-     * \param runConfigName The name to search for in the project
-     * \return A RunConfig representing the requested run configuration object if found, 0 otherwise
-     */
-    RunConfig *runConfig(QString runConfigName) const;
-
-    /*!
      * \brief Retrieve a vector of rule objects containing all of the rule files
      *  tracked by this project
      * \return A vector of Rule objects tracked by this project
@@ -281,6 +273,12 @@ public:
      */
     QVector<Graph *> graphs() const;
 
+
+    /*!
+     * \brief Retrieve a vector of run config objects containing all of the run
+     *  configurations tracked by this project
+     * \return A vector of RunConfig objects tracked by this project
+     */
     QVector<RunConfig *> runConfigurations() const;
 
     /*!
@@ -399,7 +397,8 @@ public:
      *
      * \param filePath  The RunConfig object to be added
      */
-    void addRunConfig(RunConfig *runConfig);
+    bool addRunConfig(RunConfig *runConfig);
+    void removeConfig(RunConfig *runConfig);
 
     /*!
      * \brief Boolean test to determine if the project tracks the file provided
@@ -439,9 +438,6 @@ public:
      */
     bool containsGraph(const QString &filePath);
 
-		void removeConfig(RunConfig* config);
-
-
     /*!
      * \brief Boolean test to determine if the project tracks the run configuration provided
      *
@@ -451,7 +447,10 @@ public:
      * \param runConfig  The run configuration name to test the presence of
      * \return Boolean, true if the project contains that run configuration, false otherwise
      */
-    bool containsRunConfig(QString configName);
+    bool containsRunConfig(RunConfig* config);
+    bool containsRunConfigName(QString runConfigName);
+
+    RunConfig* runConfig(QString &configName);
 
     // Inherited methods from GPFile
     bool save();

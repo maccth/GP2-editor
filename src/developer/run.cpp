@@ -39,6 +39,7 @@ void Run::setProject(Project *proj)
         return;
     }
 
+    //disconnect(_project, SIGNAL(runConfigurationListChanged()), this, SLOT(handleRunConfigListChanged()));
     _project = proj;
 
     QLayoutItem *item;
@@ -61,8 +62,18 @@ void Run::setProject(Project *proj)
     else
     {
         // Populate with run configurations
+        for (int i = 0; i < runConfigs.size(); i++)
+        {
+            RunConfig* config = runConfigs.at(i);
+            // qDebug () << "  Run: configuration detected" << config->name() << config->program() << config->graph();
+
+            // Creates the widget and adds it to the UI
+            this->addRunConfiguration(config);
+        }
     }
     _ui->addRunConfigurationButton->setEnabled(true);
+
+    connect(_project, SIGNAL(runConfigurationListChanged()), this, SLOT(handleRunConfigListChanged()));
 }
 
 void Run::handleResultGraph(QString resultLocation, RunConfig* runConfig)
@@ -70,8 +81,38 @@ void Run::handleResultGraph(QString resultLocation, RunConfig* runConfig)
     emit obtainedResultGraph(resultLocation, runConfig);
 }
 
+void Run::handleRunConfigListChanged()
+{
+    QVector<RunConfig*> configs = _project->runConfigurations();
+   //  qDebug () << "  Run: Detected" << configs.size() << "configs";
 
-RunConfiguration *Run::addRunConfiguration(bool addToProject)
+
+//    QLayoutItem *item;
+//    while((item = _ui->runConfigurations->layout()->takeAt(0)) != 0)
+//    {
+//        delete item->widget();
+//        delete item;
+//    }
+
+    // If we are not at the start (project was just opened), then we already have the
+    // full list of run configs (project owned and local)
+    // No need to update in that case
+    if (!_initial)
+        return;
+
+    for (int i = 0; i < configs.size(); i++)
+    {
+        RunConfig* config = configs.at(i);
+        // qDebug () << "  Run: configuration detected" << config->name() << config->program() << config->graph();
+
+        RunConfiguration* runConfig = this->addRunConfiguration(config);
+        runConfig->setName(config->name());
+        runConfig->setProgram(config->program());
+        runConfig->setGraph(config->graph());
+    }
+}
+
+RunConfiguration *Run::addRunConfiguration(RunConfig* runConfig)
 {
     if(_initial)
     {
@@ -85,15 +126,18 @@ RunConfiguration *Run::addRunConfiguration(bool addToProject)
         }
     }
 
-    RunConfiguration *runConfiguration = new RunConfiguration(_project, _ui->runConfigurations);
+
+    RunConfiguration *runConfiguration = new RunConfiguration(_project, _ui->runConfigurations, runConfig);
     _ui->runConfigurations->layout()->addWidget(runConfiguration);
 
-    if(addToProject)
-    {
-        // Add the run configuration to the project
-        RunConfig *runConfig = runConfiguration->getRunConfig();
-        _project->addRunConfig(runConfig);
-    }
+    // New run configurations should never be added to project
+    // Instead, should be added only when ran
+//    if(addToProject)
+//    {
+//        // Add the run configuration to the project
+//        //RunConfig *runConfig = runConfiguration->getRunConfig();
+//        //_project->addRunConfig(runConfig);
+//    }
 
     connect (runConfiguration, SIGNAL(obtainedResultGraph(QString, RunConfig*)), this, SLOT(handleResultGraph(QString, RunConfig*))  );
 

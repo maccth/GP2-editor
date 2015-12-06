@@ -24,11 +24,12 @@ namespace Developer {
 
 class Rule;
 
-RunConfiguration::RunConfiguration(Project *proj, QWidget *parent)
+RunConfiguration::RunConfiguration(Project *proj, QWidget *parent, RunConfig* runConfig)
     : QWidget(parent)
     , _ui(new Ui::RunConfiguration)
     , _project(proj)
     , _runs(0)
+    , _config(runConfig)
 {
     _ui->setupUi(this);
 
@@ -40,24 +41,85 @@ RunConfiguration::RunConfiguration(Project *proj, QWidget *parent)
 
     _ui->detailsWidget->setVisible(false);
 
-		_config = new RunConfig(proj);
-
+    toggleDetails();
     updatePrograms();
     updateGraphs();
+
+    if (_config)
+    {
+        _ui->configurationNameEdit->setText(_config->name());
+
+        int index = _ui->programCombo->findText(_config->program());
+        if (index != -1)
+            _ui->programCombo->setCurrentIndex(index);
+
+        index = _ui->targetGraphCombo->findText(_config->graph());
+        if (index != -1)
+            _ui->targetGraphCombo->setCurrentIndex(index);
+    }
 }
 
 RunConfiguration::~RunConfiguration()
 {
     delete _ui;
-
-		_project->removeConfig(_config);
-		delete _config;
+    if (_config)
+        delete _config;
 }
 
 RunConfig *RunConfiguration::getRunConfig()
 {
-		return _config;
+    return _config;
 }
+
+QString RunConfiguration::name() const
+{
+    return _ui->configurationNameEdit->text();
+}
+
+QString RunConfiguration::program() const
+{
+    return _ui->programCombo->currentText();
+}
+
+QString RunConfiguration::graph() const
+{
+    return _ui->targetGraphCombo->currentText();
+}
+
+
+void RunConfiguration::setName(QString name)
+{
+    _ui->configurationNameEdit->setText(name);
+    if (_config)
+        _config->setName(name);
+}
+
+void RunConfiguration::setProgram(QString programName)
+{
+    updatePrograms();
+
+    int index = _ui->programCombo->findText(programName);
+    if (index != -1)
+        _ui->programCombo->setCurrentIndex(index);
+
+    if (_config)
+        _config->setProgram(programName);
+}
+
+void RunConfiguration::setGraph(QString graphName)
+{
+    updateGraphs();
+
+    int index = _ui->targetGraphCombo->findText(graphName);
+    if (index != -1)
+        _ui->targetGraphCombo->setCurrentIndex(index);
+
+    if (_config)
+        _config->setGraph(graphName);
+}
+
+
+
 
 void RunConfiguration::toggleDetails()
 {
@@ -142,9 +204,46 @@ void RunConfiguration::runConfiguration()
     hostgraphFile = graph->absolutePath();
 
 
+    //hostgraph = "~/github/GP2Test/hostgraphs/1.graph";
+
+    // Update the corresponding RunConfig object
+    // _config = _project->runConfig(configName);
+
+    if (!_config)
+        _config = new RunConfig(_project, configName, prog->name(), graph->fileName());
+
+    else
+    {
+        _config->setName(configName);
+        _config->setProgram(prog->name());
+        _config->setGraph(graph->fileName());
+    }
+
+    // Update the project
+    // Check the current configuration is non-local (i.e. it exists in the project already)
+    _existsInProject = _project->containsRunConfig(_config);
+
+    if (!_existsInProject)
+    {
+        // If local, then save it to project
+        bool _addSuccess =  _project->addRunConfig(_config);
+
+        if (!_addSuccess)
+        {
+            // Local and couldn't save to project, probably name clash
+            QMessageBox::information(
+                        this,
+                        tr("Saving Run Configuration Failed"),
+                        tr("There is already an existing run configuration with the same name."));
+            return;
+        }
+    }
+
+    _project->save();
+
     /* Desired location of output */
     // The actual output is put by default in /tmp/gp2/gp2.output
-    QDir resultsDir = _project->resultsDir(); 
+    QDir resultsDir = _project->resultsDir();
     QString results = resultsDir.absolutePath();
 
     //qDebug() << "Results dir is: " << results << ", exists: " <<  resultsDir.exists() << ", isReadable: " << resultsDir.isReadable();
@@ -158,14 +257,6 @@ void RunConfiguration::runConfiguration()
         outputFile.open(QFile::WriteOnly|QFile::Truncate);
         outputFile.close();
     }
-
-    //hostgraph = "~/github/GP2Test/hostgraphs/1.graph";
-
-    // Update the corresponding RunConfig object
-    _config->setName(configName);
-    _config->setProgram(prog->name());
-    _config->setGraph(graph->fileName());
-    //_config->save();
 
     /* Call the compiler and run the executable */
     bool success = run(programTmp, hostgraphFile, output);
@@ -260,7 +351,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     validate.setProcessChannelMode(QProcess::MergedChannels);
 
     validate.start(Compiler, args);
-    qDebug () << "  Attempting to Validate program:" << Compiler << args;
+    qDebug () << "  Attempting to validate Program:" << Compiler << args;
 
     if (!validate.waitForStarted())
     {
@@ -298,7 +389,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     // do the same for the host graph
     args.clear(); args << "-h" << graphFile;
     validate.start(Compiler, args);
-    qDebug () << "  Attempting to Validate host graph:" << Compiler << args;
+    qDebug () << "  Attempting to validate Host Graph:" << Compiler << args;
 
     if (!validate.waitForStarted())
     {
@@ -385,9 +476,19 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     RunCmd += " && make && ";
     RunCmd += "./GP2-run && cp gp2.output " + outputFile;
 
-    qDebug () << "  Attempting to Execute program.";
+    qDebug () << "  Attempting to execute GP2 Program.";
 
-    return (call(RunCmd) == 0 );
+    bool success = (call(RunCmd) == 0);
+
+    if (!success)
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Run Failed"),
+                    tr("There was something wrong with execution. See the log for details."));
+
+    }
+    return success;
 }
 
 // Return 1 -- error during execution
@@ -437,4 +538,25 @@ int RunConfiguration::call(QString cmd)
 }
 
 
+}
+
+void Developer::RunConfiguration::on_deleteButton_clicked()
+{
+    QMessageBox::StandardButton response;
+    response = QMessageBox::warning(
+                0,
+                tr("Deleting Run Configuration"),
+                tr("Are you sure you want to delete this Run Configuration?"),
+                QMessageBox::Yes | QMessageBox::Cancel
+                );
+    // The user hit cancel, bail without changing anything
+    if(response != QMessageBox::Yes)
+        return;
+
+    if (_existsInProject && _project && _config)
+    {
+        _project->removeConfig(_config);
+        qDebug() << "  runconfiguration.cpp: Removing" << _config->name() << "from project.";
+    }
+    delete this;
 }

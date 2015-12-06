@@ -119,6 +119,10 @@ void Results::addResultGraph(QString resultLocation, RunConfig* runConfig)
         return;
     } 
 
+    // Update widget display name
+    if (config->text(0) != runConfig->name())
+        config->setText(0, runConfig->name());
+
     // Check if result graph exists in tree structure
     // If no, create it
     Graph* resultGraph = new Graph(resultLocation, this);

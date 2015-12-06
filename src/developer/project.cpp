@@ -276,19 +276,6 @@ Graph *Project::graph(const QString &filePath) const
     return 0;
 }
 
-RunConfig *Project::runConfig(QString runConfigName) const 
-{
-    for(runConfigConstIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
-    {
-        RunConfig *config = *iter;
-        if (config->name() == runConfigName)
-            return config;
-    }
-	
-    // We haven't found it, return 0
-    return 0;
-}
-
 QVector<Rule *> Project::rules() const
 {
     return _rules;
@@ -592,40 +579,40 @@ bool Project::readRunConfigs(QDomNode &node)
             continue;
         }
 
-				QString name = elem.attribute("name");
-    		// A name must be present
-				if (name.isEmpty())
-				{
+        QString name = elem.attribute("name");
+        // A name must be present
+        if (name.isEmpty())
+        {
             qDebug() << "Read in <runconfiguration> tag with no name attribute, failing.";
             return false;
-				}
+        }
 
-				QString program = elem.attribute("program");
-    		// A program must be present
-				if (program.isEmpty())
-				{
+        QString program = elem.attribute("program");
+        // A program must be present
+        if (program.isEmpty())
+        {
             qDebug() << "Read in <runconfiguration> tag with no program attribute, failing.";
             return false;
-				}
+        }
 
-				QString graph = elem.attribute("graph");
-    		// A graph must be present
-				if (graph.isEmpty())
-				{
+        QString graph = elem.attribute("graph");
+        // A graph must be present
+        if (graph.isEmpty())
+        {
             qDebug() << "Read in <runconfiguration> tag with no graph attribute, failing.";
             return false;
-				}
+        }
 
-				RunConfig *config = new RunConfig(this, name, program, graph);
 
-				readRunConfigOptions(n, config);	
-			  
-				_runConfigurations.push_back(config);
-				emit runConfigurationListChanged();
+        RunConfig *config = new RunConfig(this, name, program, graph);
 
-		}
+        readRunConfigOptions(n, config);
+        _runConfigurations.push_back(config);
+        // emit runConfigurationListChanged();
 
-		return true;
+    }
+
+    return true;
 }
 
 void Project::readRunConfigOptions(QDomNode &node, RunConfig* config)
@@ -1091,36 +1078,40 @@ void Project::addGraph(const QString &filePath)
 
 void Project::removeConfig(RunConfig* runConfig)
 {
-    if (!containsRunConfig(runConfig->name()))
+    if (!containsRunConfig(runConfig))
     {
-        qDebug() << "Removing an unknown Run Config; ignoring ";
+        qDebug() << "Attempted to remove an unknown Run Config, ignoring." << runConfig->name();
         return;
     }
 
     for (runConfigIter it = _runConfigurations.begin(); it != _runConfigurations.end(); )
     {
         RunConfig* config = *it;
-        if (runConfig->name() == config->name())
+        if (config == runConfig)
         {
             it = _runConfigurations.erase(it);
+            save();
             emit runConfigurationListChanged();
+            break;
         }
         else
             ++it;
     }
+
 }
 
-void Project::addRunConfig(RunConfig *runConfig)
+bool Project::addRunConfig(RunConfig *runConfig)
 {
-    if(containsRunConfig(runConfig->name()))
+    if(containsRunConfigName(runConfig->name()))
     {
-        qDebug() << "Added an already known Run Configuration; ignoring ";
-        return;
+        qDebug() << "Attempted to add an already known Run Configuration; ignoring" << runConfig->name();
+        return false;
     }
 
     _runConfigurations.push_back(runConfig);
     save();
     emit runConfigurationListChanged();
+    return true;
 }
 
 void Project::setCurrentFile(const QString &fileName, FileTypes type)
@@ -1174,9 +1165,49 @@ bool Project::containsProgram(const QString &filePath)
     return (program(filePath) != 0);
 }
 
-bool Project::containsRunConfig(QString configName)
+bool Project::containsRunConfig(RunConfig* runConfig)
 {
-    return (runConfig(configName) != 0);
+    for(runConfigConstIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
+    {
+        RunConfig *config = *iter;
+        if (config == runConfig)    // Compare objects themselves
+        {
+            qDebug() << "  project.cpp: Found Run Configuration: " << runConfig->name();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Project::containsRunConfigName(QString runConfigName)
+{
+    for(runConfigConstIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
+    {
+        RunConfig *config = *iter;
+        if (config->name() == runConfigName)    // Compare object names
+        {
+            qDebug() << "  project.cpp: Found Run Configuration: " << runConfigName;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+RunConfig* Project::runConfig(QString &configName)
+{
+    for(runConfigConstIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
+    {
+        RunConfig *config = *iter;
+        if (config->name() == configName)    // Compare objects themselves
+        {
+            qDebug() << "  project.cpp: Found Run Configuration: " << configName;
+            return config;
+        }
+    }
+
+    return 0;
 }
 
 bool Project::save()
@@ -1229,17 +1260,23 @@ bool Project::save()
     }
 
     //! \todo Save run configurations
-    /*QDomElement runConfigurations = doc.createElement("runconfigurations");
+    QDomElement runConfigurations = doc.createElement("runconfigurations");
     root.appendChild(runConfigurations);
 
-    for(runConfigIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
+    for(runConfigConstIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
     {
         RunConfig *config = *iter;
+        if (!config)
+            continue;
+        if (config->name() == QString() || config->name() == QString(""))
+            continue;
+        // qDebug() << "    project.cpp: Found valid run config" << config->name();
         QDomElement configTag = doc.createElement("runconfiguration");
         configTag.setAttribute("name", config->name());
         configTag.setAttribute("program", config->program());
         configTag.setAttribute("graph", config->graph());
 
+        /*
         QDomElement configOptions = doc.createElement("options");
         if (config->hasTracing())
         {
@@ -1256,10 +1293,10 @@ bool Project::save()
             backTracking.appendChild(backTrackingText);
 
             configOptions.appendChild(backTracking);
-        }
+        }*/
 
         runConfigurations.appendChild(configTag);
-    }*/
+    }
 
     _fp->close();
     _fp->open(QFile::Truncate | QFile::WriteOnly);
