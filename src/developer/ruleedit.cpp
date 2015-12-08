@@ -35,6 +35,8 @@ void RuleEdit::setRule(Rule *rule)
     //disconnect(_rule->lhs(), SIGNAL(graphChanged()), this, SLOT(lhsChanged()));
     //disconnect(_rule->rhs(), SIGNAL(graphChanged()), this, SLOT(rhsChanged()));
 
+    if (_rule)
+        disconnect (_rule, 0, this, 0);
     _rule = rule;
 
     _ui->nameEdit->setText(_rule->name());
@@ -51,8 +53,9 @@ void RuleEdit::setRule(Rule *rule)
     //qDebug () << "ruleedit.cpp: Changing editor condition:" << _rule->condition() << "|" << _ui->conditionsEdit->toPlainText().trimmed();
     _ui->conditionsEdit->setPlainText(_rule->condition());
 
-    //qDebug() << "** Updating variables";
     updateVariables();
+
+    connect(_rule, SIGNAL(redrawVariables()), this, SLOT(updateVariables()));
 
 }
 
@@ -74,14 +77,14 @@ void RuleEdit::documentationChanged()
 
 void RuleEdit::lhsChanged()
 {
-    updateVariables();
+    //updateVariables();
     updateInterface();
 }
 
 void RuleEdit::rhsChanged()
 {
     //qDebug () << "ruleedit.cpp: RHS changed";
-    updateVariables();
+    //updateVariables();
     updateInterface();
 }
 
@@ -114,21 +117,8 @@ void RuleEdit::updateVariables()
     headers << "Identifier" << "Type";
     _ui->variablesWidget->setHorizontalHeaderLabels(headers);
 
-    QStringList lhsVariables = _rule->lhs()->variables();
-    QStringList rhsVariables = _rule->rhs()->variables();
-
-
     QStringList types;
     types << "List" << "Atom" << "String" << "Integer" << "Character";
-
-
-    // Obtain all the variables appearing in the LHS and RHS graphs
-    QStringList graphVariables = lhsVariables;
-    graphVariables += rhsVariables;
-
-    graphVariables.removeDuplicates();
-
-    //qDebug() << "RuleEdit::updateVariables(): the variables in LHS+RHS are " << graphVariables.join(" ");
 
     // Obtain all variables that are currently declared in the rule specification
     QStringList variables;
@@ -145,9 +135,6 @@ void RuleEdit::updateVariables()
         for (std::vector<std::string>::const_iterator itt = varList.begin(); itt != varList.end(); ++itt)
         {
             QString variable = QString::fromStdString(*itt);
-
-            if (!graphVariables.contains(variable)) continue;
-
             variables << variable;
 
             // Add to the Variables Widget with respective type properly selected
@@ -172,7 +159,7 @@ void RuleEdit::updateVariables()
             else if (varType == "atom") comboBox->setCurrentIndex(1);
             else if (varType == "list") comboBox->setCurrentIndex(0);
 
-            connect(comboBox, SIGNAL(activated(int)), this, SLOT(saveVariables()));
+            connect(comboBox, SIGNAL(activated(int)), this, SLOT(modifyVariables()));
 
             _ui->variablesWidget->setCellWidget(_ui->variablesWidget->rowCount() -1, 1, comboBox);
         }
@@ -180,33 +167,9 @@ void RuleEdit::updateVariables()
     }
     //qDebug() << "RuleEdit::updateVariables(): the declared variables are " << variables.join(" ");
 
-    
-    // Remove all the LHS variables from the RHS set, those that
-    // remain are currently errors as they do not exist in the LHS
-    // These errors will be marked as red in the Widget
-    QStringList diff = rhsVariables;
-    for(int i = 0; i < lhsVariables.length(); ++i)
-    {
-        QString variable = lhsVariables.at(i);
-        if(diff.contains(variable))
-            diff.removeOne(variable);
-    }
-    //qDebug() << "RuleEdit::updateVariables(): the bad variables in RHS are " << diff.join(" ");
+   _ui->variablesWidget->setRowCount(variables.length());
 
-    // Check which graph variables are already declared in the rule specification
-    // If already declared, no need to add it again to the Variables Widget   
-    for(int i = 0; i < graphVariables.length(); ++i)
-    {
-        QString variable = graphVariables.at(i);
-        if(variables.contains(variable))
-             {graphVariables.removeOne(variable); --i;}
-    }
-
-    //qDebug() << "RuleEdit::updateVariables(): the undeclared variables in LHS+RHS are " << graphVariables.join(" ");
-
-    _ui->variablesWidget->setRowCount(graphVariables.length() + variables.length());
-
-
+    /*
     for(int i = 0; i < graphVariables.length(); ++i)
     {
         QString variable = graphVariables.at(i);
@@ -228,7 +191,7 @@ void RuleEdit::updateVariables()
 
         connect(comboBox, SIGNAL(activated(int)), this, SLOT(saveVariables()));
         _ui->variablesWidget->setCellWidget(i + variables.length(), 1, comboBox);
-    }
+    } */
 
     // Snapshot the displayed variables and save to Rule
     saveVariables();
@@ -316,7 +279,7 @@ void RuleEdit::saveVariables()
         result.push_back(vars);
     }
 
-    QString saveText;
+//    QString saveText;
     // Debug the vector of results
 		/*for (std::vector<param_t>::iterator it = result.begin(); it != result.end(); ++it)
 		{
@@ -349,6 +312,15 @@ void RuleEdit::saveVariables()
     
     // Save the vector
     _rule->setVariables(result);
+}
+
+void RuleEdit::modifyVariables()
+{
+    saveVariables();
+
+    // Tell the rule to emit a change
+    // The user should realize a save is needed
+    _rule->modifyVariables();
 }
 
 void RuleEdit::updateInterface()

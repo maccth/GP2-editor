@@ -341,6 +341,10 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                       label());
 
     // Draw the node ID
+    // ONLY IF RULE GRAPH
+    if (! _node->parent()->isRuleGraph())
+        return;
+
     QColor idColour = textColour;
 
     if(_node->isInterface())

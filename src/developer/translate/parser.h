@@ -33,7 +33,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 2068 of yacc.c  */
-#line 19 "gpparser.y"
+#line 26 "gpparser.y"
 
 #include "ast.h"
 
@@ -99,7 +99,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 69 "gpparser.y"
+#line 71 "gpparser.y"
   
   int num;   /* value of NUM token. */
   char *str; /* value of STRING and CHAR tokens. */
@@ -109,7 +109,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 102 "gpparser.y"
+#line 104 "gpparser.y"
   
   struct List *list; 
   struct GPDeclaration *decl;
@@ -157,7 +157,7 @@ extern YYLTYPE yylloc;
 /* "%code provides" blocks.  */
 
 /* Line 2068 of yacc.c  */
-#line 24 "gpparser.y"
+#line 31 "gpparser.y"
 
 extern GPGraph *ast_host_graph; 
 extern GPRule *gp_rule; 
@@ -167,9 +167,7 @@ extern string yytext;
 extern FILE *yyin;
 extern bool syntax_error;
 
-/*bool parse_gpGraphString(const char* graph_string);*/
-
 
 
 /* Line 2068 of yacc.c  */
-#line 176 "parser.h"
+#line 174 "parser.h"

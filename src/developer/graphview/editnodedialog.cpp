@@ -5,6 +5,8 @@
 #include "ui_editnodedialog.h"
 
 #include "nodeitem.hpp"
+#include "node.hpp"
+#include "graph.hpp"
 #include "listvalidator.hpp"
 
 #include <QFile>
@@ -27,9 +29,17 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
     QString style = fp.readAll();
     setStyleSheet(style);
 
-    _idValidator = new QRegExpValidator(QRegExp("n[0-9]+"), this);
-    _ui->idEdit->setValidator(_idValidator);
+
+    bool graphIsRule = _node->node()->parent()->isRuleGraph();
+
+    if (graphIsRule)
+        _idValidator = new QRegExpValidator(QRegExp("[a-z][a-zA-Z0-9_]*|[0-9]+"), this);
+    else
+        _idValidator = new QRegExpValidator(QRegExp("[0-9]+"), this);
+
+
     _ui->idEdit->setText(node->id());
+    _ui->idEdit->setValidator(_idValidator);
 
     _ui->labelEdit->setText(node->label());
     _ui->rootCheckBox->setChecked(node->isRoot());

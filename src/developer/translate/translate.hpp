@@ -14,7 +14,7 @@ graph_t 		translateGraph(GPGraph* graph);
 interface_t translateInterface(List* interface);
 std::vector<param_t> 		translateVariablesList(List* variables);
 std::string translateCondition(GPCondition* condition);
-rule_t 			trasnlateRule(GPRule* rule);
+rule_t 			translateRule(GPRule* rule);
 
 std::string ListToString(std::vector<atom_t> list);
 

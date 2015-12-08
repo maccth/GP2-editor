@@ -6,6 +6,13 @@
 
   The Bison specification for GP2's parser. Defines GP2's abstract syntax
   and calls the appropriate AST constructor for each rule.
+
+  =============
+  Update Policy
+  =============
+  Changes to the GP 2 grammar as defined in this file must be mirrored in the
+  file GP2/Compiler/src/gpParser.y in order to maintain
+  consistency with the compiler.
   
 //////////////////////////////////////////////////////////////////////////// */
 
@@ -128,6 +135,7 @@ bool syntax_error = false;
 %type <list_type> Type  
 %type <check_type> Subtype
 %type <id> NodeID EdgeID ProcID RuleID Variable
+%type <num> HostID
 
 /* This code is called whenever Bison discards a symbol during error recovery.
  * In the case of strings and identifiers, the dynamically allocated semantic
@@ -397,15 +405,15 @@ Edge: '(' EdgeID Bidirection ',' NodeID ',' NodeID ',' Label ')'
 					  if($5) free($5); if($7) free($7); }
 
  /* Layout information for the editor. This is ignored by the parser. */
- Position: '(' DNUM ',' DNUM ')'         { }
-         | '(' NUM ',' NUM ')'           { }
-         | '(' NUM ',' '-' NUM ')'           { }
-         | '(' '-' NUM ','  NUM ')'           { }
-         | '(' '-' NUM ',' '-' NUM ')'           { }
-         | '(' DNUM ',' NUM ')'          { }
-         | '(' DNUM ',' '-' NUM ')'          { }
-         | '(' NUM ',' DNUM ')'          { }
-         | '(' '-' NUM ',' DNUM ')'          { }
+ Position: '<' DNUM ',' DNUM '>'         { }
+         | '<' NUM ',' NUM '>'           { }
+         | '<' NUM ',' '-' NUM '>'           { }
+         | '<' '-' NUM ','  NUM '>'           { }
+         | '<' '-' NUM ',' '-' NUM '>'           { }
+         | '<' DNUM ',' NUM '>'          { }
+         | '<' DNUM ',' '-' NUM '>'          { }
+         | '<' NUM ',' DNUM '>'          { }
+         | '<' '-' NUM ',' DNUM '>'          { }
 
 
 RootNode: /* empty */ 
@@ -483,8 +491,24 @@ AtomExp: Variable			{ $$ = newASTVariable(@$, $1); if($1) free($1); }
 
 ProcID: PROCID 				/* default $$ = $1 */ 
 RuleID: ID		         	/* default $$ = $1 */ 
-NodeID: ID				/* default $$ = $1 */ 
-EdgeID: ID				/* default $$ = $1 */ 
+NodeID: ID				/* default $$ = $1 */
+      | NUM				{ char id[64]; int write;
+                            write = snprintf(id, 64, "%d", $1);
+                            if (write < 0) {
+                                yyerror("Node ID conversion failed.");
+                                exit(1);
+                            }
+                            else $$ = strdup(id);
+                        }
+EdgeID: ID				/* default $$ = $1 */
+      | NUM				{ char id[64]; int write;
+                            write = snprintf(id, 64, "%d", $1);
+                            if (write < 0) {
+                                yyerror("Edge ID conversion failed.");
+                                exit(1);
+                            }
+                            else $$ = strdup(id);
+                        }
 Variable: ID		  		/* default $$ = $1 */ 
 
 /* Grammar for host graphs. This is identical in structure to the grammar for
@@ -507,23 +531,31 @@ HostGraph: '[' '|' ']'  		{ $$ = newASTGraph(@$, NULL, NULL); }
 HostNodeList: HostNode			{ $$ = addASTNode(@1, $1, NULL); }
             | HostNodeList HostNode	{ $$ = addASTNode(@2, $2, $1); }
 
-HostNode: '(' NodeID RootNode ',' HostLabel ')'
-    					{ $$ = newASTNode(@2, is_root, $2, $5); 
- 					  is_root = false; 	
-					  if($2) free($2); } 
-HostNode: '(' NodeID RootNode ',' HostLabel Position ')'
-    					{ $$ = newASTNode(@2, is_root, $2, $5); 
- 					  is_root = false; 	
-					  if($2) free($2); } 
+HostNode: '(' HostID RootNode ',' HostLabel ')'
+                            { char buffer1[12];
+                               snprintf(buffer1, 12,"%d",$2);
+                               $$ = newASTNode(@2, is_root, buffer1, $5);
+                      is_root = false; }
+HostNode: '(' HostID RootNode ',' HostLabel Position ')'
+                            { char buffer1[12];
+                               snprintf(buffer1, 12,"%d",$2);
+                               $$ = newASTNode(@2, is_root, buffer1, $5);
+                                is_root = false; }
 
 HostEdgeList: HostEdge			{ $$ = addASTEdge(@1, $1, NULL); }
             | HostEdgeList HostEdge	{ $$ = addASTEdge(@2, $2, $1); } 
 
-HostEdge: '(' EdgeID ',' NodeID ',' NodeID ',' HostLabel ')'
-					{ $$ = newASTEdge(@2, false, $2, $4, $6, $8);
-					  if($2) free($2); 
-					  if($4) free($4); 
-                     			  if($6) free($6); }
+HostEdge: '(' HostID ',' HostID ',' HostID ',' HostLabel ')'
+                    { char buffer1[12];
+                       snprintf(buffer1, 12,"%d",$2);
+                      char buffer2[12];
+                       snprintf(buffer2, 12,"%d",$4);
+                      char buffer3[12];
+                       snprintf(buffer3, 12,"%d",$6);
+
+                                $$ = newASTEdge(@2, false, buffer1, buffer2 , buffer3, $8);
+                            }
+HostID: NUM                 /* default $$ = $1 */
 
 HostLabel: HostList			{ $$ = newASTLabel(@$, NONE, $1); }
          | _EMPTY			{ $$ = newASTLabel(@$, NONE, NULL); }

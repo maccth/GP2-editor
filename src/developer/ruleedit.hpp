@@ -54,6 +54,7 @@ public slots:
 
     void updateVariables();
     void saveVariables();
+    void modifyVariables();
 
     /*!
      * \brief Slot to handle displaying the "injective matching" help page from

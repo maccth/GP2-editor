@@ -75,6 +75,8 @@ public:
     void setVariables(std::vector<param_t> &variables);
     void setCondition(const QString &conditionString);
 
+    void modifyVariables();
+
 //    void addVariables(param_t &variables);
     void removeVariable(std::string &variable);
 
@@ -86,12 +88,15 @@ public:
 
     bool open();
 
-		QString toAlternative();
+    QString toAlternative();
 
 protected slots:
     void lhsGraphChanged();
     void rhsGraphChanged();
     void interfaceChanged();
+
+signals:
+    void redrawVariables();
 
 private:
     QString _name;

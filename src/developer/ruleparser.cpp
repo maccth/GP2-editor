@@ -75,7 +75,23 @@ rule_t parseRule(const QString &rulePath)
     }*/
 
     Developer::reverseRuleAST(gp_rule);
-    ret = Developer::trasnlateRule(gp_rule);
+    ret = Developer::translateRule(gp_rule);
+
+//    int size = 0;
+//    for (std::vector<param_t>::const_iterator it = ret.parameters.begin(); it != ret.parameters.end(); ++it)
+//    {
+//        param_t v = *it;
+////        if (v.type != "list")
+////            continue;
+//        qDebug() << "    ruleparser.cpp: " << QString(v.type.c_str());
+//        for (std::vector<std::string>::const_iterator itt = v.variables.begin(); itt != v.variables.end(); ++itt)
+//        {
+//            qDebug() << "    ruleparser.cpp:" << QString(itt->c_str());
+//            size++;
+//        }
+//    }
+//    qDebug() << "    ruleparser.cpp: The extracted rule_t structure has" << size << "variables";
+
     return ret;
 }
 

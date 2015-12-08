@@ -7,6 +7,13 @@
   The Flex specification for the GP2 lexical analyser for GP2.
   Defines the tokens of GP2 and their associated regular expressions.
 
+       =============
+    +  Update Policy
+    +  =============
+    +  Changes to the GP 2 grammar as defined in this file must be mirrored in the
+    +  file Compiler/src/gplexer.lex in order to maintain
+    +  consistency with the compiler.
+
 /////////////////////////////////////////////////////////////////////////// */ 
 
 /* yywrap is an old flex library routine to manage multiple input files. 
@@ -16,6 +23,8 @@
  * yylineno is a flex-maintained integer variable storing the current line 
  * number of input. 
  */
+
+
 
 %option noyywrap nodefault yylineno
 
@@ -81,7 +90,7 @@ extern int parse_target;
 "\"\""				 { yylval.str = NULL; return STR; } 
 "\""	            		 BEGIN(IN_STRING);
 <IN_STRING>"\""        		 BEGIN(INITIAL);
-<IN_STRING>[a-zA-Z0-9_ ]{0,63} 	 { yylval.str = strdup(yytext); return STR; }
+<IN_STRING>[\040,\041,\043-\172]{0,63} 	 { yylval.str = strdup(yytext); return STR; }
 <IN_STRING>(\n)                  { print_to_log("%d.%d-%d.%d: String "
           				         "continues on new line.\n", 
                                         yylloc.first_line, yylloc.first_column, 

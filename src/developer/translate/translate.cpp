@@ -14,6 +14,10 @@ std::vector<edge_t> translateEdges(List* edges);
 void reverseConditionAST(GPCondition *condition);
 void reverseRuleAST(GPRule *rule);
 
+std::stringstream extraVars;
+
+std::vector<param_t> translateExtraVariables(std::vector<param_t> &declaredVars);
+
 /*
  * Translates a GPAtom AST into an atom_t structure
  * Integer constants are represented by 'int' C values
@@ -30,6 +34,7 @@ atom_t 			translateAtom(GPAtom* atom)
     {
     case VARIABLE:
         result = std::string( atom->variable.name );
+        extraVars << std::string( atom->variable.name ) + ","; // comma-delimited list
         break;
 
     case INTEGER_CONSTANT:
@@ -224,38 +229,270 @@ param_t translateVariables(List* variables, std::string type)
  */
 std::vector<param_t> 		translateVariablesList(List* variables)
 {
-	std::vector<param_t> result;
-	if (variables == NULL) return result;
+    std::vector<param_t> result;
 
-	List* current_list = variables;
+    // If no variables in graph nodes/edges, then return
+    if (extraVars.str().empty())
+        return result;
 
-	while (current_list != NULL)
-	{
-		switch (current_list->type)
-		{
-			case INT_DECLARATIONS:	
-					result.push_back( translateVariables( current_list->variables , "int" ) ); 
-					break;
-			case CHAR_DECLARATIONS:	
-					result.push_back( translateVariables( current_list->variables , "char" ) ); 
-					break;
-			case STRING_DECLARATIONS:	
-					result.push_back( translateVariables( current_list->variables , "string" ) ); 
-					break;
-			case ATOM_DECLARATIONS:	
-					result.push_back( translateVariables( current_list->variables , "atom" ) ); 
-					break;
-			case LIST_DECLARATIONS:	
-					result.push_back( translateVariables( current_list->variables , "list" ) ); 
-					break;
+    param_t validListVars; validListVars.type = "list";
+    param_t validIntVars;   validIntVars.type = "int";
+    param_t validCharVars;  validCharVars.type = "char";
+    param_t validStringVars; validStringVars.type = "string";
+    param_t validAtomVars;  validAtomVars.type = "atom";
 
-			default: print_to_console("Unknown conversion of Variables list: %d", current_list->type); break;
-		}
-		current_list = current_list->next;
-	}
+    // Obtain the declared variables in the rule specification
+    std::vector<param_t> declaredVars;
 
-	return result;
+    List* current_list = variables;
+    while (current_list != NULL)
+    {
+        switch (current_list->type)
+        {
+            case INT_DECLARATIONS:
+                    declaredVars.push_back( translateVariables( current_list->variables , "int" ) );
+                    break;
+            case CHAR_DECLARATIONS:
+                    declaredVars.push_back( translateVariables( current_list->variables , "char" ) );
+                    break;
+            case STRING_DECLARATIONS:
+                    declaredVars.push_back( translateVariables( current_list->variables , "string" ) );
+                    break;
+            case ATOM_DECLARATIONS:
+                    declaredVars.push_back( translateVariables( current_list->variables , "atom" ) );
+                    break;
+            case LIST_DECLARATIONS:
+                    declaredVars.push_back( translateVariables( current_list->variables , "list" ) );
+                    break;
+
+            default: print_to_console("Unknown conversion of Variables list: %d", current_list->type); break;
+        }
+        current_list = current_list->next;
+    }
+
+    // Split the list of extra variables
+    std::vector<std::string> extraVariables;
+    std::istringstream iStream;     // :)
+    iStream.str(extraVars.str().c_str());
+    for (std::string var; std::getline( iStream, var, ',') ; ) // comma-delimited
+    {
+        extraVariables.push_back(var);
+    }
+    // sort + remove duplicates
+    std::sort(extraVariables.begin(), extraVariables.end());
+    extraVariables.erase( std::unique(extraVariables.begin(), extraVariables.end()), extraVariables.end());
+
+    // Check which existing variable is declared - if not declared, then add it, otherwise keep with same type
+    for (std::vector<std::string>::const_iterator it = extraVariables.begin() ; it != extraVariables.end()  ;++it)
+    {
+        std::string var = *it;
+        bool declared = false;
+        for (std::vector<param_t>::const_iterator itt = declaredVars.begin(); itt != declaredVars.end(); ++itt)
+        {
+            param_t varCollection = *itt;
+            std::vector<std::string>::const_iterator position = std::find(varCollection.variables.begin(), varCollection.variables.end(), var);
+            if (position != varCollection.variables.end())
+            {
+                // Existing variable was actually declared, check type and add to list of valid variables
+                declared = true;
+                qDebug() << "    translate.cpp: Declared variable found:" << QString(var.c_str()) << QString(varCollection.type.c_str());
+
+                if (varCollection.type == "list")
+                    validListVars.variables.push_back(var);
+
+                if (varCollection.type == "atom")
+                    validAtomVars.variables.push_back(var);
+
+                if (varCollection.type == "int")
+                    validIntVars.variables.push_back(var);
+
+                if (varCollection.type == "string")
+                    validStringVars.variables.push_back(var);
+
+                if (varCollection.type == "char")
+                    validCharVars.variables.push_back(var);
+            }
+        }
+
+        if (!declared)
+            // Variable exists but was not declared, declare it as a list variable
+        {
+            qDebug() << "    translate.cpp: Undeclared variable:" << QString(var.c_str()) << " found, fixing.";
+            validListVars.variables.push_back(var);
+        }
+    }
+
+    // Now we are ready to populate the result - only add non-empty collections
+    if (validListVars.variables.size() > 0)
+        result.push_back(validListVars);
+
+    if (validAtomVars.variables.size() > 0)
+        result.push_back(validAtomVars);
+
+    if (validIntVars.variables.size() > 0)
+        result.push_back(validIntVars);
+
+    if (validStringVars.variables.size() > 0)
+        result.push_back(validStringVars);
+
+    if (validCharVars.variables.size() > 0)
+        result.push_back(validCharVars);
+
+    return result;
 }
+
+
+
+/*  Translates a list of variables collections into a collection of param_t structs
+ *  Each variables collection is a list of variables of a specific GP type (int, atom ..)
+ */
+//std::vector<param_t> 		translateVariablesList(List* variables)
+//{
+//	std::vector<param_t> result;
+//    //if (variables == NULL) return result;
+
+//	List* current_list = variables;
+
+//    param_t listVarDeclarations;
+//    listVarDeclarations.type = "list";
+//    std::vector<std::string> existingListVars;
+
+//	while (current_list != NULL)
+//	{
+//		switch (current_list->type)
+//		{
+//			case INT_DECLARATIONS:
+//					result.push_back( translateVariables( current_list->variables , "int" ) );
+//					break;
+//			case CHAR_DECLARATIONS:
+//					result.push_back( translateVariables( current_list->variables , "char" ) );
+//					break;
+//			case STRING_DECLARATIONS:
+//					result.push_back( translateVariables( current_list->variables , "string" ) );
+//					break;
+//			case ATOM_DECLARATIONS:
+//                    result.push_back( translateVariables( current_list->variables , "atom" ) );
+//					break;
+//			case LIST_DECLARATIONS:
+//                    // Do nothing for list declarations at this point, need to check for extra variables first
+//                    // Accumulate the declared list variables to a local collection
+//                    {
+//                        List* variables = current_list->variables;
+//                        List* currentVar = variables;
+
+//                        while (currentVar != NULL)
+//                        {
+//                            existingListVars.push_back(std::string(currentVar->variable_name));
+//                            currentVar = currentVar->next;
+//                        }
+
+//                        qDebug () << "    translate.cpp: Found" << existingListVars.size() << "declared list variables";
+
+//                        break;
+//                    }
+
+//            default: print_to_console("Unknown conversion of Variables list: %d", current_list->type); break;
+//		}
+//		current_list = current_list->next;
+//	}
+
+//    // Add the extra variables occuring in LHS/RHS labels
+//    // Ignore those which are already declared
+//    if (!extraVars.str().empty())
+//    {
+//        // Split the list of extra variables
+//        std::vector<std::string> extraVariables;
+//        std::istringstream iStream;     // :)
+//        iStream.str(extraVars.str().c_str());
+//        for (std::string var; std::getline( iStream, var, ',') ; ) // comma-delimited
+//        {
+//            extraVariables.push_back(var);
+//        }
+
+//        // sort + remove duplicates
+//        std::sort(extraVariables.begin(), extraVariables.end());
+//        extraVariables.erase( std::unique(extraVariables.begin(), extraVariables.end()), extraVariables.end());
+
+//        // Iterate over the existing non-list variables
+//        for (std::vector<param_t>::const_iterator it = result.begin();
+//             it != result.end();
+//             ++it)
+//        {
+//            param_t varDecl = *it;
+//            for (std::vector<std::string>::iterator itt = varDecl.variables.begin();
+//                 itt != varDecl.variables.end();
+//                 ++itt)
+//            {
+//                std::string var = *itt;
+//                std::vector<std::string>::iterator position = std::find(extraVariables.begin(), extraVariables.end(), var);
+//                if (position != extraVariables.end())
+//                {
+//                    // Declaration of variable found, erase from extra list
+//                    extraVariables.erase(position);
+//                    qDebug() << "    translate.cpp: Declaration of variable" << QString(var.c_str()) << "found, type:" << QString(varDecl.type.c_str());
+//                }
+//                else
+//                {
+//                    // Variable was declared but not used anywhere in the actual graphs, remove ?
+//                    qDebug() << "    translate.cpp: Found unused (but declared) variable" << QString(var.c_str()) << ", type:" << QString(varDecl.type.c_str());
+//                    varDecl.variables.erase(position);
+//                }
+//            }
+//        }
+
+//        // Iterate over the declared list variables
+//        for (std::vector<std::string>::iterator itt = existingListVars.begin();
+//             itt != existingListVars.end();
+//             ++itt)
+//        {
+//            std::string declaredVar = *itt;
+//            // qDebug() << "    translate.cpp: Checking for duplication of variable" << QString(itt->c_str());
+
+//            // Check if the declared variable is in the extraVariables list
+//            std::vector<std::string>::iterator position = std::find(extraVariables.begin(), extraVariables.end() , declaredVar);
+//            if (position != extraVariables.end())
+//            {
+//                // If found, modify the existng list of extra variables because they dont need to be declared
+//                qDebug() << "    translate.cpp: Declaration of variable" << QString(declaredVar.c_str()) << "found, type: list";
+//                extraVariables.erase(position);
+//            }
+//            else
+//            {
+//                // Variable was declared but not used anywhere in the actual graphs, remove ?
+//                qDebug() << "    translate.cpp: Found unused (but declared) variable" << QString(declaredVar.c_str()) << ", type: list";
+
+//            }
+//        }
+
+//        // Some variables were found in labels but were not declared
+//        if (!extraVariables.empty())
+//        {
+//            bool foundListDeclarations = false;
+
+//            qDebug() << "    translate.cpp: Size before changes:" << existingListVars.size();
+
+//            for (std::vector<std::string>::const_iterator itt = extraVariables.begin();
+//                 itt != extraVariables.end();
+//                 ++itt)
+//            {
+//                std::string var = *itt;
+//                qDebug() << "    translate.cpp: Declaring extra variable" << QString(var.c_str()) << "in the rule declaration.";
+//                existingListVars.push_back(var);
+//            }
+
+//            qDebug() << "    translate.cpp: New size:" << existingListVars.size();
+//        }
+//    }
+
+//    // If we found list variables that actually need to be declared (either preexisting or part of node/edge list expressions)
+//    if (existingListVars.size() > 0)
+//    {
+//        listVarDeclarations.variables = existingListVars;
+//        result.push_back(listVarDeclarations);
+//    }
+
+//	return result;
+//}
 
 /* Returns a C string representation of a GP list appearing in a rule's condition
  */
@@ -359,16 +596,23 @@ std::string translateCondition(GPCondition* condition)
  * The interface is an interface_t struct
  * The condition is a C string
  */
-rule_t 			trasnlateRule(GPRule* rule)
+rule_t 			translateRule(GPRule* rule)
 {
+    // clear temporary coiolection of extra variables in GP atoms
+    extraVars.str("");
+    extraVars.clear(); // Clear state flags.
+
 	rule_t result;
 	result.documentation = std::string("");		// The GPRule AST doesn't store comments
 	result.id = std::string(rule->name);
-	result.parameters = translateVariablesList(rule->variables);
+//	result.parameters = translateVariablesList(rule->variables);
 	result.lhs = translateGraph(rule->lhs);
+    result.parameters = translateVariablesList(rule->variables);
+
 	result.rhs = translateGraph(rule->rhs);
 	result.interface = translateInterface(rule->interface);
 	result.condition = translateCondition(rule->condition);
+
 
 	return result;
 }

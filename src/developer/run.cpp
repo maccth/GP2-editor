@@ -42,6 +42,12 @@ void Run::setProject(Project *proj)
     //disconnect(_project, SIGNAL(runConfigurationListChanged()), this, SLOT(handleRunConfigListChanged()));
     _project = proj;
 
+    if ((!_ui) || (!_ui->runConfigurations) || (!_ui->runConfigurations->layout()))
+    {
+        qDebug() << "Error: Run UI not initialized; ignoring";
+        return;
+    }
+
     QLayoutItem *item;
     while((item = _ui->runConfigurations->layout()->takeAt(0)) != 0)
     {

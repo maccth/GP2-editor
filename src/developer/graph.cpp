@@ -3,7 +3,7 @@
  */
 #include "graph.hpp"
 #include "graphparser.hpp"
-#include "list.hpp"
+#include "translate.hpp"
 
 #include <QSettings>
 #include <QDomDocument>
@@ -13,19 +13,21 @@
 
 namespace Developer {
 
-Graph::Graph(const QString &graphPath, bool autoInitialise, QObject *parent)
+Graph::Graph(const QString &graphPath, bool autoInitialise, QObject *parent, bool isRuleGraph)
     : GPFile(graphPath, parent)
     , _nodeIdCounter(0)
     , _edgeIdCounter(0)
+    , _isRuleGraph(isRuleGraph)
 {
     if(autoInitialise && !graphPath.isEmpty())
         open();
 }
 
-Graph::Graph(const graph_t &inputGraph, QObject *parent)
+Graph::Graph(const graph_t &inputGraph, QObject *parent, bool isRuleGraph)
     : GPFile(QString(), parent)
     , _nodeIdCounter(0)
     , _edgeIdCounter(0)
+    , _isRuleGraph(isRuleGraph)
 {
     // We don't follow the normal open procedure here, since this is not coming
     // from a file. This is intended for create in-memory graph objects and
@@ -53,10 +55,10 @@ bool Graph::save()
     GraphTypes type = DEFAULT_GRAPH_FORMAT;
     if(_path.endsWith(GP_GRAPH_ALTERNATIVE_EXTENSION))
         type = AlternativeGraph;
-    if(_path.endsWith(GP_GRAPH_DOT_EXTENSION))
-        type = DotGraph;
-    if(_path.endsWith(GP_GRAPH_GXL_EXTENSION))
-        type = GxlGraph;
+//    if(_path.endsWith(GP_GRAPH_DOT_EXTENSION))
+//        type = DotGraph;
+//    if(_path.endsWith(GP_GRAPH_GXL_EXTENSION))
+//        type = GxlGraph;
 
     QString saveText;
     switch(type)
@@ -64,12 +66,12 @@ bool Graph::save()
         case AlternativeGraph:
             saveText = toAlternative();
             break;
-        case GxlGraph:
-            saveText = toGxl();
-            break;
-        case DotGraph:
-            saveText = toDot();
-            break;
+//        case GxlGraph:
+//            saveText = toGxl();
+//            break;
+//        case DotGraph:
+//            saveText = toDot();
+//            break;
         default:
             saveText = toAlternative();
             break;
@@ -144,8 +146,8 @@ bool Graph::saveAs(const QString &filePath)
 bool Graph::exportTo(const QString &filePath, GraphTypes outputType)
 {
     bool keepLayout = true;
-    if(outputType != LaTeXGraph)
-    {
+//    if(outputType != LaTeXGraph)
+//    {
         QMessageBox::StandardButton ret = QMessageBox::question(
                     0,
                     tr("Retain Layout Information?"),
@@ -156,7 +158,7 @@ bool Graph::exportTo(const QString &filePath, GraphTypes outputType)
                     );
 
         keepLayout = (ret == QMessageBox::Yes);
-    }
+//    }
 
     QString thePath = filePath;
     if(filePath.isEmpty())
@@ -171,18 +173,18 @@ bool Graph::exportTo(const QString &filePath, GraphTypes outputType)
         QString filter;
         switch(outputType)
         {
-        case LaTeXGraph:
-            filter = tr("LaTeX File (*.tex)");
-            break;
+//        case LaTeXGraph:
+//            filter = tr("LaTeX File (*.tex)");
+//            break;
         case AlternativeGraph:
             filter = tr("GP Graph Format (*.host)");
             break;
-        case GxlGraph:
-            filter = tr("GXL Format (*.gxl)");
-            break;
-        case DotGraph:
-            filter = tr("DOT Format (*.gv)");
-            break;
+//        case GxlGraph:
+//            filter = tr("GXL Format (*.gxl)");
+//            break;
+//        case DotGraph:
+//            filter = tr("DOT Format (*.gv)");
+//            break;
         default:
             filter = tr("GP Graph Format (*.host)");
             break;
@@ -253,22 +255,22 @@ bool Graph::open()
         GraphTypes type = DEFAULT_GRAPH_FORMAT;
         if(_path.endsWith(GP_GRAPH_ALTERNATIVE_EXTENSION))
             type = AlternativeGraph;
-        if(_path.endsWith(GP_GRAPH_DOT_EXTENSION))
-            type = DotGraph;
-        if(_path.endsWith(GP_GRAPH_GXL_EXTENSION))
-            type = GxlGraph;
+//        if(_path.endsWith(GP_GRAPH_DOT_EXTENSION))
+//            type = DotGraph;
+//        if(_path.endsWith(GP_GRAPH_GXL_EXTENSION))
+//            type = GxlGraph;
 
         switch(type)
         {
         case AlternativeGraph:
             graph = parseAlternativeGraph(absolutePath());
             break;
-        case GxlGraph:
-            graph = parseGxlGraph(contents);
-            break;
-        case DotGraph:
-            graph = parseDotGraph(contents);
-            break;
+//        case GxlGraph:
+//            graph = parseGxlGraph(contents);
+//            break;
+//        case DotGraph:
+//            graph = parseDotGraph(contents);
+//            break;
         default:
             graph = parseAlternativeGraph(absolutePath());
         }
@@ -475,25 +477,10 @@ QStringList Graph::edgeIdentifiers() const
     return result;
 }
 
-QStringList Graph::variables() const
+
+bool Graph::isRuleGraph() const
 {
-    QStringList result;
-
-    for(nodeConstIter iter = _nodes.begin(); iter != _nodes.end(); ++iter)
-    {
-        Node *n = *iter;
-        result += List(n->label()).variables();
-    }
-
-    for(edgeConstIter iter = _edges.begin(); iter != _edges.end(); ++iter)
-    {
-        Edge *e = *iter;
-        result += List(e->label()).variables();
-    }
-
-    result.removeDuplicates();
-
-    return result;
+    return _isRuleGraph;
 }
 
 bool Graph::contains(const QString &id) const
@@ -523,19 +510,19 @@ QString Graph::toString(int outputType, bool keepLayout)
 
     switch(outputType)
     {
-    case LaTeXGraph:
-        return toLaTeX();
-        break;
-    case GxlGraph:
-        return toGxl(keepLayout);
-        break;
+//    case LaTeXGraph:
+//        return toLaTeX();
+//        break;
+//    case GxlGraph:
+//        return toGxl(keepLayout);
+//        break;
     case AlternativeGraph:
         if(!keepLayout)
             qDebug() << "The GP graph format includes layout information in "
                      << "all cases, ignoring request to omit it.";
         return toAlternative();
         break;
-    case DotGraph:
+//    case DotGraph:
     case DefaultGraph:
     default:
         return toDot(keepLayout);
@@ -666,11 +653,11 @@ QString Graph::toAlternative()
 {
     QString result = "[";
     // First add the canvas
-    result += "(";
+    result += "<";
     result += QVariant(_canvas.width()).toString();
     result += ",";
     result += QVariant(_canvas.height()).toString();
-    result += ")";
+    result += ">";
 
     // Add the nodes
     bool added = false;
@@ -711,13 +698,13 @@ QString Graph::toAlternative()
         if(n->mark() != QString()  && n->mark() != QString("none"))
             result += "#" + n->mark();
 
-        result += QString(" (")
+        result += QString(" <")
                 // QVariant(n->pos().x() < 0 ? -(n->pos().x()) : n->pos().x()).toString()
                 + QVariant(n->pos().x()).toString()
                 + ", "
                 // QVariant( n->pos().y() < 0 ? -(n->pos().y()) : n->pos().y()).toString()
                 + QVariant(n->pos().y()).toString()
-                + ") )";
+                + "> )";
     }
     if(!added)
         result += "\n    |";
@@ -1008,7 +995,7 @@ bool Graph::openGraphT(const graph_t &inputGraph)
             return false;
         }
 
-        QString label = List(node.label).toString();
+        QString label = QString(ListToString(node.label.values).c_str());
 
         Node *n = new Node(node.id.c_str(), (label == QString("empty"))  ? QString(""): label, QString(node.label.mark.c_str()), QVariant(node.isRoot).toBool(), false,
                                                          QPointF(node.xPos, node.yPos), this);
@@ -1052,7 +1039,7 @@ bool Graph::openGraphT(const graph_t &inputGraph)
         }
 
         //qDebug() << "graph.cpp: " << edge.isBidirectional;
-        QString label = List(edge.label).toString();
+        QString label = QString(ListToString(edge.label.values).c_str());
 
         Edge *e = new Edge(edge.id.c_str(), from, to, (label == QString("empty"))  ? QString(""): label , QString(edge.label.mark.c_str()), edge.isBidirectional, this);
         connect(e, SIGNAL(edgeChanged()), this, SLOT(trackChange()));
@@ -1074,13 +1061,22 @@ QString Graph::newNodeId()
 {
     // Reset counter
     _nodeIdCounter = 0;
+    if (_isRuleGraph)
+    {
+        while(contains("n" + QVariant(_nodeIdCounter).toString()))
+            ++_nodeIdCounter;
 
-    // Just find the first free integer, return as a string with prepended 'n'
-    // allows for string identifiers
-    while(contains("n" + QVariant(_nodeIdCounter).toString()))
-        ++_nodeIdCounter;
+        return "n" + QVariant(_nodeIdCounter).toString();
+    }
+    else
+    {
+        // Just find the first free integer, return as a string with prepended 'n'
+        // allows for string identifiers
+        while(contains(QVariant(_nodeIdCounter).toString()))
+            ++_nodeIdCounter;
 
-    return "n" + QVariant(_nodeIdCounter).toString();
+        return QVariant(_nodeIdCounter).toString();
+    }
 }
 
 
@@ -1089,11 +1085,22 @@ QString Graph::newEdgeId()
     // Reset counter
     _edgeIdCounter = 0;
 
-    // Just find the first free integer, return as a string with prepended 'e'
-    while(contains("e" + QVariant(_edgeIdCounter).toString()))
-        ++_edgeIdCounter;
+    if (_isRuleGraph)
+    {
+        while(contains("e" + QVariant(_edgeIdCounter).toString()))
+            ++_edgeIdCounter;
 
-    return "e" + QVariant(_edgeIdCounter).toString();
+        return "e" + QVariant(_edgeIdCounter).toString();
+
+    }
+    else
+    {
+        // Just find the first free integer, return as a string with prepended 'e'
+        while(contains(QVariant(_edgeIdCounter).toString()))
+            ++_edgeIdCounter;
+
+        return QVariant(_edgeIdCounter).toString();
+    }
 }
 
 }

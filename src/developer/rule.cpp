@@ -196,10 +196,17 @@ void Rule::setVariables(std::vector<param_t> &variables)
     // qDebug() << "rule.cpp: Variables modified";
 
     // Right now variables are inferred, no need to emit a modify
+//    if (_initialOpen) return;
+//    _status = Modified;
+//    emit statusChanged(_status);
+}
 
-    //if (_initialOpen) return;
-    //_status = Modified;
-    //emit statusChanged(_status);
+void Rule::modifyVariables()
+{
+    if (_initialOpen) return;
+
+    _status = Modified;
+    emit statusChanged(_status);
 }
 
 void Rule::setCondition(const QString &conditionString)
@@ -304,6 +311,27 @@ bool Rule::save()
 
     qDebug() << "    Save completed. Wrote " << status << " bytes";
 
+    QString ruleContents = _fp->readAll();
+    if(!ruleContents.isEmpty())
+    {
+        rule_t rule = parseRule(absolutePath());
+
+//        for (std::vector<param_t>::const_iterator it = rule.parameters.begin(); it != rule.parameters.end(); ++it)
+//        {
+//            param_t v = *it;
+//    //        if (v.type != "list")
+//    //            continue;
+//            qDebug() << "    rule.cpp: File contains" << v.variables.size() << QString(v.type.c_str()) << (( v.variables.size() > 1 ) ? "variables" : "variable");
+//            for (std::vector<std::string>::const_iterator itt = v.variables.begin(); itt != v.variables.end(); ++itt)
+//            {
+//                qDebug() << "    rule.cpp: (*)" << QString(itt->c_str());
+//            }
+//        }
+
+        setVariables(rule.parameters);
+        emit redrawVariables();
+    }
+
     _status = Normal;
     emit statusChanged(_status);
     return true;
@@ -313,12 +341,12 @@ bool Rule::save()
 // comment and then concatenating the rule contents
 QString Rule::toAlternative()
 {
-		QString saveText = QString();
+    QString saveText = QString();
     QString docText = _documentation;
     docText.replace("\n","\n \\\\ ");
 
-		if (!_documentation.isEmpty())
-			saveText += QString("// ") + docText + QString("\n");
+    if (!_documentation.isEmpty())
+        saveText += QString("// ") + docText + QString("\n");
 
     saveText += _name + "\n(\n";
 
@@ -468,8 +496,10 @@ bool Rule::open()
     else
         setRhs(new Graph(QString(), false, this));*/
 
-    setLhs(new Graph(rule.lhs, this));
-    setRhs(new Graph(rule.rhs, this));
+    Graph* lhs = new Graph(rule.lhs, this, true);
+    Graph* rhs = new Graph(rule.rhs, this, true);
+    setLhs(lhs);
+    setRhs(rhs);
 
     _interface = rule.interface;
 
@@ -493,6 +523,19 @@ bool Rule::open()
         else
             qDebug() << "Warning: Node" << var << "is not contained in RHS of rule"  << _name <<", but it is in the interface";
     }
+
+//    for (std::vector<param_t>::const_iterator it = rule.parameters.begin(); it != rule.parameters.end(); ++it)
+//    {
+//        param_t v = *it;
+////        if (v.type != "list")
+////            continue;
+//        qDebug() << "    rule.cpp: Variables of type" << QString(v.type.c_str());
+//        for (std::vector<std::string>::const_iterator itt = v.variables.begin(); itt != v.variables.end(); ++itt)
+//        {
+//            qDebug() << "    rule.cpp: Variable:" << QString(itt->c_str());
+//        }
+//    }
+
 
     setVariables(rule.parameters);
 

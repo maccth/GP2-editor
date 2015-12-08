@@ -22,8 +22,10 @@ class Graph : public GPFile
 public:
     Graph(const QString &graphPath = QString(),
           bool autoInitialise = true,
-          QObject *parent = 0);
-    Graph(const graph_t &inputGraph, QObject *parent = 0);
+          QObject *parent = 0,
+          bool isRuleGraph = false);
+    Graph(const graph_t &inputGraph, QObject *parent = 0,
+          bool isRuleGraph = false);
 
     bool save();
     bool saveAs(const QString &filePath);
@@ -45,11 +47,12 @@ public:
 
     QStringList nodeIdentifiers() const;
     QStringList edgeIdentifiers() const;
-    QStringList variables() const;
 
     bool contains(const QString &id) const;
     bool containsNode(const QString &id) const;
     bool containsEdge(const QString &id) const;
+
+    bool isRuleGraph() const;
 
     QString toString(int outputType = DefaultGraph, bool keepLayout = true);
     QString toGxl(bool keepLayout = true) const;
@@ -104,6 +107,7 @@ protected:
     int _nodeIdCounter;
     int _edgeIdCounter;
     QRect _canvas;
+    bool _isRuleGraph;
     std::vector<Node *> _nodes;
     std::vector<Edge *> _edges;
 

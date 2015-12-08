@@ -8,6 +8,13 @@
   type definitions, AST node definitions, prototypes for AST constructors and 
   prototypes for AST freeing functions.
 
+  =============
+  Update Policy
+  =============
+  Changes to the GP 2 AST definition as defined in this file must be mirrored in the
+  file GP2/Compiler/src/ast.h in order to maintain
+  consistency with the compiler.
+
 /////////////////////////////////////////////////////////////////////////// */
 #ifndef INC_AST_H
 #define INC_AST_H 

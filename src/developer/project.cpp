@@ -32,6 +32,10 @@ Project::Project(const QString &projectPath, bool autoInitialise, QObject *paren
             // in the whole file.
             setName(fileName());
         }
+        else
+        {
+            qDebug () << "Error: Opening" << projectPath << "failed.";
+        }
     }
 }
 
@@ -881,20 +885,20 @@ void Project::newGraph(const QString &graphName, GraphTypes type)
     // Determine the type the graph should be
     switch(type)
     {
-    case DotGraph:
-    case GxlGraph:
+//    case DotGraph:
+//    case GxlGraph:
     case AlternativeGraph:
         // Already specified, move on
         break;
     case DefaultGraph:
     default:
         // Check if one is implied by the extension
-        if(graphName.endsWith(GP_GRAPH_DOT_EXTENSION))
-            type = DotGraph;
-        else if(graphName.endsWith(GP_GRAPH_GXL_EXTENSION))
-            type = GxlGraph;
-        else if(graphName.endsWith(GP_GRAPH_ALTERNATIVE_EXTENSION))
+        if(graphName.endsWith(GP_GRAPH_ALTERNATIVE_EXTENSION))
             type = AlternativeGraph;
+//        else if(graphName.endsWith(GP_GRAPH_GXL_EXTENSION))
+//            type = GxlGraph;
+//        else if(graphName.endsWith(GP_GRAPH_DOT_EXTENSION))
+//            type = DotGraph;
         else
             type = DEFAULT_GRAPH_FORMAT;
     }
@@ -923,15 +927,15 @@ void Project::newGraph(const QString &graphName, GraphTypes type)
         {
             switch(type)
             {
-            case GxlGraph:
-                filePath = d.filePath(graphName + GP_GRAPH_GXL_EXTENSION);
-                break;
+//            case GxlGraph:
+//                filePath = d.filePath(graphName + GP_GRAPH_GXL_EXTENSION);
+//                break;
             case AlternativeGraph:
                 filePath = d.filePath(graphName + GP_GRAPH_ALTERNATIVE_EXTENSION);
                 break;
-            case DotGraph:
-                filePath = d.filePath(graphName + GP_GRAPH_DOT_EXTENSION);
-                break;
+//            case DotGraph:
+//                filePath = d.filePath(graphName + GP_GRAPH_DOT_EXTENSION);
+//                break;
             default:
                 filePath = d.filePath(graphName + GP_GRAPH_DEFAULT_EXTENSION);
                 break;
@@ -960,9 +964,9 @@ void Project::newGraph(const QString &graphName, GraphTypes type)
 
     switch(type)
     {
-    case GxlGraph:
-        file.write(QVariant(QString("<graph></graph>")).toByteArray());
-        break;
+//    case GxlGraph:
+//        file.write(QVariant(QString("<graph></graph>")).toByteArray());
+//        break;
     case AlternativeGraph:
     {
         QFile fp(":/templates/newgraph_alternative.host");
@@ -971,9 +975,9 @@ void Project::newGraph(const QString &graphName, GraphTypes type)
         file.write(QVariant(newGraphString).toByteArray());
     }
         break;
-    case DotGraph:
-        file.write(QVariant(QString("")).toByteArray());
-        break;
+//    case DotGraph:
+//        file.write(QVariant(QString("")).toByteArray());
+//        break;
     default:
         file.write(QVariant(QString("[ | | ]")).toByteArray());
         break;

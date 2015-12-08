@@ -549,11 +549,11 @@
    </property>
   </action>
   <action name="actionOptions">
-  <property name="enabled">
-   <bool>false</bool>
-  </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
-    <iconset resource="icons.qrc">
+    <iconset>
      <normaloff>:/icons/small_wrench.png</normaloff>:/icons/small_wrench.png</iconset>
    </property>
    <property name="text">
@@ -670,8 +670,11 @@
    </property>
   </action>
   <action name="actionExportAsDot">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
-    <iconset resource="icons.qrc">
+    <iconset>
      <normaloff>:/icons/small_page_white_text.png</normaloff>:/icons/small_page_white_text.png</iconset>
    </property>
    <property name="text">
@@ -679,8 +682,11 @@
    </property>
   </action>
   <action name="actionExportAsGxl">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
-    <iconset resource="icons.qrc">
+    <iconset>
      <normaloff>:/icons/small_page_white_text.png</normaloff>:/icons/small_page_white_text.png</iconset>
    </property>
    <property name="text">
@@ -693,8 +699,11 @@
    </property>
   </action>
   <action name="actionExportAsLaTeX">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
-    <iconset resource="icons.qrc">
+    <iconset>
      <normaloff>:/icons/small_page_white_text.png</normaloff>:/icons/small_page_white_text.png</iconset>
    </property>
    <property name="text">

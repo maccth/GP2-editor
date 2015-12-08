@@ -1,3 +1,15 @@
+/*
+ *
+ *
+ *   =============
+ *   Update Policy
+ *   =============
+ *   Changes to the GP 2 AST definition as defined in this file must be mirrored in the
+ *   file GP2/Compiler/src/ast.c in order to maintain
+ *   consistency with the compiler.
+ *
+ *
+ */
 #include "ast.h" 
 
 List *makeGPList(YYLTYPE location, ListType type)

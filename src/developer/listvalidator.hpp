@@ -11,7 +11,7 @@ namespace Developer {
 class ListValidator : public QValidator
 {
     Q_OBJECT
-public:
+private:
     explicit ListValidator(QObject *parent = 0);
 
     State validate(QString &input, int &pos) const;

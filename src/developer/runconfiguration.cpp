@@ -45,6 +45,7 @@ RunConfiguration::RunConfiguration(Project *proj, QWidget *parent, RunConfig* ru
     updatePrograms();
     updateGraphs();
 
+    _ui->configurationNameEdit->setValidator(new QRegExpValidator(QRegExp("^(\\w|\\d|\\-|_|\\.)+$"),this));
     if (_config)
     {
         _ui->configurationNameEdit->setText(_config->name());
@@ -181,13 +182,12 @@ void RunConfiguration::runConfiguration()
     QString ruleStrings = rulesToQString(rules);
 
     // Create temporary file to hold program text and rules
-    QString programTmp = prog->absolutePath();
-    programTmp += ".gp2";
+    QString programTmp = prog->absolutePath() + ".tmp";
     QFile file(programTmp);  
   
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) 
     {
-        qDebug() << "Could not open a temporary file for writing: " << programTmp;
+        qDebug() << "    Could not open a temporary file for writing: " << programTmp;
     }
     else 
     {
@@ -252,7 +252,7 @@ void RunConfiguration::runConfiguration()
     QFileInfo checkFile(output);
     if (checkFile.exists())
     {
-        qDebug() << "Truncating the file: " << output;
+        qDebug() << "    Truncating the file: " << output;
         QFile outputFile(output);
         outputFile.open(QFile::WriteOnly|QFile::Truncate);
         outputFile.close();
@@ -279,7 +279,7 @@ void RunConfiguration::runConfiguration()
     // Attempt to open the output file for reading
     if (!result.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        qDebug() << "  " << "Could not open result file for reading: " << output;
+        qDebug() << "  " << "    Could not open result file for reading: " << output;
         return;
     }
     else
@@ -311,7 +311,7 @@ void RunConfiguration::runConfiguration()
         return;
     }
 
-    qDebug() << "Attempting to open output graph.";
+    qDebug() << "    Attempting to open output graph.";
 
     //Graph* resultGraph = new Graph(output, this);
     emit obtainedResultGraph(output, _config);
@@ -341,14 +341,67 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
 
     //qDebug() << "Location of GP2 Compiler: " << Compiler;
 
-    /* ******************************* */
-    /* Validate program and host graph */
-    /* ******************************* */
-    args << "-p" << programFile;   // start with validating the program
-
     QProcess validate;
     // http://stackoverflow.com/questions/3852587/how-to-get-stdout-from-a-qprocess
     validate.setProcessChannelMode(QProcess::MergedChannels);
+
+    /* ****************** */
+    /* Validate each rule */
+    /* ****************** */
+
+    // Collect all rules
+    QVector<Rule *> rules =  _project->rules();
+    qDebug () << "  Attempting to validate Rules.";
+
+    for (QVector<Rule *>::iterator it = rules.begin(); it!= rules.end(); ++it)
+    {
+        Rule* rule = *it;
+        args.clear();
+        args << "-r" << rule->absolutePath();
+
+        validate.start(Compiler, args);
+
+        if (!validate.waitForStarted())
+        {
+            QMessageBox::information(
+                        this,
+                        tr("Validation Failed"),
+                        tr("Could not start validating one of the rules."));
+            validate.close();
+            return false;
+        }
+
+        if (!validate.waitForFinished()) // sets current thread to sleep
+        {
+            QMessageBox::information(
+                        this,
+                        tr("Validation Failed"),
+                        tr("Could not finish validating one of the rules."));
+            validate.close();
+            return false;
+        }
+
+        QByteArray validateOutput = validate.readAllStandardOutput();
+        qDebug() << "    " << QString(validateOutput).simplified();
+        if (!validateOutput.contains("is valid"))
+        {
+            QMessageBox::information(
+                        this,
+                        tr("Validation Failed"),
+                        tr("Could not validate one of the rules. See the log for details."));
+            validate.close();
+            return false;
+        }
+        validate.close();
+    }
+    qDebug () << "  Validation of Rules completed.";
+
+
+    /* ******************************* */
+    /* Validate program and host graph */
+    /* ******************************* */
+    args.clear();
+    args << "-p" << programFile;
 
     validate.start(Compiler, args);
     qDebug () << "  Attempting to validate Program:" << Compiler << args;
@@ -358,7 +411,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
         QMessageBox::information(
                     this,
                     tr("Validation Failed"),
-                    tr("Could not start validating the given program/rules."));
+                    tr("Could not start validating the given program."));
         validate.close();
         return false;
     }
@@ -368,7 +421,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
         QMessageBox::information(
                     this,
                     tr("Validation Failed"),
-                    tr("Could not finish validating the given program/rules."));
+                    tr("Could not finish validating the given program."));
         validate.close();
         return false;
     }
@@ -470,25 +523,62 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     }
     compile.close();
 
+    /* *********************************************************** */
     /* Create command for running the GP program on the host graph */
+    /* *********************************************************** */
     QString RunCmd = QString();
     RunCmd += "cd /tmp/gp2";
     RunCmd += " && make && ";
     RunCmd += "./GP2-run && cp gp2.output " + outputFile;
 
-    qDebug () << "  Attempting to execute GP2 Program.";
+    qDebug () << "  Attempting to execute GP2 Program:" << RunCmd;
+//    bool success = (call(RunCmd) == 0);
+    bool success = true;
+    QProcess run;
+    // http://stackoverflow.com/questions/3852587/how-to-get-stdout-from-a-qprocess
+    run.setProcessChannelMode(QProcess::MergedChannels);
 
-    bool success = (call(RunCmd) == 0);
+    args.clear();
+    args << "-c" <<RunCmd;
+    run.start("sh", args);
+    if (!run.waitForStarted())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Run Failed"),
+                    tr("Could not start running the given configartion."));
+        run.close();
+        qDebug () << "    Run failed.";
+        return false;
+    }
 
-    if (!success)
+    if (!run.waitForFinished())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Run Failed"),
+                    tr("Could not finish running the given configartion."));
+        run.close();
+        qDebug () << "    Run failed.";
+        return false;
+    }
+
+    QByteArray runOutput = run.readAllStandardOutput();
+    qDebug() << "    " << runOutput;
+    if (!success || runOutput.contains("Error"))
     {
         QMessageBox::information(
                     this,
                     tr("Run Failed"),
                     tr("There was something wrong with execution. See the log for details."));
-
+        run.close();
+        qDebug () << "    Run failed.";
+        return false;
     }
-    return success;
+    qDebug () << "    Run successful.";
+    run.close();
+
+    return true;
 }
 
 // Return 1 -- error during execution
@@ -513,7 +603,7 @@ int RunConfiguration::call(QString cmd)
     QByteArray ba = cmd.toLatin1();
     const char* command = ba.data();
 
-    qDebug() << "  " << "Command is: ";
+    qDebug() << "   Command is: ";
     qDebug() << "  " << QString(command);
 
     fp = popen(command, "r");

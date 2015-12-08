@@ -958,41 +958,41 @@ void MainWindow::exportGraphToSvg()
 
 void MainWindow::exportGraphToDot()
 {
-    if(_currentGraph == 0)
-    {
-        qDebug() << "Export graph requested with no active graph";
-        return;
-    }
+//    if(_currentGraph == 0)
+//    {
+//        qDebug() << "Export graph requested with no active graph";
+//        return;
+//    }
 
-    reinterpret_cast<GraphScene *>(
-                _currentGraph->scene()
-                )->graph()->exportTo(QString(), DotGraph);
+//    reinterpret_cast<GraphScene *>(
+//                _currentGraph->scene()
+//                )->graph()->exportTo(QString(), DotGraph);
 }
 
 void MainWindow::exportGraphToGxl()
 {
-    if(_currentGraph == 0)
-    {
-        qDebug() << "Export graph requested with no active graph";
-        return;
-    }
+//    if(_currentGraph == 0)
+//    {
+//        qDebug() << "Export graph requested with no active graph";
+//        return;
+//    }
 
-    reinterpret_cast<GraphScene *>(
-                _currentGraph->scene()
-                )->graph()->exportTo(QString(), GxlGraph);
+//    reinterpret_cast<GraphScene *>(
+//                _currentGraph->scene()
+//                )->graph()->exportTo(QString(), GxlGraph);
 }
 
 void MainWindow::exportGraphToLaTeX()
 {
-    if(_currentGraph == 0)
-    {
-        qDebug() << "Export graph requested with no active graph";
-        return;
-    }
+//    if(_currentGraph == 0)
+//    {
+//        qDebug() << "Export graph requested with no active graph";
+//        return;
+//    }
 
-    reinterpret_cast<GraphScene *>(
-                _currentGraph->scene()
-                )->graph()->exportTo(QString(), LaTeXGraph);
+//    reinterpret_cast<GraphScene *>(
+//                _currentGraph->scene()
+//                )->graph()->exportTo(QString(), LaTeXGraph);
 }
 
 void MainWindow::showPreferences()

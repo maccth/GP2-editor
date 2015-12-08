@@ -50,14 +50,8 @@ enum GraphTypes
 {
     //! Default format: use the default defined in the program settings
     DefaultGraph,
-    //! Dot format
-    DotGraph,
-    //! GXL (Graph eXchange Language) format
-    GxlGraph,
     //! The "alternative" graph format documented in the GP2 design documents
-    AlternativeGraph,
-    //! A LaTeX output format
-    LaTeXGraph
+    AlternativeGraph
 };
 
 /*!
