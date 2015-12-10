@@ -823,7 +823,7 @@ void Graph::setCanvas(const QRect &rect)
 
 Edge *Graph::addEdge(const QString &id, Node *from, Node *to, const QString &label, const QString &mark, bool isBidirectional)
 {
-    if(contains(id))
+    if(containsEdge(id))
         return 0;
 
     Edge *e = new Edge(id, from, to, label, mark, isBidirectional, this);
@@ -860,7 +860,7 @@ Edge *Graph::addEdge(Node *from, Node *to, const QString &label, const QString &
 
 Node *Graph::addNode(const QString &id, const QString &label, const QString &mark, bool isRoot, bool isInterface, const QPointF &pos)
 {
-    if(contains(id))
+    if(containsNode(id))
         return 0;
 
     Node *n = new Node(id, label, mark, isRoot, isInterface, pos, this);
@@ -987,9 +987,9 @@ bool Graph::openGraphT(const graph_t &inputGraph)
     {
         node_t node = inputGraph.nodes.at(i);
 
-        if(contains(node.id.c_str()))
+        if(containsNode(node.id.c_str()))
         {
-            qDebug() << "    Duplicate ID found: " << node.id.c_str();
+            qDebug() << "    Duplicate Node ID found: " << node.id.c_str();
             qDebug() << "    Graph parsing failed.";
             emit openComplete();
             return false;
@@ -1009,9 +1009,9 @@ bool Graph::openGraphT(const graph_t &inputGraph)
     for(size_t i = 0; i < inputGraph.edges.size(); ++i)
     {
         edge_t edge = inputGraph.edges.at(i);
-        if(contains(edge.id.c_str()))
+        if(containsEdge(edge.id.c_str()))
         {
-            qDebug() << "    Duplicate ID found: " << edge.id.c_str();
+            qDebug() << "    Duplicate Edge ID found: " << edge.id.c_str();
             qDebug() << "    Graph parsing failed.";
             emit openComplete();
             return false;
@@ -1063,7 +1063,7 @@ QString Graph::newNodeId()
     _nodeIdCounter = 0;
     if (_isRuleGraph)
     {
-        while(contains("n" + QVariant(_nodeIdCounter).toString()))
+        while(containsNode("n" + QVariant(_nodeIdCounter).toString()))
             ++_nodeIdCounter;
 
         return "n" + QVariant(_nodeIdCounter).toString();
@@ -1072,7 +1072,7 @@ QString Graph::newNodeId()
     {
         // Just find the first free integer, return as a string with prepended 'n'
         // allows for string identifiers
-        while(contains(QVariant(_nodeIdCounter).toString()))
+        while(containsNode(QVariant(_nodeIdCounter).toString()))
             ++_nodeIdCounter;
 
         return QVariant(_nodeIdCounter).toString();
@@ -1087,7 +1087,7 @@ QString Graph::newEdgeId()
 
     if (_isRuleGraph)
     {
-        while(contains("e" + QVariant(_edgeIdCounter).toString()))
+        while(containsEdge("e" + QVariant(_edgeIdCounter).toString()))
             ++_edgeIdCounter;
 
         return "e" + QVariant(_edgeIdCounter).toString();
@@ -1096,7 +1096,7 @@ QString Graph::newEdgeId()
     else
     {
         // Just find the first free integer, return as a string with prepended 'e'
-        while(contains(QVariant(_edgeIdCounter).toString()))
+        while(containsEdge(QVariant(_edgeIdCounter).toString()))
             ++_edgeIdCounter;
 
         return QVariant(_edgeIdCounter).toString();
