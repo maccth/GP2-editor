@@ -2,6 +2,7 @@
  * \file
  */
 #include "graphparser.hpp"
+#include "dotparser.hpp"
 /*
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/support_istream_iterator.hpp>
@@ -81,12 +82,12 @@ graph_t parseAlternativeGraph(const QString &graphPath)
     return ret;
 }
 
-//graph_t parseDotGraph(const QString &graphString)
-//{
-//    DotParser dotParser(graphString);
+graph_t parseDotGraph(const QString &graphString)
+{
+    DotParser dotParser(graphString);
 
-//    return dotParser.toGraph();
-//}
+    return dotParser.toGraph();
+}
 
 //graph_t parseGxlGraph(const QString &graphString)
 //{

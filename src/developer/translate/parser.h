@@ -102,14 +102,15 @@ typedef union YYSTYPE
 #line 71 "gpparser.y"
   
   int num;   /* value of NUM token. */
+  double dnum; /* value of DNUM token. */
   char *str; /* value of STRING and CHAR tokens. */
   char *id;  /* value of PROCID and ID tokens. */
   int mark;  /* enum MarkTypes, value of MARK token. */
-	double dnum; /* value of DNUM token. */
+
 
 
 /* Line 2068 of yacc.c  */
-#line 104 "gpparser.y"
+#line 105 "gpparser.y"
   
   struct List *list; 
   struct GPDeclaration *decl;
@@ -130,7 +131,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 134 "parser.h"
+#line 135 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -170,4 +171,4 @@ extern bool syntax_error;
 
 
 /* Line 2068 of yacc.c  */
-#line 174 "parser.h"
+#line 175 "parser.h"

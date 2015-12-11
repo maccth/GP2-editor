@@ -70,10 +70,11 @@ bool syntax_error = false;
 
 %union {  
   int num;   /* value of NUM token. */
+  double dnum; /* value of DNUM token. */
   char *str; /* value of STRING and CHAR tokens. */
   char *id;  /* value of PROCID and ID tokens. */
   int mark;  /* enum MarkTypes, value of MARK token. */
-	double dnum; /* value of DNUM token. */
+
 }
 
 /* Single character tokens do not need to be explicitly declared. */
@@ -213,7 +214,7 @@ bool syntax_error = false;
 
 
 Initialise: GP_RULE RuleDecl		{ gp_rule = $2; }
-					| GP_PROGRAM Program 	{ gp_program = $2; }
+          | GP_PROGRAM Program 	{ gp_program = $2; }
           | GP_GRAPH HostGraph  { ast_host_graph = $2; }
 
  /* Grammar for GP 2 program text. */
@@ -453,23 +454,16 @@ LabelArg: /* empty */ 			{ $$ = NULL; }
  	| ',' Label 			{ $$ = $2; }
 
  /* Grammar for GP2 Labels */
-
 Label: List				{ $$ = newASTLabel(@$, NONE, $1); }
-     | _EMPTY				{ $$ = newASTLabel(@$, NONE, NULL); }
      | List '#' MARK	  		{ $$ = newASTLabel(@$, $3, $1); }
-     | _EMPTY '#' MARK	  		{ $$ = newASTLabel(@$, $3, NULL); }
      /* Any has a distinct token since it cannot occur in the host graph. */
      | List '#' ANY_MARK		{ $$ = newASTLabel(@$, $3, $1); }
-     | _EMPTY '#' ANY_MARK		{ $$ = newASTLabel(@$, $3, NULL); }
 
 
 List: AtomExp				{ $$ = addASTAtom(@1, $1, NULL); } 
     | List ':' AtomExp 			{ $$ = addASTAtom(@3, $3, $1); }
-    /* The empty keyword in the middle of a list is a syntax error. */
-    | List ':' _EMPTY			{ $$ = $1;
-    					  report_warning("Empty symbol in the "
-     					                 "middle of a list.\n"); }
-
+    | _EMPTY				{ $$ = NULL; }
+    | List ':' _EMPTY			/* default $$ = $1 */
 
 AtomExp: Variable			{ $$ = newASTVariable(@$, $1); if($1) free($1); }
        | NUM 				{ $$ = newASTNumber(@$, $1); }
@@ -488,7 +482,6 @@ AtomExp: Variable			{ $$ = newASTVariable(@$, $1); if($1) free($1); }
        | AtomExp '.' AtomExp 		{ $$ = newASTConcat(@$, $1, $3); }
 
  /* GP2 Identifiers */
-
 ProcID: PROCID 				/* default $$ = $1 */ 
 RuleID: ID		         	/* default $$ = $1 */ 
 NodeID: ID				/* default $$ = $1 */
@@ -558,16 +551,12 @@ HostEdge: '(' HostID ',' HostID ',' HostID ',' HostLabel ')'
 HostID: NUM                 /* default $$ = $1 */
 
 HostLabel: HostList			{ $$ = newASTLabel(@$, NONE, $1); }
-         | _EMPTY			{ $$ = newASTLabel(@$, NONE, NULL); }
          | HostList '#' MARK	  	{ $$ = newASTLabel(@$, $3, $1); }
-         | _EMPTY '#' MARK	  	{ $$ = newASTLabel(@$, $3, NULL); }
 
 HostList: HostExp 			{ $$ = addASTAtom(@1, $1, NULL); } 
         | HostList ':' HostExp 		{ $$ = addASTAtom(@3, $3, $1); }
-        /* The empty keyword in the middle of a list is a syntax error. */
-        | HostList ':' _EMPTY	        { $$ = $1;
-					  report_warning("Error: empty symbol in the "
-     					                 "middle of a list.\n"); }
+        | _EMPTY			{ $$ = NULL; }
+        | HostList ':' _EMPTY	        /* default $$ = $1 */
 
 HostExp: NUM 				{ $$ = newASTNumber(@$, $1); }
        | '-' NUM %prec UMINUS 	        { $$ = newASTNumber(@$, -($2)); } 

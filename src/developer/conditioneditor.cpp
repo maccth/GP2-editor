@@ -42,7 +42,7 @@ QRegExp ConditionEditor::pattern(int type) const
     case Empty:
         return QRegExp("empty");
     case Variable:
-        return QRegExp("[a-zA-Z_][a-zA-Z0-9_]{,62}");
+        return QRegExp("[a-z][a-zA-Z0-9_]{0,63}");
     case GraphLexeme:
         return QRegExp("[a-zA-Z0-9_]{1,63}");
     case ListSeparator:
@@ -267,11 +267,11 @@ void ConditionEditor::handleLexeme(ConditionLexemes lexeme, int matchLength)
         // Accept it
         _tokens.push_back(token);
         return;
-        // Reject it, we handle these in areas which accept them
-        token->lexeme = ConditionLexeme_Error;
-        token->description = tr("Unexpected integer");
-        _tokens.push_back(token);
-        return;
+//        // Reject it, we handle these in areas which accept them
+//        token->lexeme = ConditionLexeme_Error;
+//        token->description = tr("Unexpected integer");
+//        _tokens.push_back(token);
+//        return;
     case Negation:
         // Accept it
         _tokens.push_back(token);

@@ -7,6 +7,9 @@
 #include "helpdialog.hpp"
 #include "project.hpp"
 
+#include <QMenu>
+#include <QPoint>
+
 namespace Developer {
 
 Edit::Edit(QWidget *parent)
@@ -45,6 +48,12 @@ void Edit::setProject(Project *project)
     _project = project;
     _currentFile = 0;
 
+    if ((!_ui) || (!_ui->stackedWidget) || (!_ui->ruleEdit) || (!_ui->graphEdit)  )
+    {
+        qDebug() << "Error: Edit UI not initialized; ignoring";
+        return;
+    }
+
     // Set up rule edit
     if(_project->rules().count() > 0)
     {
@@ -73,6 +82,7 @@ void Edit::setProject(Project *project)
     else
         _ui->graphEdit->setVisible(false);
 
+    // Set up graph edit
     if(_project->graphs().count() > 0)
     {
         Graph *graph = _project->graphs().at(0);
@@ -240,6 +250,16 @@ void Edit::fileListChanged()
             // Do nothing
             break;
         }
+
+        // Create right-click menu
+//        QMenu* menu = new QMenu();
+//        QAction* open = new QAction(tr("Open A File"), menu);
+//        connect(open, SIGNAL(triggered()), this, SLOT(fileRightClicked()));
+
+//        _ui->projectTreeWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+//        _ui->projectTreeWidget->addAction(open);
+
+        // Append item to parent tree
         programs->addChild(item);
         _treeMap.insert(p, item);
     }
@@ -285,6 +305,27 @@ void Edit::fileListChanged()
     }
 
     _ui->projectTreeWidget->expandAll();
+}
+
+void Edit::fileRightClicked()
+{
+    //qDebug() << "Right click happened.";
+    QAction *action = static_cast<QAction *>(sender());
+    if (!action)
+    {
+        qDebug() << "  edit.cpp: Could not find the clicked Action.";
+        return;
+    }
+
+    QMenu* menu = static_cast<QMenu *>(action->parent());
+    if (!menu)
+    {
+        qDebug() << "  edit.cpp: Action does not have a parent.";
+        return;
+    }
+
+    //qDebug() << "  edit.cpp: Success";
+
 }
 
 void Edit::fileStatusChanged(QString path, int status)

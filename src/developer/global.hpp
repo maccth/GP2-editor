@@ -50,6 +50,8 @@ enum GraphTypes
 {
     //! Default format: use the default defined in the program settings
     DefaultGraph,
+    //! The Dot graph is created/used by graphviz
+    DotGraph,
     //! The "alternative" graph format documented in the GP2 design documents
     AlternativeGraph
 };

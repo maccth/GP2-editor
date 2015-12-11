@@ -174,12 +174,49 @@ void RunConfiguration::runConfiguration()
 
     QString progName = _ui->programCombo->currentText();
     Program* prog = _project->program(progName);    // exploiting that project->program(path) first iterates through _programs and compares program.name() with path
+    if (!prog || !prog->save())
+    {
+        // Couldn't save the specified program
+        QMessageBox::warning(
+                    this,
+                    tr("Saving Program Failed"),
+                    tr("Could not save the program %1 before running. Check the log for details.")
+                    .arg(prog->baseName())
+                    );
+        return;
+    }
+
+
     QString programString = prog->program();
     //program = qPrintable(prog->absolutePath());
 
     // Collect all rule specifications, we have to append them to the program text
     QVector<Rule *> rules =  _project->rules();
-    QString ruleStrings = rulesToQString(rules);
+
+    QStringList resultList;
+    for (QVector<Rule *>::iterator it = rules.begin(); it!= rules.end(); ++it)
+    {
+        Rule* rule = *it;
+
+        // First save the rule
+        if (!rule || !rule->save())
+        {
+            // Couldn't save on of the rules
+            QMessageBox::warning(
+                        this,
+                        tr("Saving Program Failed"),
+                        tr("Could not save the rule %1 before running. Check the log for details.")
+                        .arg(rule->name())
+                        );
+            return;
+        }
+        else
+        {
+            resultList << rule->toAlternative();
+        }
+    }
+
+    QString ruleStrings = resultList.join("\n");
 
     // Create temporary file to hold program text and rules
     QString programTmp = prog->absolutePath() + ".tmp";
@@ -196,12 +233,23 @@ void RunConfiguration::runConfiguration()
     }
     file.close();
 
-    /* Location of selected GP host graph */
-    QString hostgraphFile;
+    /* Locate the selected GP host graph */
 
     QString graphName = _ui->targetGraphCombo->currentText();
     Graph* graph = _project->graph(graphName);
-    hostgraphFile = graph->absolutePath();
+    if (!graph || !graph->save())
+    {
+        // Couldn't save the specified graph
+        QMessageBox::warning(
+                    this,
+                    tr("Saving Host Graph Failed"),
+                    tr("Could not save the graph %1 before running. Check the log for details.")
+                    .arg(graphName)
+                    );
+        return;
+    }
+
+    QString hostgraphFile = graph->absolutePath();
 
 
     //hostgraph = "~/github/GP2Test/hostgraphs/1.graph";
@@ -239,6 +287,8 @@ void RunConfiguration::runConfiguration()
         }
     }
 
+    // This will save the project file (.gpp) along with the run congfigurations
+    // Will not do a recursive save on all files
     _project->save();
 
     /* Desired location of output */
@@ -316,20 +366,6 @@ void RunConfiguration::runConfiguration()
     //Graph* resultGraph = new Graph(output, this);
     emit obtainedResultGraph(output, _config);
 }
-
-QString RunConfiguration::rulesToQString(QVector<Rule *> rules)
-{
-    QStringList resultList;
-
-    for (QVector<Rule *>::iterator it = rules.begin(); it!= rules.end(); ++it)
-    {
-        Rule* rule = *it;
-        resultList << rule->toAlternative();
-    }
-
-    return resultList.join("\n");
-}
-
 
 bool RunConfiguration::run(QString programFile, QString graphFile, QString outputFile)
 {
@@ -482,6 +518,21 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     /* *************************************************** */
     args.clear();
     args << programFile << graphFile;
+
+    // Clear the output directory first;
+    QString tempPath = "/tmp/gp2";
+    QFileInfo tmp(tempPath);
+    if (tmp.exists() && tmp.isDir())
+    {
+        qDebug () << "  Cleaning temporary directory" << tempPath;
+        QDir dir(tempPath);
+        dir.setNameFilters(QStringList() << "*.*");
+        dir.setFilter(QDir::Files);
+        foreach(QString dirFile, dir.entryList())
+        {
+            dir.remove(dirFile);
+        }
+    }
 
     // The actual output is put by default in /tmp/gp2/gp2.output
     QProcess compile;

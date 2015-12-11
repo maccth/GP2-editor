@@ -21,6 +21,8 @@ Graph::Graph(const QString &graphPath, bool autoInitialise, QObject *parent, boo
 {
     if(autoInitialise && !graphPath.isEmpty())
         open();
+
+//    qDebug () << "  graph.cpp: &&" << graphPath;
 }
 
 Graph::Graph(const graph_t &inputGraph, QObject *parent, bool isRuleGraph)
@@ -34,6 +36,7 @@ Graph::Graph(const graph_t &inputGraph, QObject *parent, bool isRuleGraph)
     // simply uses the GPFile derived object for consistency and avoiding
     // duplication of effort
     openGraphT(inputGraph);
+//    qDebug () << "  graph.cpp: &&";
 }
 
 bool Graph::save()
@@ -255,8 +258,8 @@ bool Graph::open()
         GraphTypes type = DEFAULT_GRAPH_FORMAT;
         if(_path.endsWith(GP_GRAPH_ALTERNATIVE_EXTENSION))
             type = AlternativeGraph;
-//        if(_path.endsWith(GP_GRAPH_DOT_EXTENSION))
-//            type = DotGraph;
+        if(_path.endsWith(GP_GRAPH_DOT_EXTENSION))
+            type = DotGraph;
 //        if(_path.endsWith(GP_GRAPH_GXL_EXTENSION))
 //            type = GxlGraph;
 
@@ -268,19 +271,21 @@ bool Graph::open()
 //        case GxlGraph:
 //            graph = parseGxlGraph(contents);
 //            break;
-//        case DotGraph:
-//            graph = parseDotGraph(contents);
-//            break;
+        case DotGraph:
+            graph = parseDotGraph(contents);
+            break;
         default:
             graph = parseAlternativeGraph(absolutePath());
         }
     }
 
     if(!openGraphT(graph))
+    {
+        qDebug() << "    Graph parsing failed.";
         return false;
+    }
 
     qDebug() << "    Finished parsing graph file.";
-
     emit openComplete();
     return true;
 }
@@ -990,8 +995,6 @@ bool Graph::openGraphT(const graph_t &inputGraph)
         if(containsNode(node.id.c_str()))
         {
             qDebug() << "    Duplicate Node ID found: " << node.id.c_str();
-            qDebug() << "    Graph parsing failed.";
-            emit openComplete();
             return false;
         }
 
@@ -1012,8 +1015,6 @@ bool Graph::openGraphT(const graph_t &inputGraph)
         if(containsEdge(edge.id.c_str()))
         {
             qDebug() << "    Duplicate Edge ID found: " << edge.id.c_str();
-            qDebug() << "    Graph parsing failed.";
-            emit openComplete();
             return false;
         }
 
@@ -1024,8 +1025,6 @@ bool Graph::openGraphT(const graph_t &inputGraph)
         {
             qDebug() << "    Edge " << edge.id.c_str() << " references non-existent node "
                      << edge.from.c_str();
-            qDebug() << "    Graph parsing failed.";
-            emit openComplete();
             return false;
         }
 
@@ -1033,8 +1032,6 @@ bool Graph::openGraphT(const graph_t &inputGraph)
         {
             qDebug() << "    Edge " << edge.id.c_str() << " references non-existent node "
                      << edge.to.c_str();
-            qDebug() << "    Graph parsing failed.";
-            emit openComplete();
             return false;
         }
 

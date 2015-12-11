@@ -1,7 +1,2 @@
-// Example program
-
 // Main declaration
-Main = RemoveLeaf!; if NotNull then No else Yes
-
-// Macro declaration
-NotNull = {Loop,EdgeBetweenNodes}
+Main =

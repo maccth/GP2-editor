@@ -82,6 +82,8 @@ public slots:
 
     void fileStatusChanged(QString path, int status);
 
+    void fileRightClicked();
+
 signals:
     void graphHasFocus(GraphWidget *graphWidget);
     void graphLostFocus(GraphWidget *graphWidget);

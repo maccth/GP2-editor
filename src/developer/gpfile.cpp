@@ -17,10 +17,18 @@ GPFile::GPFile(const QString &filePath, QObject *parent)
     , _status(GPFile::Modified)
     , _internalChanges(0)
 {
+//    qDebug () << "(9.06)";
     _fileWatcher = new QFileSystemWatcher(this);
+    if (_fileWatcher == 0)
+        qDebug () << "(9.07) Could not create FileSystem Watcher";
+//    qDebug () << "(9.08)";
+
+    qDebug () << "    gpfile.cpp:" << filePath;
+
     connect(_fileWatcher, SIGNAL(fileChanged(QString)),
             this, SLOT(fileChanged(QString)));
 
+//    qDebug () << "(9.09)";
     if(!_path.isEmpty())
         open();
 }
@@ -112,16 +120,19 @@ bool GPFile::open()
     // succeeds
     _status = GPFile::Error;
 
+//    qDebug () << "(9.10)";
     if(_fp != 0)
     {
         _fp->close();
         delete _fp;
     }
 
+//    qDebug () << "(9.11)";
     // Clear the watcher of any existing path
     if(_fileWatcher->files().count() > 0)
         _fileWatcher->removePaths(_fileWatcher->files());
 
+//    qDebug () << "(9.12)";
     _fp = new QFile(_path);
     // If this is a new file then we stick with GPFile::Modified as a status as
     // it needs to be saved or discarded, otherwise we stick with GPFile::Normal
@@ -132,6 +143,7 @@ bool GPFile::open()
         //_status = GPFile::Normal;
         // It exists, so we should watch it
         _fileWatcher->addPath(_path);
+//        qDebug () << "(9.13)";
     }
     else if(!_path.startsWith(":"))
     {

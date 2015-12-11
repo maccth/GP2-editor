@@ -295,7 +295,7 @@ std::vector<param_t> 		translateVariablesList(List* variables)
             {
                 // Existing variable was actually declared, check type and add to list of valid variables
                 declared = true;
-                qDebug() << "    translate.cpp: Declared variable found:" << QString(var.c_str()) << QString(varCollection.type.c_str());
+//                qDebug() << "    translate.cpp: Declared variable found:" << QString(var.c_str()) << QString(varCollection.type.c_str());
 
                 if (varCollection.type == "list")
                     validListVars.variables.push_back(var);

@@ -43,6 +43,16 @@ void Results::setProject(Project *project)
     }
 
     _project = project;
+
+    // Clear the existing result graphs
+    _ui->resultsTreeWidget->clear();
+
+    QStringList items;
+    items << "Results";
+    QTreeWidgetItem *root = new QTreeWidgetItem(items);
+    root->setIcon(0, QIcon(QPixmap(":/icons/application-icon.png")));
+    _ui->resultsTreeWidget->addTopLevelItem(root);
+
     //_currentGraph = 0;
 
 		/* Set up run configurations

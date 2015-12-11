@@ -3,8 +3,6 @@
  */
 #include "dotparser.hpp"
 
-#include "list.hpp"
-
 #include <QPointF>
 #include <QDebug>
 
@@ -185,10 +183,11 @@ bool DotParser::parseItem()
                 {
                     if(label.isEmpty())
                         label = id;
-                    List list(label);
+                    label_t nodeLabel;
+                    nodeLabel.values.push_back(label.toStdString());
                     node_t node;
                     node.id = id.toStdString();
-                    node.label = list.toLabel();
+                    node.label = nodeLabel;
                     _nodes << id;
                     _graph.nodes.push_back(node);
                 }
@@ -249,10 +248,11 @@ bool DotParser::parseItem()
                     {
                         if(toLabel.isEmpty())
                             toLabel = to;
-                        List list(toLabel);
+                        label_t nodeLabel;
+                        nodeLabel.values.push_back(toLabel.toStdString());
                         node_t node;
                         node.id = to.toStdString();
-                        node.label = list.toLabel();
+                        node.label = nodeLabel;
                         _nodes << to;
                         _graph.nodes.push_back(node);
                     }
@@ -277,9 +277,13 @@ bool DotParser::parseItem()
                         edgeLabel = QString("\"") + attributes["label"].toString() + "\"";
 
                     edge_t edge;
-                    List list(edgeLabel);
+
+                    label_t edgeL;
+                    if  (!edgeLabel.isEmpty() && (edgeLabel != QString("")) )
+                            edgeL.values.push_back(edgeLabel.toStdString());
+
                     edge.id = edgeId.toStdString();
-                    edge.label = list.toLabel();
+                    edge.label = edgeL;
                     edge.from = id.toStdString();
                     edge.to = to.toStdString();
                     _edges << edgeId;
@@ -340,10 +344,12 @@ bool DotParser::parseItem()
                     }
                 }
 
-                List list(label);
+                label_t nodeLabel;
+                nodeLabel.values.push_back(label.toStdString());
+
                 node_t node;
                 node.id = id.toStdString();
-                node.label = list.toLabel();
+                node.label = nodeLabel;
                 node.xPos = position.x();
                 node.yPos = position.y();
                 _graph.nodes.push_back(node);

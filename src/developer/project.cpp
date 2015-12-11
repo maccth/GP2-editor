@@ -22,7 +22,8 @@ Project::Project(const QString &projectPath, bool autoInitialise, QObject *paren
     , _error("")
 {
     if(!projectPath.isEmpty() && autoInitialise)
-        open(projectPath);
+       if  (!open(projectPath))
+            qDebug () << "Error: Opening" << projectPath << "failed.";
     else
     {
         if(!projectPath.isEmpty())
@@ -34,20 +35,25 @@ Project::Project(const QString &projectPath, bool autoInitialise, QObject *paren
         }
         else
         {
-            qDebug () << "Error: Opening" << projectPath << "failed.";
+//            qDebug () << "Error: Opening" << projectPath << "failed.";
         }
     }
 }
 
 Project::~Project()
 {
-    // delete child file objects (rules, programs, graphs)
+    // delete child file objects (rules, programs, graphs, run configs)
     for(ruleIter iter = _rules.begin(); iter != _rules.end(); ++iter)
         delete *iter;
     for(programIter iter = _programs.begin(); iter != _programs.end(); ++iter)
         delete *iter;
     for(graphIter iter = _graphs.begin(); iter != _graphs.end(); ++iter)
         delete *iter;
+    for(runConfigIter iter = _runConfigurations.begin(); iter != _runConfigurations.end(); ++iter)
+        delete *iter;
+
+//    if (_currentFile != 0)
+//        delete _currentFile;
 }
 
 QString Project::name() const
@@ -827,12 +833,12 @@ void Project::newProgram(const QString &programName)
     {
         filePath = name;
         name = info.baseName();
-        if(name.endsWith(GP_PROGRAM_EXTENSION))
+        if(name.endsWith(GP_PROGRAM_EXTENSION) || name.endsWith(GP_OLD_EXTENSION))
             name = name.left(name.size()-4);
     }
     else
     {
-        // Get the directory in which we should be creating this rule
+        // Get the directory in which we should be creating this program
         QDir d = programsDir();
 
         filePath = d.filePath(name + GP_PROGRAM_EXTENSION);
@@ -862,7 +868,7 @@ void Project::newProgram(const QString &programName)
      *  %1 => Rule name
      *  %2 => Creation time
      */
-    QFile fp(":/templates/newprogram.gpx");
+    QFile fp(":/templates/newprogram.gp2");
     fp.open(QIODevice::ReadOnly | QIODevice::Text);
     QString newProgramString = fp.readAll();
 //    newProgramString = newProgramString.arg(
