@@ -6,6 +6,7 @@
 
 #include <QFile>
 #include <QFileDialog>
+#include <QSettings>
 #include <QMessageBox>
 #include "project.hpp"
 
@@ -35,11 +36,19 @@ void ImportGraphDialog::selectFile()
     QString file = _ui->graphFileEdit->text();
     QFileInfo info(file);
 
+    QSettings settings;
+    QString defaultPath = settings.value(
+                "Projects/DefaultProjectLocation",
+                QVariant(QDir::toNativeSeparators(
+                             QDir::homePath()
+                             ))
+                ).toString();
+
     QString dir;
     if(info.exists())
         dir = info.dir().path();
     else
-        dir = QDir::homePath();
+        dir = defaultPath;
 
     file = QFileDialog::getOpenFileName(
                 this,

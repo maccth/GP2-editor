@@ -12,8 +12,11 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain("www.cs.york.ac.uk");
     a.setApplicationName("GP Developer");
 
+    qDebug () << "Starting application.";
+
     Developer::MainWindow w;
     w.show();
+
     
     return a.exec();
 }

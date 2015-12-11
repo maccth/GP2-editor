@@ -504,83 +504,90 @@ std::string translateConditionList(List* condition)
 /* Translates a GPCondition AST into its underlying string representation
  * This is needed because rule_t structures have conditions as plain C strings
  */
-std::string translateCondition(GPCondition* condition)
+std::string translateCondition(GPCondition* condition, bool nested)
 {
 	std::string result;
 	if (condition == NULL) return result;
         std::stringstream s;
 	switch(condition->type)
 	{
-                case INT_CHECK:         result = "int( "; result+= condition->var; result += " )" ; break;
-                case CHAR_CHECK:        result = "char( "; result+= condition->var; result += " )" ; break;
-                case STRING_CHECK: 	result = "string( "; result+= condition->var; result += " )" ; break;
-                case ATOM_CHECK:        result = "atom( "; result+= condition->var; result += " )" ; break;
+        case INT_CHECK:     result = "int( "; result+= condition->var; result += " )" ; break;
+        case CHAR_CHECK:    result = "char( "; result+= condition->var; result += " )" ; break;
+        case STRING_CHECK: 	result = "string( "; result+= condition->var; result += " )" ; break;
+        case ATOM_CHECK:    result = "atom( "; result+= condition->var; result += " )" ; break;
 
 		case EQUAL:  				
-                    result =  translateConditionList(condition->list_cmp.left_list);
-                    result+= "=";
-                    result+= translateConditionList(condition->list_cmp.right_list);
-                    break;
+            result = translateConditionList(condition->list_cmp.left_list);
+            result+= "=";
+            result+= translateConditionList(condition->list_cmp.right_list);
+            break;
  
 		case NOT_EQUAL: 
-                    result =  translateConditionList(condition->list_cmp.left_list);
-                    result+= "!=";
-                    result+= translateConditionList(condition->list_cmp.right_list);
-                    break;
+            result = translateConditionList(condition->list_cmp.left_list);
+            result+= "!=";
+            result+= translateConditionList(condition->list_cmp.right_list);
+            break;
 
-                case GREATER:
-                    s << translateAtom(condition->atom_cmp.left_exp);
-                    s << ">";
-                    s << translateAtom(condition->atom_cmp.right_exp);
-                    result = s.str();
-                    break;
+        case GREATER:
+            s << translateAtom(condition->atom_cmp.left_exp);
+            s << ">";
+            s << translateAtom(condition->atom_cmp.right_exp);
+            result = s.str();
+            break;
 
-                case GREATER_EQUAL:
-                    s << translateAtom(condition->atom_cmp.left_exp);
-                    s << ">=";
-                    s << translateAtom(condition->atom_cmp.right_exp);
-                    result = s.str();
-                    break;
+        case GREATER_EQUAL:
+            s << translateAtom(condition->atom_cmp.left_exp);
+            s << ">=";
+            s << translateAtom(condition->atom_cmp.right_exp);
+            result = s.str();
+            break;
 
-                case LESS:
-                    s << translateAtom(condition->atom_cmp.left_exp);
-                    s << "<";
-                    s << translateAtom(condition->atom_cmp.right_exp);
-                    result = s.str();
-                    break;
+        case LESS:
+            s << translateAtom(condition->atom_cmp.left_exp);
+            s << "<";
+            s << translateAtom(condition->atom_cmp.right_exp);
+            result = s.str();
+            break;
 
-                case LESS_EQUAL:
-                    s << translateAtom(condition->atom_cmp.left_exp);
-                    s << "<=";
-                    s << translateAtom(condition->atom_cmp.right_exp);
-                    result = s.str();
-                    break;
- 
-                case BOOL_NOT:
-                    result = "not ";
-                    result+= translateCondition(condition->not_exp);
-                    break;
+        case LESS_EQUAL:
+            s << translateAtom(condition->atom_cmp.left_exp);
+            s << "<=";
+            s << translateAtom(condition->atom_cmp.right_exp);
+            result = s.str();
+            break;
+
+        case BOOL_NOT:
+            result = "not ";
+            result+= translateCondition(condition->not_exp, true);
+            break;
+
 		case BOOL_OR: 
-                    result = translateCondition(condition->bin_exp.left_exp);
-                    result+= " or ";
-                    result+= translateCondition(condition->bin_exp.right_exp);
-                    break;
+            if (nested) result = "(";
+            result+= translateCondition(condition->bin_exp.left_exp, true);
+            result+= " or ";
+            result+= translateCondition(condition->bin_exp.right_exp, true);
+            if (nested) result+= ")";
+            break;
 
 		case BOOL_AND: 
-                    result = translateCondition(condition->bin_exp.left_exp);
-                    result+= " and ";
-                    result+= translateCondition(condition->bin_exp.right_exp);
-                    break;
+            if (nested) result = "(";
+            result+= translateCondition(condition->bin_exp.left_exp, true);
+            result+= " and ";
+            result+= translateCondition(condition->bin_exp.right_exp, true);
+            if (nested) result+= ")";
+            break;
 
 		case EDGE_PRED: 
-                    result = "edge( ";
-                    result+= condition->edge_pred.source;
-                    result += ", ";
-                    result+= condition->edge_pred.target;
-                    if (condition->edge_pred.label != NULL)
-                            result+= ListToString((translateLabel(condition->edge_pred.label)).values);
-                    result += " )";
-                    break;
+            result = "edge( ";
+            result+= condition->edge_pred.source;
+            result+= ", ";
+            result+= condition->edge_pred.target;
+
+            if (condition->edge_pred.label != NULL)
+            result+= ListToString((translateLabel(condition->edge_pred.label)).values);
+
+            result += " )";
+            break;
 
 		default: break;
 	}
@@ -604,14 +611,13 @@ rule_t 			translateRule(GPRule* rule)
 
 	rule_t result;
 	result.documentation = std::string("");		// The GPRule AST doesn't store comments
-	result.id = std::string(rule->name);
-//	result.parameters = translateVariablesList(rule->variables);
+    result.id = std::string(rule->name);
 	result.lhs = translateGraph(rule->lhs);
     result.parameters = translateVariablesList(rule->variables);
 
 	result.rhs = translateGraph(rule->rhs);
 	result.interface = translateInterface(rule->interface);
-	result.condition = translateCondition(rule->condition);
+    result.condition = translateCondition(rule->condition, false);
 
 
 	return result;
@@ -625,7 +631,17 @@ rule_t 			translateRule(GPRule* rule)
 std::vector<atom_t> translateValues(List* list)
 {
 	std::vector<atom_t> result;
-	if (list == NULL || (list->type != GP_LIST)) return result;
+
+    // The empty list is represented by NULL
+    if (list == NULL)
+    {
+        result.push_back("empty");
+        return result;
+    }
+
+    if (list->type != GP_LIST)
+        return result;
+
 
 	result.reserve(getASTListLength(list));
 
@@ -643,7 +659,7 @@ std::string ListToString(std::vector<atom_t> list)
 {
 	std::stringstream s;
 
-	for (std::vector<atom_t>::iterator it = list.begin(); it != list.end(); ++it)
+    for (std::vector<atom_t>::const_iterator it = list.begin(); it != list.end(); ++it)
 	{
 			s << *it;
 			if (it != (list.end() - 1)) s << ":";
@@ -706,29 +722,30 @@ void reverseConditionAST(GPCondition *condition)
     case INT_CHECK:
     case CHAR_CHECK: 
     case STRING_CHECK: 
-    case ATOM_CHECK: break;
+    case ATOM_CHECK:
+        break;
 
     case EDGE_PRED: 
-                                // struct GPLabel has a pointer (to a List) called gp_list
-                                if (condition->edge_pred.label)  // edge predicate has OPTIONAL label
-                                    condition->edge_pred.label->gp_list = reverse(condition->edge_pred.label->gp_list);
-				break;
+        // struct GPLabel has a pointer (to a List) called gp_list
+        if (condition->edge_pred.label)  // edge predicate has OPTIONAL label
+            condition->edge_pred.label->gp_list = reverse(condition->edge_pred.label->gp_list);
+        break;
 
     case EQUAL: 
     case NOT_EQUAL: 
-				condition->list_cmp.left_list = reverse(condition->list_cmp.left_list);
-				condition->list_cmp.right_list = reverse(condition->list_cmp.right_list);
-				break;
+        condition->list_cmp.left_list = reverse(condition->list_cmp.left_list);
+        condition->list_cmp.right_list = reverse(condition->list_cmp.right_list);
+        break;
 
     case BOOL_NOT: 
-				reverseConditionAST(condition->not_exp);
-                                break;
+        reverseConditionAST(condition->not_exp);
+        break;
 
     case BOOL_OR: 
     case BOOL_AND:
-				reverseConditionAST(condition->bin_exp.left_exp);
-				reverseConditionAST(condition->bin_exp.right_exp);
-				break;
+        reverseConditionAST(condition->bin_exp.left_exp);
+        reverseConditionAST(condition->bin_exp.right_exp);
+        break;
 
     case GREATER: 
     case GREATER_EQUAL: 

@@ -108,8 +108,17 @@ bool Graph::saveAs(const QString &filePath)
     {
         QDir d = dir();
         QString dirPath;
+
+        QSettings settings;
+        QString defaultPath = settings.value(
+                    "Projects/DefaultProjectLocation",
+                    QVariant(QDir::toNativeSeparators(
+                                 QDir::homePath()
+                                 ))
+                    ).toString();
+
         if(d.path().isEmpty())
-            dirPath = QDir::homePath();
+            dirPath = defaultPath;
         else
             dirPath = d.absolutePath();
 
@@ -168,8 +177,17 @@ bool Graph::exportTo(const QString &filePath, GraphTypes outputType)
     {
         QDir d = dir();
         QString dirPath;
+
+        QSettings settings;
+        QString defaultPath = settings.value(
+                    "Projects/DefaultProjectLocation",
+                    QVariant(QDir::toNativeSeparators(
+                                 QDir::homePath()
+                                 ))
+                    ).toString();
+
         if(d.path().isEmpty())
-            dirPath = QDir::homePath();
+            dirPath = defaultPath;
         else
             dirPath = d.absolutePath();
 
@@ -185,9 +203,9 @@ bool Graph::exportTo(const QString &filePath, GraphTypes outputType)
 //        case GxlGraph:
 //            filter = tr("GXL Format (*.gxl)");
 //            break;
-//        case DotGraph:
-//            filter = tr("DOT Format (*.gv)");
-//            break;
+        case DotGraph:
+            filter = tr("DOT Format (*.gv)");
+            break;
         default:
             filter = tr("GP Graph Format (*.host)");
             break;

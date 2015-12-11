@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
 #include "project.hpp"
 
 namespace Developer {
@@ -35,11 +36,19 @@ void ImportProgramDialog::selectFile()
     QString file = _ui->programFileEdit->text();
     QFileInfo info(file);
 
+    QSettings settings;
+    QString defaultPath = settings.value(
+                "Projects/DefaultProjectLocation",
+                QVariant(QDir::toNativeSeparators(
+                             QDir::homePath()
+                             ))
+                ).toString();
+
     QString dir;
     if(info.exists())
         dir = info.dir().path();
     else
-        dir = QDir::homePath();
+        dir = defaultPath;
 
     file = QFileDialog::getOpenFileName(
                 this,
