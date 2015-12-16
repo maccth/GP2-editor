@@ -371,8 +371,8 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
 {
     /* Location of GP Compiler */
     //QString GPCompilerDir = "~/github/GP2/Compiler";
-    QString GPCompilerDir = QString(COMPILER_LOCATION);
-    QString Compiler = GPCompilerDir + "/GP2-compile";
+    // QString GPCompilerDir = QString(COMPILER_LOCATION);
+    QString Compiler = "GP2-compile";
     QStringList args = QStringList();
 
     //qDebug() << "Location of GP2 Compiler: " << Compiler;

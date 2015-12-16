@@ -96,17 +96,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     statusBar()->showMessage(tr("Ready."));
 
-    restoreWindowDimensions();
-    updateRecentProjects();
 
+    restoreWindowDimensions();
     QSettings settings;
-    qDebug() << settings.fileName();
+    qDebug () << "    User configuration: " << settings.fileName().replace(" ","\\ ");
     if(settings.value("FirstRun", true).toBool())
     {
         FirstRunDialog dialog(this);
         dialog.exec();
         settings.setValue("FirstRun", false);
     }
+    updateRecentProjects();
 }
 
 MainWindow::~MainWindow()
@@ -135,7 +135,7 @@ void MainWindow::updateRecentProjects()
     {
         QString project = *iter;
         QFileInfo info(project);
-        if(info.exists())
+        if(info.exists() && info.isFile())
             tmp << project;
     }
 
@@ -151,29 +151,40 @@ void MainWindow::updateRecentProjects()
     {
         // There are recent projects, enable the widgets which require them and
         // populate them with the list contents
-        if(_mapper != 0)
-            delete _mapper;
-        _mapper = new QSignalMapper(this);
+        if(_mapper == 0)
+        {
+            _mapper = new QSignalMapper(this);
+//            qDebug() << "    mainwindow.cpp: Creating fresh QSignalMapper";
+        }
+//        qDebug() << "    mainwindow.cpp: Updating list of projects";
+
         _ui->menuRecentProjects->setEnabled(true);
 
+        // Clear the current list
+        _mapper->disconnect();
         _ui->menuRecentProjects->clear();
+
         for(QStringList::iterator iter = tmp.begin(); iter != tmp.end(); ++iter)
         {
-            Project *proj = new Project(*iter, false);
-            if(proj->name().isEmpty())
-                continue;
+            QString project = *iter;
+//            Project *proj = new Project(*iter, false);
+//            if(!proj ||  proj->name().isEmpty())
+//                continue;
 
-            QAction *action = new QAction(proj->absolutePath(), _ui->menuRecentProjects);
+            QAction *action = new QAction(project, _ui->menuRecentProjects);
             connect(action, SIGNAL(triggered()), _mapper, SLOT(map()));
-            _mapper->setMapping(action, proj->absolutePath());
+            _mapper->setMapping(action, project);
 
-            delete proj;
+//            delete proj;
             _ui->menuRecentProjects->addAction(action);
         }
 
         connect(_mapper, SIGNAL(mapped(QString)),
                 this, SLOT(openProject(QString)));
     }
+
+//    if (_recentProjects == tmp)
+//        return;
 
     _recentProjects = tmp;
 
@@ -199,6 +210,8 @@ void MainWindow::addRecentProject(QString project)
     // items are usually what triggered this in the first place and deleting
     // themselves while they're working causes a segmentation fault (bad access)
     //updateRecentProjects();
+
+    emit recentProjectsChanged(_recentProjects);
 }
 
 void MainWindow::restoreWindowDimensions()
@@ -237,16 +250,17 @@ void MainWindow::setProject(Project *project)
             this, SLOT(projectChanged()));
 
     _ui->title->setText(QString("GP Developer - ") + project->name());
-    _ui->quickRunWidget->setProject(project);
     _edit->setProject(project);
     _run->setProject(project);
+    _results->setProject(project);
+    //_ui->quickRunWidget->setProject(project);
 }
 
 void MainWindow::setProjectActive(bool state)
 {
     if(state)
     {
-        // Show the quick run widget
+        // Hide the quick run widget
         _ui->quickRunWidget->setVisible(false);
 
         // Enable all tabs
@@ -300,6 +314,7 @@ void MainWindow::setProjectActive(bool state)
 
 void MainWindow::newProject()
 {
+    closeProject();
     NewProjectWizard *wizard = new NewProjectWizard(this);
     wizard->exec();
 
@@ -370,7 +385,12 @@ void MainWindow::openProject(QString path)
                     );
         if(path.isEmpty())
             return;
+        QFileInfo location(path);
+        if (!location.exists() || !location.isFile())
+            return;
     }
+
+    closeProject();
 
     QFile f(path);
     if(!f.exists())
@@ -378,7 +398,7 @@ void MainWindow::openProject(QString path)
 
     Project *newProject = new Project(path);
 
-    if(newProject->isNull())
+    if((newProject==0) || newProject->isNull())
     {
         QMessageBox::warning(
                     this,
@@ -428,9 +448,10 @@ void MainWindow::openGraph()
 
 void MainWindow::closeProject()
 {
-    setProject(0);
+    setProject(0);  // does nothing
     _activeProject = 0;
     setProjectActive(false);
+    _ui->title->setText(QString("GP Developer"));
 }
 
 void MainWindow::save()

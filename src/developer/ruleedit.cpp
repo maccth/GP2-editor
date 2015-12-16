@@ -362,7 +362,7 @@ void RuleEdit::updateInterface()
     // This will also redraw the graphs because interface nodes should have bolded identifiers
     _rule->setInterface(result);
 
-    qDebug () << "  ruleedit.cpp: Updating Interface :" << debug;
+//    qDebug () << "  ruleedit.cpp: Updating Interface :" << debug;
 }
 
 

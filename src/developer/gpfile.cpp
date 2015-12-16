@@ -20,10 +20,10 @@ GPFile::GPFile(const QString &filePath, QObject *parent)
 //    qDebug () << "(9.06)";
     _fileWatcher = new QFileSystemWatcher(this);
     if (_fileWatcher == 0)
-        qDebug () << "(9.07) Could not create FileSystem Watcher";
+        qDebug () << "Warning: Could not create FileSystem Watcher";
 //    qDebug () << "(9.08)";
 
-    qDebug () << "    gpfile.cpp:" << filePath;
+//    qDebug () << "    gpfile.cpp:" << filePath;
 
     connect(_fileWatcher, SIGNAL(fileChanged(QString)),
             this, SLOT(fileChanged(QString)));

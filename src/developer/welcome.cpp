@@ -38,16 +38,13 @@ Welcome::~Welcome()
 
 void Welcome::recentProjectsUpdated(QStringList projects)
 {
-    if(_mapper != 0)
-    {
-        _mapper->disconnect();
-        delete _mapper;
-    }
-
     QLayoutItem *item;
     while((item = _ui->recentProjectsGroup->layout()->takeAt(0)) != 0)
     {
-        delete item->widget();
+        QWidget* widget = item->widget();
+        if (_mapper != 0)
+            _mapper->removeMappings(widget);
+        delete widget;
         delete item;
     }
 
@@ -60,7 +57,16 @@ void Welcome::recentProjectsUpdated(QStringList projects)
     }
     else
     {
-        _mapper = new QSignalMapper(this);
+        if(_mapper == 0)
+        {
+            _mapper = new QSignalMapper(this);
+//            qDebug() << "    welcome.cpp: Creating fresh QSignalMapper";
+        }
+
+//        qDebug() << "    welcome.cpp: Updating list of projects";
+
+        // Clear the current list
+        _mapper->disconnect();
 
         // There are recent projects, add them to the widget
         for(QStringList::iterator iter = projects.begin();
@@ -68,17 +74,15 @@ void Welcome::recentProjectsUpdated(QStringList projects)
         {
             // Attempt to make this into a project, we need to be able to get a
             // name
-            Project *proj = new Project(*iter, false);
-            if(proj->name().isEmpty())
-                continue;
+            QString projectPath = *iter;
+            QFileInfo projectName(projectPath);
 
             StyledButton *button = new StyledButton(_ui->recentProjectsGroup);
-            button->setMainText(proj->name());
-            button->setSubtext(proj->absolutePath());
+            button->setMainText(projectName.fileName());
+            button->setSubtext(projectPath);
             connect(button, SIGNAL(pressed()), _mapper, SLOT(map()));
-            _mapper->setMapping(button, proj->absolutePath());
+            _mapper->setMapping(button, projectPath);
 
-            delete proj;
             _ui->recentProjectsGroup->layout()->addWidget(button);
         }
 

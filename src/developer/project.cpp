@@ -340,6 +340,7 @@ bool Project::open()
 
 bool Project::open(const QString &projectPath)
 {
+    qDebug() << "Opening project:" << projectPath;
     _path = projectPath;
     if(!open())
     {
@@ -464,6 +465,7 @@ bool Project::open(const QString &projectPath)
     _null = false;
     _error = "";
     _status = GPFile::Normal;
+    qDebug() << "    Finished opening project.";
     emit statusChanged(_status);
     emit openComplete();
     return true;
