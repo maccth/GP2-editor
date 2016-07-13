@@ -2,6 +2,8 @@
 
 ## Introduction
 
+Authors: Ivaylo Hristakiev and Alex Elliott (19 Jan 2015)
+
 This is the working repository for the GP2 Editor, the integrated development environment being constructed for <a href="https://www.cs.york.ac.uk/plasma/wiki/index.php?title=GP_(Graph_Programs)">GP2</a>, an experimental graph programming language developed by the University of York.
 
 ## Compiling and Installing on Linux
