@@ -584,7 +584,7 @@ std::string translateCondition(GPCondition* condition, bool nested)
             result+= condition->edge_pred.target;
 
             if (condition->edge_pred.label != NULL)
-            result+= ListToString((translateLabel(condition->edge_pred.label)).values);
+                result+= ", " + ListToString((translateLabel(condition->edge_pred.label)).values);
 
             result += " )";
             break;
