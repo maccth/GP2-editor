@@ -18,15 +18,14 @@
 
 namespace Developer {
 
-EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo, bool isBidirectional,
-                   QGraphicsItem *parent)
+EdgeItem::EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo, QGraphicsItem *parent)
     : GraphItem(edge->id(), edge->label(), "edge", parent)
     , _edge(edge)
     , _from(edgeFrom)
     , _to(edgeTo)
     , _hover(false)
     , _mark(edge->mark())
-    , _isBidirectional(isBidirectional)
+    , _isBidirectional(edge->isBidirectional())
 {
     setZValue(EDGE_Z_VALUE);
 

@@ -18,7 +18,7 @@ class EdgeItem : public GraphItem
 {
     Q_OBJECT
 public:
-    explicit EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo, bool isBidirectional = false,
+    explicit EdgeItem(Edge *edge, NodeItem *edgeFrom, NodeItem *edgeTo,
                       QGraphicsItem *parent = 0);
     explicit EdgeItem(const QString &edgeId, NodeItem *edgeFrom,
                       NodeItem *edgeTo, const QString &edgeLabel = QString(), const QString &edgeMark = QString(), bool isBidirectional = false,
