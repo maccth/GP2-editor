@@ -20,8 +20,7 @@ ConditionEditor::ConditionEditor(QWidget *parent)
     , _pos(0)
 {
     _keywords << "edge" << "node" << "not" << "and" << "or" << "int" << "string"
-              << "atom" << "empty" << "true" << "false" << "indeg" << "outdeg"
-              << "where";
+              << "atom" << "empty" << "true" << "false" << "indeg" << "outdeg";
 
     // Mouse tracking is required for tooltips
     setMouseTracking(true);
@@ -420,17 +419,17 @@ void ConditionEditor::parseEdgeTest()
             }
             else
             {
+//                qDebug() << " ConditionEditor: Stag " << stage << ", Lexeme" << lexeme;
                 token->lexeme = ConditionLexeme_Error;
+                //token->description = tr("Unexpected Special character in edge test");
                 _tokens.push_back(token);
                 continue;
             }
             break;
         case 5:
-            // This accepts a list, which is more complicated than I would like
-            _pos -= matchLength;
-            ++stage;
-            break;
-        case 6:
+            // This should accepts a list
+//            qDebug() << " ConditionEditor: Stage" << stage << ", Lexeme" << lexeme;
+
             if(lexeme == ClosingParen)
             {
                 _tokens.push_back(token);
@@ -438,11 +437,26 @@ void ConditionEditor::parseEdgeTest()
             }
             else
             {
-                token->lexeme = ConditionLexeme_Error;
-                _tokens.push_back(token);
-                continue;
+                _pos += matchLength;
+                //++stage;
             }
+
             break;
+//        case 6:
+//            if(lexeme == ClosingParen)
+//            {
+//                _tokens.push_back(token);
+//                return;
+//            }
+//            else
+//            {
+//                qDebug() << " ConditionEditor: Stage" << stage << ", Lexeme" << lexeme;
+//                token->lexeme = ConditionLexeme_Error;
+//                token->description = tr("Unexpected Special character in edge test");
+//                _tokens.push_back(token);
+//                continue;
+//            }
+//            break;
         default:
             _pos -= matchLength;
             return;
