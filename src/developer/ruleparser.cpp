@@ -76,6 +76,7 @@ rule_t parseRule(const QString &rulePath)
 
     Developer::reverseRuleAST(gp_rule);
     ret = Developer::translateRule(gp_rule);
+//    qDebug() << "    ruleparser.cpp: " <<  QString::fromStdString(ret.condition);
 
 //    int size = 0;
 //    for (std::vector<param_t>::const_iterator it = ret.parameters.begin(); it != ret.parameters.end(); ++it)

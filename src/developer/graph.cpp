@@ -1053,7 +1053,7 @@ bool Graph::openGraphT(const graph_t &inputGraph)
             return false;
         }
 
-        //qDebug() << "graph.cpp: " << edge.isBidirectional;
+        // qDebug() << "graph.cpp: Edge (" << edge.id.c_str() << ") is bidirectional: " << edge.isBidirectional;
         QString label = QString(ListToString(edge.label.values).c_str());
 
         Edge *e = new Edge(edge.id.c_str(), from, to, (label == QString("empty"))  ? QString(""): label , QString(edge.label.mark.c_str()), edge.isBidirectional, this);

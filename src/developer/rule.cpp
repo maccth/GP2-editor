@@ -211,6 +211,7 @@ void Rule::modifyVariables()
 
 void Rule::setCondition(const QString &conditionString)
 {
+    //qDebug() << _condition;
     if(_condition.compare(conditionString) == 0)
         return;
 
