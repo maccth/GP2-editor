@@ -30,13 +30,26 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
 
     //QStringList nodes = _edge->edge()->parent()->nodeIdentifiers();
 
-    _ui->idEdit->setText(_edge->id());
-    _ui->idEdit->setReadOnly(true);
+    if (!_edge->edge()->parent()->isRuleGraph())
+    {
+        // If editing a host graph, disable ID display
+        _ui->idEdit->setVisible(false);
+        _ui->idLabel->setVisible(false);
+
+        // and bidirectional selection
+        _ui->bidirectionalBox->hide();
+
+    }
+    else
+    {
+        _ui->idEdit->setText(_edge->id());
+        _ui->idEdit->setReadOnly(true);
+        _ui->bidirectionalBox->setChecked(_edge->isBidirectional());
+    }
 
     _ui->labelEdit->setText(_edge->label());
 
     // qDebug() << _edge->isBidirectional();
-    _ui->bidirectionalBox->setChecked(_edge->isBidirectional());
 
     //_ui->fromComboBox->addItems(nodes);
     //_ui->toComboBox->addItems(nodes);
@@ -63,7 +76,11 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
                            ).value<QColor>();
     px.fill(color);
     QIcon icon(px);
-    _ui->markComboBox->addItem(icon,"any");
+
+
+    if (_edge->edge()->parent()->isRuleGraph())
+        // Only rule graphs have 'any'
+        _ui->markComboBox->addItem(icon,"any");
 
 
     color = settings.value("GraphView/Edges/ColourShaded",

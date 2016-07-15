@@ -38,11 +38,22 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
         _idValidator = new QRegExpValidator(QRegExp("[0-9]+"), this);
 
 
-    _ui->idEdit->setText(node->id());
-    _ui->idEdit->setValidator(_idValidator);
+    if (graphIsRule)
+    {
+        _ui->idEdit->setText(node->id());
+        _ui->idEdit->setValidator(_idValidator);
+        _ui->rootCheckBox->setChecked(node->isRoot());
+    }
+    else
+    {
+        _ui->idEdit->hide();
+        _ui->idLabel->hide();
+        _ui->rootCheckBox->hide();
+        _ui->rootLabel->hide();
+    }
+
 
     _ui->labelEdit->setText(node->label());
-    _ui->rootCheckBox->setChecked(node->isRoot());
 
     _ui->markComboBox->addItem("none");//set our icon
 
@@ -56,7 +67,10 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
                            ).value<QColor>();
     px.fill(color);
     QIcon icon(px);
-    _ui->markComboBox->addItem(icon,"any");
+
+    // Only rule graphs have 'any' mark
+    if (graphIsRule)
+        _ui->markComboBox->addItem(icon,"any");
 
     color = settings.value("GraphView/Nodes/ColourShaded",
                            QColor(0xb2,0xb2,0xb2) // light gray
