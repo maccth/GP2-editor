@@ -393,7 +393,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     {
         Rule* rule = *it;
         args.clear();
-        args << "-r" << rule->absolutePath();
+        args << "-r" << rule->absolutePath().replace(" ","\\ ");
 
         validate.start(Compiler, args);
 
@@ -437,7 +437,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     /* Validate program and host graph */
     /* ******************************* */
     args.clear();
-    args << "-p" << programFile;
+    args << "-p" << programFile.replace(" ","\\ ");
 
     validate.start(Compiler, args);
     qDebug () << "  Attempting to validate Program:" << Compiler << args;
@@ -476,7 +476,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     validate.close();
 
     // do the same for the host graph
-    args.clear(); args << "-h" << graphFile;
+    args.clear(); args << "-h" << graphFile.replace(" ","\\ ");
     validate.start(Compiler, args);
     qDebug () << "  Attempting to validate Host Graph:" << Compiler << args;
 
@@ -517,7 +517,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     /* Create command for compiling program and host graph */
     /* *************************************************** */
     args.clear();
-    args << programFile << graphFile;
+    args << programFile.replace(" ","\\ ") << graphFile.replace(" ","\\ ");
 
     // Clear the output directory first;
     QString tempPath = "/tmp/gp2";
@@ -580,7 +580,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     QString RunCmd = QString();
     RunCmd += "cd /tmp/gp2";
     RunCmd += " && make && ";
-    RunCmd += "./GP2-run && cp gp2.output " + outputFile;
+    RunCmd += "./GP2-run && cp gp2.output " + outputFile.replace(" ","\\ ");
 
     qDebug () << "  Attempting to execute GP2 Program:" << RunCmd;
 //    bool success = (call(RunCmd) == 0);
