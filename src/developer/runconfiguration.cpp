@@ -563,7 +563,7 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
 
     QByteArray compileOutput = compile.readAllStandardOutput();
     qDebug() << "    " << QString(compileOutput).simplified();
-    if (!compileOutput.contains("Generating program code..."))
+    if (!compileOutput.contains("Generating program code...") || compileOutput.contains("Segmentation"))
     {
         QMessageBox::information(
                     this,
