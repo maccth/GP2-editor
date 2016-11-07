@@ -30,6 +30,10 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
 
     //QStringList nodes = _edge->edge()->parent()->nodeIdentifiers();
 
+    _ui->idEdit->setText(_edge->id());
+    _ui->idEdit->setReadOnly(true);
+    _ui->bidirectionalBox->setChecked(_edge->isBidirectional());
+
     if (!_edge->edge()->parent()->isRuleGraph())
     {
         // If editing a host graph, disable ID display
@@ -39,12 +43,6 @@ EditEdgeDialog::EditEdgeDialog(EdgeItem *edgeItem, QWidget *parent)
         // and bidirectional selection
         _ui->bidirectionalBox->hide();
 
-    }
-    else
-    {
-        _ui->idEdit->setText(_edge->id());
-        _ui->idEdit->setReadOnly(true);
-        _ui->bidirectionalBox->setChecked(_edge->isBidirectional());
     }
 
     _ui->labelEdit->setText(_edge->label());

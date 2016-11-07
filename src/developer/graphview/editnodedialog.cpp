@@ -37,14 +37,11 @@ EditNodeDialog::EditNodeDialog(NodeItem *node, QWidget *parent)
     else
         _idValidator = new QRegExpValidator(QRegExp("[0-9]+"), this);
 
+    _ui->idEdit->setText(node->id());
+    _ui->idEdit->setValidator(_idValidator);
+    _ui->rootCheckBox->setChecked(node->isRoot());
 
-    if (graphIsRule)
-    {
-        _ui->idEdit->setText(node->id());
-        _ui->idEdit->setValidator(_idValidator);
-        _ui->rootCheckBox->setChecked(node->isRoot());
-    }
-    else
+    if (!graphIsRule)
     {
         _ui->idEdit->hide();
         _ui->idLabel->hide();
