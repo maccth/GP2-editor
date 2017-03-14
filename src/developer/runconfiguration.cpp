@@ -16,9 +16,9 @@
 
 #include <stdlib.h>  /* system, NULL, EXIT_FAILURE */
 
-//#ifndef COMPILER_LOCATION
-//  #define COMPILER_LOCATION @COMPILER_LOCATION@
-//#endif
+#ifndef COMPILER_LOCATION
+  #define COMPILER_LOCATION @COMPILER_LOCATION@
+#endif
 
 namespace Developer {
 
@@ -371,8 +371,8 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
 {
     /* Location of GP Compiler */
     //QString GPCompilerDir = "~/github/GP2/Compiler";
-    // QString GPCompilerDir = QString(COMPILER_LOCATION);
-    QString Compiler = "gp2compile";
+    QString Compiler = QString(COMPILER_LOCATION);
+    //QString Compiler = "gp2compile";
     QStringList args = QStringList();
 
     //qDebug() << "Location of GP2 Compiler: " << Compiler;
