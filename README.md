@@ -61,13 +61,11 @@ This step takes about an hour.
 
 #### Building the Editor
 
-First, obtain the code from https://github.com/ivaylohristakiev/GP2-editor.git
+First, obtain the code from https://github.com/UoYCS-plasma/GP2-editor.git
 
 ```
 $ cd GP2
-$ mkdir GP2-editor
-$ cd GP2-editor
-$ git clone https://github.com/ivaylohristakiev/GP2-editor.git
+$ git clone https://github.com/UoYCS-plasma/GP2-editor.git
 ```
 
 Next, edit the **CMakeLists.txt** and edit occurrences marked with _Change this_ .  Also note the comment about exporting CMAKE_PREFIX_PATH. This ensures CMake searches in the right places for the libraries (otherwise it will search /usr/local/... and find nothing).
