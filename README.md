@@ -24,7 +24,7 @@ Start by obtaining the latest version of the Compiler
 $ mkdir GP2
 $ cd GP2
 $ mkdir GP2-Compiler
-$ cd GP2-Compier
+$ cd GP2-Compiler
 $ git clone https://github.com/UoYCS-plasma/GP2.git
 ```
 
