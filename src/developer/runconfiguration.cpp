@@ -539,6 +539,9 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     // http://stackoverflow.com/questions/3852587/how-to-get-stdout-from-a-qprocess
     compile.setProcessChannelMode(QProcess::MergedChannels);
 
+    args.clear();
+    args << programFile.replace(" ","\\ ");
+
     qDebug () << "  Attempting to Compile configuration:" << Compiler << args;
     compile.start(Compiler, args);
     if (!compile.waitForStarted())
@@ -578,10 +581,11 @@ bool RunConfiguration::run(QString programFile, QString graphFile, QString outpu
     /* Create command for running the GP program on the host graph */
     /* *********************************************************** */
     QString RunCmd = QString();
-    RunCmd += "cd /tmp/gp2";
-    RunCmd += " && make && ";
-    RunCmd += "./gp2run && cp gp2.output " + outputFile.replace(" ","\\ ");
-
+    RunCmd += "cd /tmp/gp2 ; ";
+    RunCmd += "make ; ";
+    RunCmd += "./gp2run " + graphFile.replace(" ","\\ ") + " ; ";
+    RunCmd += "cp gp2.output " + outputFile.replace(" ","\\ ") + " ; ";
+    RunCmd += "make clean ; ";
     qDebug () << "  Attempting to execute GP2 Program:" << RunCmd;
 //    bool success = (call(RunCmd) == 0);
     bool success = true;
